@@ -1,0 +1,586 @@
+id,category_id,name,description,sku,price,cost,stock_quantity,brand,weight,is_active,created_at,updated_at
+130,6,Apple Watch Ultra 2,Apple Watch Ultra 2 - High quality smartwatches product,SMA-APP-67441,697.8,-551.67,,Apple,0.03,true,11.06.2022,2022-06-11 18:25:00
+243,10,Crucial 25...,Crucial 256GB microSD - High quality storage product,--,176.34,119.08,204,,0.76,true,2022-02-20 12:37:00
+53,3,"Apple Tab A9
+",Apple Tab A9 - High quality tablets product,TAB-APP-14312,1205.87,582.07,454,  Apple  	,1.33,true,2024-01-10 21:47:00,2024-01-10 21:47:00
+395,16,Parrot EVO Nano+,,DRO-PAR-68916,637.32,509.14,490,Parrot,1.33,true_typo,2024-06-25 00:44:00,2024-06-25 00:44:00
+45,2,"Apple Chromebook 14""","Apple Chromebook 14"" - High quality laptops product",LAP-APP-16252,,1088.13,287,,5.04,TRUE,2022-09-05 16:25:00,2022-09-05 16:25:00
+239,10,  SanDisk 2TB External HDD  	,SaanDiisk 2TB EExteernaal HDD - Hiigh quuaaliity stooraagee prooduuct,STO-SAN-78514,125.36,89.07,13,SanDisk,0.33,true,2024-12-07 18:46:00,2024-12-07 18:46:00
+352,15,Google Security Camera,Google Security Camera - High quality smart home product,SMA-GOO-90562,230.94,135.67,396,Google,0.67,true,2022-04-05 20:51:00,2022-04-05 20:51:00
+148,6,"Apple Venu 3
+",Apple Venu 3 - High quality smartwatches product,SMA-APP-35045,abc,52.32,430,Apple,0.08,true,2022-04-12 22:04:00,2022-04-12 22:04:00
+282,12,"BENQ 24"" FHD MONITOR","BenQ 24"" FHD Monitor - High quality tvs & monitors product",TVS-BEN-39478,1178.42,793.98,137,BenQ,$17.98,true,2023-06-04 06:59:00,"Jun 4, 2023"
+85,4,Bose Sport Earbuds,BOSE SPORT EARBUDS - HIGH QUALITY HEADPHONES PRODUCT,HEA-BOS-53383,468.78,257.77,267,,0.39,true,2023-02-23 05:26:00,02-23-2023
+30,2,"HP Air 13""","HP Air 13"" - High quality laptops product",LAP-HP-41752,2976.37,2226.13,363,  HP  	,5.12,true,2024-03-11 23:05:00,2024-03-11 23:05:00
+431,18,"McAfee QuickBooks Online
+",McAfee QuickBooks Online - High quality software product,SOOF-MCAA-75147,EMPTY,69.33,$19.00,"McAfee
+",0.08,true,2022-06-22 11:11:00,2022-06-22 11:11:00
+54,3,,Amazon Tab A9 - High quality tablets product,TAB-AMA-66136,592.71,343.43,N/A,Amazon,830,true,2022-07-20 04:59:00,2022-07-20 04:59:00
+485,20,Casetify Impact Case,Casetify Impact Case - High quality phone cases product,PHO-CAS-82925,43.14,18.32,,Case...,0.11,null,2024-01-25 09:07:00,2024-01-25 09:07:00
+396,16,Autel Mavic 3 Classic,N/A,DRO-AUT-80403,1849.21,977.99,423,  Autel  	,TBD,,2022-03-03 10:58:00,2022-03-03 10:58:00
+222,9,Google WiFi Adapter,Google WiFi Adapter - High quality networking product,NET-GOO-60834,361.82,196.43,123USD,Google,1.01,false,2024-02-22 15:02:00,02-22-2024
+500,20,Apple Tough Armor,Apple Tough Armor - High quality phone cases product,PHO-APP-27958,12.03,8.46,356,Apple,0.13,true,2023-05-02 11:01:00,2023-05-02 11:01:00
+408,17,,  Apple USB-C to USB-A 3-Pack - High quality cables & adapters product  	,CAB-APP-26940,37.12,16.81,None,Apple,0.05,true,2024-09-26 16:48:00,2024-09-26 16:48:00
+62,3,"Microsoft Pro 12.9""","Microsoft Pro 12.9"" - High quality tablets product",TAB-MIC-44313,862.23,586.75,229,  Microsoft  	,1.35,true,,2023-12-12 10:57:00
+342,14,EVGA Ryzen 9 CPU,EVGA Ryzen 9 CPU - High quali...,COM-EVG-45541,1054.66,722.03,453,,2.4,true,2022-02-05 22:31:00,2022-02-05 22:31:00
+411,17,Belkin USB-C Hub 7-in-1,BELKIN USB-C HUB 7-IN-1 - HIGH QUALITY CABLES & ADAPTERS PRODUCT,CAB-BEL-55854,25.29,15.22,241,,0.27,,TBD,2023-07-18 10:34:00
+293,12,"LG 43"" SMART TV",,TVS-LG-48374,944.59USD,,131,LG,13.66,true,null,2022-04-15 02:26:00
+242,10,Crucial 4TB Desktop HDD,Crucial 4TB Desktop HDD - High quality storage product,,78.69,-56.57,470,Crucial,0.11,null,not available,2022-11-11 00:21:00
+99,4,Sony Air...,Sony AirPods Pro - High q...,HEA-SON-86618,516.44,295.12,470,Sony,0.11,true,2022-10-08 23:22:00,#N/A
+310,13,,"Brother All-in-One Inkjet - High quality printers product
+",PRI-BRO-95960,440.51,196.81,243,Brother,7.84,true,2022-03-08 10:01:00,
+165,7,Razer Mechanical Keyboard,  Razer Mechanical Keyboard - High quality gaming product  	,,512.85,275.86,74,Razer,4.65,  true  ,2023-12-19 15:43:00,2023-12-19 15:43:00
+413,17,Belkin USB-C t...,#N/A,None,10.08,6.42,63,Belkin,0.16,true,2022-07-09 02:16:00,#N/A
+175,7,Sony Mechanical Keyboard,Sony Mechanical Keyboard - High quality gaming product,EMPTY,281.95,,140,Sony,,,2024-08-26 01:15:00,
+330,14,Intel 850W PSU,Intel 850W PSU - High quality computer components product,COM-INT-87217,1083.28,748.75,404,Intel,0.64,true,2022-02-23 18:10:00,23.02.2022
+348,14,Intel CPU Cooler AIO,Intel CPU Cooler AIO - High quality computer components product,,-21077,102.26,233,Intel,1.48,true,2023-02-08 13:41:00,2023-02-08 13:41:00
+476,20,OtterBox Monarch Series,OtterBox Monarch Series - High quality phone cases product,PHO-OTT-48442,61.41,,-4910,OtterBox,$0.17,true,not a date,2022-04-27 13:56:00
+136,6,Apple Venu 3,Apple Venu 3 - High quality smartwatches product,SMA-APP-49617,398.63,,178,Apple,,false,2024/03/05 11:54:00,2024-03-05 11:54:00
+415,17,Apple HDMI 2.1 Cable 10ft,AApplee HDMII 2.1 Caablee 10ft - Hiigh quuaaliity caablees & aadaapteers prooduuct,CAB-APP-28000,47940,true,,Apple,0.14,,not available,2022-10-06 06:47:00
+419,17,Cable Matters DisplayPort Cable,Cable Matters DisplayPort Cable - High quality cables & adapters product,,11.61,6.97,114,Cable Matters,0.06,true,2024-03-14 14:11:00,
+214,9,Netgear Range Extender,Netgear Range Extender - High quality networking product,NET-NET-95376,Inf,282.2,76,,1.01,  true  ,2023-12-26 04:37:00,2023-12-26 04:37:00
+223,9,TP-Link Access Point,,NET-TP--19351,238.09,134.94,,TP-Link,-103,true,2022-12-26 19:02:00,2022-12-26 19:02:00
+210,9,Ubiquiti Mesh System 3-Pack,TBD,NET-UBI-20588,260.26,151.26USD,354,Ubiquiti,0.95,true,2024-03-28 08:29:00,2024-03-28 08:29:00
+176,8,,  Spigen MagSafe Charger - High quality accessories product  	,ACC-SPI-50385,44.58,20.84,132,Spigen,0.14,true_typo,2023-12-09 17:24:00,2023-12-09 17:24:00
+336,14,NVIDIA RTX 4070 GPU,NVIDIA RTX 4070 GPU - High quality computer components product,"COM-NVI-87804
+",168.96,125.67,N/A,,-6.4,true,2022-09-10 17:14:00,2022-09-10 17:14:00
+193,8,Anker MagSafe Charger,Anker MagSafe Charger - High quality accessories product,ACC-ANK-86898,???,not available,272,Anker,0.48,true,2024-04-06 08:09:00,2024-04-06 08:09:00
+145,6,Samsung Pixel Watch 2,Samsung Pixel Watch 2 - High quality smartwatches product,"SMA-SAM-49179
+",202.43,,,,Inf,true,2023-12-08 17:44:00,2023-12-08 17:44:00
+345,14,  EVGA 32GB DDR5 RAM  	,EVGA 32GB DDR5 RAM - High quality computer components product,COM-EV...,1221.93,956.73,392,  EVGA  	,2.33,TRUE,2022-03-04 09:30:00,2022-03-04 09:30:00
+421,17,Anker DisplayPort Cable,Anker DisplayPort Cable - High quality cables & adapters product,CAB-ANK-78195,-1686,,396,An...,0.28,true,2024-10-11 05:45:00,2024-10-11 05:45:00
+236,10,Seagate 2TB External HDD,Seagate 2TB External HDD - High quality storage product,STO-SEA-78784,85.35,abc,383,Seagate,0.57,true,2022-03-28 14:50:00,2022-03-28 14:50:00
+142,6,Garmin Venu 3,GARMIN VENU 3 - HIGH QUALITY SMARTWATCHES PRODUCT,SMA-GAR-87121,,337.64,339,Garmin,-0.04,true,2023-05-07 01:02:00,2023-05-07 01:02:00
+385,16,Parrot Air 3,PARROT AIR 3 - HIGH QUALITY DRONES PRODUCT,DRO-PAR-70456,1813,1397.03,177,Parrot,-0.37,TRUE,2024-12-15 10:43:00,2024-12-15 10:43:00
+146,6,Apple Forerunner 265,Apple Forerunner 265 - High quality smartwatches product,SMA-APP-97382,759.65,493990,254,Apple,0.09,true,2022-07-15 07:37:00,2022-07-15 07:37:00
+36,2,,"Asus Chromebook 14"" - High quality laptops product",LAP-ASU-36568,703.48,311.57,390,  Asus  	,5.89,TRUE,2024-04-24 08:14:00,2024-04-24 08:14:00
+262,11,Harman Kardon Home Speaker,Harman Kardon Home Speaker ...,AUD-HA...,448.21,232.23,201,Harman Kardon,2.78,false,2023-06-02 00:36:00,2023-06-02 00:36:00
+309,13,Epson Wireless Laser,Epson Wireless Laser - High quality printers product,PRI-EP...,391.2,220.64,353,TBD,19.63,true,2024-09-26 16:30:00,2024-09-26 16:30:00
+188,8,Spigen Power Strip,Spigen Power Strip - High quality accessories product,ACC-SPI-27615,82.53,45.5,89,Spigen,0.07,true,2023-06-05 13:34:00,2023-06-05 13:34:00
+357,15,Philips Hue Smart Thermostat,EMPTY,SMA-PHI-97702,31.38,15.69,283,Philips Hue,1.27,true,2024-05-03 15:22:00,2024-05-03 15:22:00
+46,2,"Leenoovoo 15"" Gaamiing",,LAP-LEN-21593,1369.15,563.81,414,Lenovo,2.5,true,2023-10-14 05:53:00,2023-10-14 05:53:00
+154,7,Microsoft PS5 Controller,Microsoft PS5 Controller - High quality gaming product,GAM-MIC-48765,N/A,,abc,Microsoft,1.62,true,2022-12-05 06:18:00,2022-12-05 06:18:00
+376,16,DJI FPV Drone,DJI FPV Drone - High quality drones product,DRO-DJI-19075,404.63,,203,DJI,1.7,true,2024-03-27 15:29:00,2024-03-27 15:29:00
+229,10,Crucial 25...,Crucial 256GB microSD - High quality storage product,STO-CRU-16383,234.75,134.2,38,Crucial,0.5,,3024-11-25 02:52:00,2024-11-25 02:52:00
+207,9,Asus Access Point,Asus Access Point - High quality networking product,NET-ASU-41729,441.05,-249.21,-222,Asus,0.45,true,2023-09-17 16:29:00,2023-09-17 16:29:00
+439,18,Adobe VPN 2-Year Plan,Adobe VPN 2-Year Plan - High quality software product,SOF-ADO-43624,,#REF!,53,,0.02,true,2023-10-19 18:06:00,2023-10-19 18:06:00
+234,10,Seagate 1TB Portable SSD,Seagate 1TB Portable SSD - High quality storage product,STO-SEA-41952,179.52,126.15000000000002,161,Seagate,,true,--,2023-06-12 01:41:00
+5,1,Apple Plus 128GB,Apple Plus 128GB - High quality smartphones product,SMA-APP-15341,1482.81,-786.5,23,Apple,0.4,true,2023-09-23 05:14:00,2023-09-23 05:14:00
+299,12,"Samsung 24"" FHD Monitor
+","Samsung 24"" FHD Monitor - High quality tvs & monitors product",TVS-SAM-22861,1208.19,773.3,75,Samsung,5.08,TRUE,,2022-06-03 16:40:00
+372,15,Google Smart Thermostat,Google Smart Thermostat - High quality smart home product,  SMA-GOO-85910  	,,--,TBD,,1.57,true,2024-07-16 05:23:00,2024-07-16 05:23:00
+493,20,OtterBox Monarch Series,OtterBox Monarch Series - High quality phone cases product,PHO-OTT-67889,15.58,7.02,377,OtterBox,0.07,true,2022-10-22 04:17:00,2022-10-22 04:17:00
+380,16,Skydio Air 3,Skydio Air 3 - High quality drones product,DRO-SKY-81922,NaN,703.39,$160.00,Skydio,1.33,true,2022-04-12 02:18:00,
+308,13,HP Photo Printer,HP Photo Printer - High ...,PRI-HP-84519,170.65,not available,150,HP,N/A,TRUE,2023-04-02 18:05:00,2023-04-02 18:05:00
+333,14,AMD Core i7 CPU,,COM-AMD-91886,None,844.92,443,AMD,0.95,true,2022-09-05 05:01:00,2022-09-05 05:01:00
+41,2,"  HP Pro 14""  	",,LAP-HP-43719,2748.86,1782.12,472,HP,5.71,true,2023-10-15 12:33:00,2023-10-15 12:33:00
+436,18,Microsoft Photo Editor Pro,Microsoft Photo Editor Pro - High quality software product,SOF-MIC-60167,87.14,not available,-23600,Microsoft,0.08,TRUE,2022-07-14 00:41:00,2022-07-14 00:41:00
+319,13,Epson Color LaserJet,TBD,PRI-EPS-67491,489.05,,354,Epson,5.93,true,2022-02-12 01:27:00,2022-02-12 01:27:00
+106,5,Sony Hero 12 Black,Sony Hero 12 Black - High quality cameras product,CAM-SON-14569,1185.29,930.45,,Sony,-0.65,false,2023-02-12 08:54:00,2023-02-12 08:54:00
+209,9,Netgear Mesh System 3-Pack,Netgear Mesh System 3-Pack - High quality networking product,NET-NET-28715,80.37,45.55,109,Netgear,1.83,true,2024-10-28 19:10:00,2024-10-28 19:10:00
+335,14,AMD Core i7 CPU,AMD Core i7 CPU - High quality computer components product,COM-AMD-97858,342.25,-22370,105,AMD,-134,true,2022-08-25 14:19:00,2022-08-25 14:19:00
+125,5,Nikon Action 4,Niikoon AActiioon 4 - Hiigh quuaaliity caameeraas prooduuct,CAM-NIK-75071,-231998.99999999997,1530.79,190,,0.56,true,2024-08-23 02:41:00,2024-08-23 02:41:00
+220,9,Netgear Wi...,Netgear WiFi Adapter - High quality networking product,NET-NET-24309,179.52,$79.16,227,Netgear,1.01,true,2023-05-16 00:07:00,2023-05-16 00:07:00
+246,10,Western Digital 1TB Portable SSD,Western Digital 1TB Portable SSD - High quality storage product,STO-WES-54578,-148.62,UNKNOWN,,Western Digital,0.52000000000001,true,2023-09-16 23:00:00,2023-09-16 23:00:00
+150,6,Garmin Venu 3,Gaarmiin Veenuu 3 - Hiigh quuaaliity smaartwaatchees prooduuct,SMA-GAR-50968,754.67,null,485,Garmin,0.05,true,2022-07-02 10:29:00,2022-07-02 10:29:00
+273,11,JBL Party Speaker,JBL Party Speaker - High quality audio product,AUD-JBL-35259,833.3,347.62,321,JBL,6.93,true,05.06.2023,
+495,20,OtterBox Silicone Case,OtterBox Silicone Case - High quality phone cases product,,40.48,27.13,269,OtterBox,0.14,true,2023-05-06 15:56:00,2023-05-06 15:56:00
+89,4,SONY SPORT EARBUDS,Sony Sport Earbuds - High ...,"HEA-SON-89651
+",301.63,233.01,261,Sony,0.12,true,2024-01-21 16:29:00,2024-01-21 16:29:00
+271,11,Bose Soundbar 5.1,Bose Soundbar 5.1 - High quality audio product,,563.91,309.92,405,Bose,6.39,,2022-07-08 14:53:00,2022-07-08 14:53:00
+365,15,Wyze Smart Plug 2-Pack,Wyze Smart Plug 2-Pack - High quality smart home product,"SMA-WYZ-60635
+",306.73,187.13,179,Wyze,1.87,true,2023-02-13 00:35:00,2023-02-13 00:35:00
+461,999998,OURA BAND 4.0,Oura Band 4.0 - High quality wearables product,WEA-OUR-99057,87.96,$56.72,,Oura,0.05,true,2024-07-12 21:51:00,2024-07-12 21:51:00
+447,18,Adobe QuickBooks Online,Adobe QuickBooks Online - High quality software product,SOF-ADO-35283,350.83,0,450,Adobe,0.08,true,2024-11-25 20:42:00,2024-11-25 20:42:00
+389,16,Autel Air 3,Autel Air 3 - High quality drones product,DRO-AUT-82013,776.72,369.94,174,Au...,N/A,true,2024-03-13 08:28:00,2024-03-13 08:28:00
+410,17,#N/A,Cable Matters USB-C to Lightning 6ft - High quality cables & adapters product,  CAB-CAB-83392  	,,Inf,193,Cable Matters,--,true,2022-06-05 06:09:00,2022-06-05 06:09:00
+320,13,Brother Tank Printer,Brother Tank Printer - High quality printers product,PRI-BRO-64108,382.25,UNKNOWN,-453,Brother,16.18,,2024-10-19 23:57:00,
+250,10,Western Digital 512GB NVMe SSD,Western Digital 512GB NVMe SSD - High quality storage product,STO-WES-46356,,72.46,40,Western Digital,0.94,true,2023-03-26 03:46:00,3023-03-26 03:46:00
+174,7,Razer Gaming Mouse,Razer Gaming Mouse - High quality gaming product,GAM-RAZ-79373,529.69,391.46,458,Razer,true,true,2023-07-16 15:55:00,2023-07-16 15:55:00
+256,11,Marshall Subwoofer,,AUD-MAR-99851,92.75,55.14,196,Marshall,4.34,true,2024-09-19 04:04:00,2024-09-19 04:04:00
+100,4,Sennheiser AirPods Pro,Sennheiser AirPods Pro - High quality headphones product,HEA-SEN-64525,422.03,170.98,-147,  Sennheiser  	,0.12,true,2024-02-18 00:09:00,2024-02-18 00:09:00
+244,10,Samsung 4TB Desktop HDD,Samsung 4TB Desktop HDD - High quality storage product,STO-SAM-42220,44.58,26.51,-4180,Samsung,0.72,  true  ,2022-08-11 08:09:00,2022-08-11 08:09:00
+158,7,,,,-339.83,--,338,Nintendo,1.19,true,UNKNOWN,2023-10-04 21:17:00
+77,4,Sony Sport Earbuds,Sony Sport Earbuds - High ...,HEA-SON-77588,107.36,62.08,$171.00,Sony,$0.22,true,2024-07-25 05:54:00,2024-07-25 05:54:00
+373,15,ecobee Smart Bulb 4-Pack,ecobee Smart Bulb 4-Pack - High quality smart home product,,157.09,,14,ecobee,1.75,true,2023-04-11 14:33:00,2023-04-11 14:33:00
+269,11,Bose Subwoofer,Bose Subwoofer - High quality audio product,AUD-BOS-38375,627.03,468.83,65,Bose,,true,2023-10-13 19:09:00,2023-10-13 19:09:00
+97,4,Bose Free Buds,BOSE FREE BUDS - HIGH QUALITY HEADPHONES PRODUCT,HEA-BOS-41793,50.29,36.97,210,Bose,310,true,2023-05-27 04:52:00,2023-05-27 04:52:00
+251,11,Marshall Studio Monitor,Marshall Studio Monitor - High quality audio product,"AUD-MAR-51742
+",630.51,413.19,267,Marshall,1.17,true,2024-05-01 21:46:00,2024-05-01 21:46:00
+120,5,Fujifilm X-T5,"Fujifilm X-T5 - High quality cameras product
+",CAM-FUJ-39792,,231.77,NaN,  Fujifilm  	,0.59,true,2022-03-04 13:55:00,2022-03-04 13:55:00
+390,16,,Skydio Mini 4 Pro - High quality drones product,DRO-SKY-83242,79.16,38.52,-105,Sky...,1.94,true_typo,2022-10-06 16:31:00,2022-10-06 16:31:00
+369,999995,Google Smart Thermostat,Google Smart Thermostat - High quality smart home product,SMA-GOO-96177,147.14,116.59,-2770,Google,1.82,true,2022-09-02 09:14:00,2022-09-02 09:14:00
+197,8,Spiigeen MaagSaafee Chaargeer,Spigen MagSafe Charger - High quality accessories product,ACC-SPI-89698,19.47,12.5,124,Spigen,0.27,true,2022-12-15 11:23:00,2022-12-15 11:23:00
+51,3,  Apple Tab S9  	,Apple Tab S9 - High quality tablets product,,229.99,157.89,54,Apple,0.43,true,2023-11-11 14:34:00,2023-11-11 14:34:00
+189,8,Samsung Phone Stand,Samsung Phone Stand - High quality accessories product,ACC-SAM-27438,21.03,$9.44,40,,0.15,true,,2023-06-11 15:18:00
+350,14,Intel ATX Motherboard,Intel ATX Motherboard - High quality computer components product,COM-INT-85352,78.56,0,29,Intel,0.49,true,2022-02-25 12:48:00,2022-02-25 12:48:00
+489,20,UAG Wallet Folio,UAG Wallet Folio - High quality phone cases product,PHO-UAG-96560,74.04,53.52,-156,UAG,-0.16,true,,2022-08-27 01:39:00
+127,6,Google For...,Google Forerunner 265 - High quality smartwatches product,SMA-GO...,781.15,621.81,371,Google,0.05,true,2024-01-13 00:48:00,not a date
+198,8,Spigen MagSafe Charger,UNKNOWN,ACC-SPI-40864,47.13,20.93,-43,Spigen,0.39,true,2022-11-12 12:09:00,1668254940
+361,15,ecobee Security Camera,ecobee Security Camera - High quality smart home product,SMA-ECO-79560,262.85,0,207,eecoobeeee,-5.4,true_typo,2023-01-23 20:24:00,2023-01-23 20:24:00
+362,15,Ring Smart Plug 2-Pack,Ring Smart Plug 2-Pack - High quality smart home product,SMA-RIN-42121,331.17,184.27,378,Ring,1.68,true_typo,2023-11-07 14:01:00,3023-11-07 14:01:00
+192,8,Belkin Wireless Charging Pad,Belkin Wireless Charging Pad - High quality accessories product,ACC-BEL-49227,30.16,15.58,268,Belkin,-24,true,2024-11-18 23:27:00,2024-11-18 23:27:00
+429,18,Norton QuickBooks Online,,SOF-NOR-23769,$129.68,70.57,242,Norton,0.06,true_typo,2024-09-25 15:35:00,2024-09-25 15:35:00
+441,18,,Norton Windows 11 Pro Key - High quality software product,SOF-NOR-89072,370780,187.59,#REF!,Norton,0.09,TRUE,2022-10-09 00:37:00,2022-10-09 00:37:00
+382,16,DJI Beginner Drone,DJI Beginner Drone - High quality drones product,DRO-DJI-84340,,286.5,109,not available,1.29,true,2024-08-08 07:35:00,2024-08-08 07:35:00
+358,15,ecobee Smart Plug 2-Pack,ecobee Smart Plug 2-Pack - High quality smart home product,SMA-ECO-85857,163.2,76.13,221,ecobee,$1.20,true,2023-09-10 11:25:00,2023-09-10 11:25:00
+233,10,Samsung 128GB USB Drive,Samsung 128GB USB Drive - High quality storage product,STO-SAM-43550,101.87,-46.93,89,Samsung,0.08,true,2022-02-10 03:05:00,2022-02-10 03:05:00
+433,18,Adobe Offic...,Adobe Office 365 1-Year - High quality software product,SOF-ADO-62688,???,50.28,,Adobe,0.1,,2022-11-23 18:38:00,2022-11-23 18:38:00
+129,6,GARMIN WATCH ULTRA 2,Garmin Watch Ultra 2 - High quality smartwatches product,SMA-GAR-88069,359.52,195.21,131,,0.03,true,2023-12-01 13:45:00,2023-12-01 13:45:00
+237,10,Saamsuung 1TB Poortaablee SSD,Samsung 1TB Portable SSD - High quality storage product,STO-SAM-89411,393.76,235.41,,Samsung,,null,  2023-09-23 12:53:00  ,2023-09-23 12:53:00
+318,13,Brootheer Cooloor LaaseerJeet,Brother Color LaserJet - High quality printers product,  PRI-BRO-11091  	,,189.3,43,Brother,N/A,true,,
+194,8,AApplee Wiireeleess Chaargiing Paad,Apple Wireless Charging Pad - High quality accessories product,ACC-APP-66520,23.46,,402,TBD,0.47,true,2023-05-28 09:47:00,2023-05-28 09:47:00
+65,3,"Amazon Pro 12.9""","Amazon Pro 12.9"" - High quality tablets product",TAB-AMA-26891,307.72,181.68,61,AMAZON,0.47,true,2024-03-03 20:53:00,2024-03-03 20:53:00
+29,999991,"HP Business 15""","HP Business 15"" - High quality laptops product",LAP-HP-83706,1135.87,570.99,371,HP,5.26,true,2022-05-08 04:11:00,
+166,7,Nintendo Mechanical Keyboard,Nintendo Mechanical Keyboard ...,GAM-NIN-88497,110.08,56.35,494,Nintendo,-312,false,2023-05-27 13:25:00,2023-05-27 13:25:00
+379,16,Holy Stone FPV Drone,Holy Stone FPV Drone - High quality drones product,DRO-HOL-76710,1192.75,636.51,#REF!,Holy Stone,-14.7,true,,
+157,7,Sony Mechanical Keyboard,Sony Mechanical Keyboard - High quality gaming product,GAM-SON-63241,408.57,,200,Sony,0.37,true,UNKNOWN,2022-05-20 08:59:00
+263,11,Marshall Party Speaker,Marshall Party Speaker - High quality audio product,AUD-MAR-87315,379.32,189.65,369,Marshall,7.28,TRUE,2024-02-08 03:19:00,2024-02-08 03:19:00
+47,2,MSI Chrom...,"MSI Chromebook 14"" - High quality laptops product",LAP-MSI-17875,,304.24,174,MSI,3060,  true  ,2023-08-20 23:53:00,00/00/0000
+477,20,OtterBox Silicone Case,OtterBox Silicone Case - High quality phone cases product,N/A,null,,228,OtterBox,0.07,false,2023-06-21 19:39:00,2023-06-21 19:39:00
+196,8,  Belkin Screen Protector 3-Pack  	,  Belkin Screen Protector 3-Pack - High quality accessories product  	,ACC-BEL-12132,,21.19,123,Belkin,0.33,true,2023-09-08 19:32:00,
+481,20,Apple Tough Armor,Apple Tough Armor - High quality phone cases product,PHO-APP-81538,75.04,38.82,194,Apple,0.17,true,2024-05-19 09:40:00,2024-05-19 09:40:00
+177,8,Belkin MagSafe Charger,Belkin MagSafe Charger - High quality accessories product,ACC-BEL-86371,48.13,25.74,,,0.12,true_typo,2023-09-12 17:09:00,2023-09-12 17:09:00
+82,4,Beats Studio Pro,Beats Studio Pro - High quality headphones product,HEA-BEA-24844,199.7,106.94,$447.00,Beats,0.36,true_typo,,2024-04-20 15:56:00
+78,4,Beats AirPods Pro,BEATS AIRPODS PRO - HIGH QUALITY HEADPHONES PRODUCT,,402.19,0,415,Beats,0.31,true,2022-10-24 05:28:00,2022-10-24 05:28:00
+434,18,McAfee VPN 2-Year Plan,McAfee VPN 2-Year Plan - High quality software product,SOF-MCA-79044,187.57,149.55,324,McAfee,--,false,2022-05-14 10:24:00,2022-05-14 10:24:00
+203,9,Linksys WiFi Adapter,Linksys WiFi Adapter - High quality networking product,NET-LIN-57676,460.42,232.28,143,#N/A,1.03,true_typo,2024-12-23 15:18:00,2024-12-23 15:18:00
+425,17,Apple USB-C Hub 7-in-1,,,36.31,26.62,156,Apple,0.24,true,2022-10-10 19:24:00,2022-10-10 19:24:00
+87,4,,Sennheiser Studio Pro - High quality headphones product,HEA-SEN-95275,242.27,,428,Sennh...,0.31,true,2022-05-07 01:26:00,3022-05-07 01:26:00
+460,19,Fiitbiit Fiitneess Traackeer,Fitbit Fitness Tracker - High quality wearables product,WEA-FIT-89399,53.6,N/A,,Fitbit,,true,2023-09-21 18:05:00,2023-09-21 18:05:00
+204,9,,Linksys WiFi Adapter - High quality networking product,NET-LIN-98764,66.51,48.27,250,"Linksys
+",1.41,true,2023-01-06 03:17:00,2023-01-06 03:17:00
+11,1,Motorola FE 5G,Motorola FE 5G - High quality smartphones product,SMA-MOT-50993,-42025,-255.34,477,Moto...,0.42,true,,2023-10-27 11:52:00,extra_col_value
+400,16,not available,Parrot Anafi - High quality drones product,DRO-PAR-52970,1283.16,537.45,450,,1.32,true,2023-03-23 06:29:00
+39,2,"  HP Ultra 16""  	","HP ULTRA 16"" - HIGH QUALITY LAPTOPS PRODUCT",LAP-HP-57368,1448.85,831.01,41,HP,2.75,TRUE,2022-06-25 22:06:00,2022-06-25 22:06:00
+462,19,Whoop Health Monitor Band,Whoop Health Monitor Band - High quality wearables product,WEA-WHO-79424,-251.92,127.08,401,,0.09,true,2023-06-21 03:13:00,2023-06-21 03:13:00
+412,17,Cable Matters Thunderbolt 4 Cable,Cable Matters Thunderbolt 4 Cable - High quality cables & adapters product,CAB-CAB-43354,24.77,13.75,,Cable Matters,0.19,true,2023-08-14 18:25:00,2023-08-14 18:25:00
+467,19,Fitbit Ring Gen 3,  Fitbit Ring Gen 3 - High quality wearables product  	,,-325.35,153.15,143,Fitbit,0.04,,2023-05-15 14:21:00,2023-05-15 14:21:00
+288,12,"Sony 55"" 4K OLED","Sony 55"" 4K OLED - High quality tvs & monitors product",TVS-SON-92974,2128.08,1365.94,37,Sony,17.2,,2023-01-01 10:36:00,2023-01-01 10:36:00
+471,999996,Amazfit Charge 6,,WEA-AM...,383.55,255.34,20,Amazfit,0.07,true,2024-09-05 13:35:00,
+55,3,"Amazon Air 10.9""","Amazon Air 10.9"" - High quality tablets product",TAB-AM...,-11692,649.68,,Amazon,,true,2022-02-02 23:04:00,UNKNOWN
+88,4,Soony Stuudiioo Proo,,HEA-SON-27062,68610,40.82,485,Sony,0.32,true,2024-07-23 07:49:00 ,2024-07-23 07:49:00
+95,4,Beeaats Stuudiioo Proo,"Beats Studio Pro - High quality headphones product
+",HEA-BEA-56580,534.2,396.71,NaN,Beats,0.21,#N/A,2022-05-25 17:47:00,2022-05-25 17:47:00
+473,19,Amazfit Band 4.0,Amazfit Band 4.0 - High quality wearables product,WEA-AMA-54162,NaN,293.83,-178,Amazfit,0.06,TRUE,,2023-10-24 02:39:00
+367,15,Philips Hue Smart Plug 2-Pack,Philips Hue Smart Plug 2-Pack -...,,135.42,80.76,-1330,Philips Hue,1.08,true,2023-01-07 07:24:00,2023-01-07 07:24:00
+301,13,HP Label Printer,HP Label Printer - High quality printers product,PRI-HP-69078,124.87,NaN,-18600,,16.36,true,2023-02-27 05:04:00,2023-02-27 05:04:00
+466,19,Fitbit GTR 4,Fitbit GTR 4 - High quality wearables product,WEA-FIT-14888,103.7,47.97,51,Fiitbiit,-0.04,true,  2023-01-24 05:36:00  ,01-24-2023
+101,5,Fujifilm DSLR Kit,Fujifilm DSLR Kit - High quality cameras product,CAM-FUJ-39649,1157.72,545.11,227,Fuujiifiilm,0.71,true,,2024-09-06 11:59:00
+478,20,  Casetify Defender Series  	,,,22.29,15.07,EMPTY,Casetify,0.15,true,2024-12-20 21:37:00,
+156,7,Nintendo Gaming Headset,Nintendo Gaming Headset - High quality gaming product,???,-12352,-866.3,-226,Nintendo,???,true,2024-02-08 22:34:00,2024-02-08 22:34:00
+303,13,Xerox Tank Printer,Xerox Tank Printer - High quality printers product,PRI-XER-26005,-1535.1,116.68,147,Xerox,11.76,true,,2023-05-21 06:33:00
+143,6,"Apple Forerunner 265
+",Apple Forerunner 265 - High quality smartwatches product,SMA-APP-63118,EMPTY,94.33,92,Apple,0.05,true,2024-04-02 04:08:00,2024-04-02 04:08:00
+405,17,Anker DisplayPort Cable,Anker DisplayPort Cable - High quality cables & adapters product,CAB-ANK-71625,-145.6,9.42,195,Anker,0.09,true,2024-08-05 13:59:00,2024-08-05 13:59:00
+33,2,"Dell Chromebook 14""","Dell Chromebook 14"" - High quality laptops product",LAP-DEL-17813,2544.92,1410.65,317,,3.61,true,2024-12-16 00:00:00,2024-12-16 00:00:00
+406,17,Anker USB-C Hub 7-in-1,Anker USB-C Hub 7-in-1 - High quality cables & adapters product,CAB-ANK-88958,35.48,20.42,392,Anker,0.2,TRUE,2023-07-02 20:00:00,
+171,7,Razer PS5 Controller,"Razer PS5 Controller - High quality gaming product
+",GAM-RAZ-39508,290.84,126.92,121,Razer,3.66,true,2023-02-05 01:57:00,2023-02-05 01:57:00
+378,16,,Holy Stone Mini 4 Pro - H...,  DRO-HOL-52401  	,335.07,157.08,-24100,Holy ...,1.13,true,2022-06-26 04:11:00,2022-06-26 04:11:00
+297,12,"Dell 49"" Ultrawide","Dell 49"" Ultrawide - High qu...",TVS-DEL-35356,2362.25,1820.43,EMPTY,De...,28.67,true,"Dec 23, 2022",
+115,5,DJI Ac...,DJI Action 4 - High quality cameras product,CAM-DJI-68858,,1021.99,339,DJI,-33,true,2023-09-17 16:33:00,2023-09-17 16:33:00
+484,20,Casetify Clear Case MagSafe,Caaseetiify Cleeaar Caasee MaagSaafee - Hiigh quuaaliity phoonee caasees prooduuct,PHO-CAS-48992,#REF!,55.99,355,,-4,true,2024-06-25 23:12:00,
+74,3,Apple Surface Go,Apple Surface Go - High quality tablets product,TAB-AP...,1035.93,783.94,480,,0.68,false,2024-09-24 20:51:00,
+40,2,"Raazeer Woorkstaatiioon 17""","Razer Workstation 17"" - High quality laptops product",LAP-RAZ-76585,2644.29,1949390,448,Razer,-4.54,TRUE,2023-09-02 20:46:00,2023-09-02 20:46:00
+432,18,Microsoft Photo Editor Pro,MICROSOFT PHOTO EDITOR PRO - HIGH QUALITY SOFTWARE PRODUCT,,177.59,114.38,256,Microsoft,0.04,true,2023-08-07 15:06:00,2023-08-07 15:06:00
+4,1,"Samsung Plus 128GB
+",Samsung Plus 128GB - High quality smartphones product,SMA-SAM-97936,1340.49,590.15,$265.00,Samsung,0.5,true,2024-04-05 12:22:00,2024-04-05 12:22:00
+418,17,Apple HDMI 2.1 Cable 10ft,Apple HDMI 2.1 Cable 10ft - High quality cables & adapters product,CAB-APP-86450,30.59,17.03,409,Apple,0.26,true,2024-11-12 06:37:00,2024-11-12 06:37:00
+341,14,"G.Skill 850W PSU
+",G.Skill 850W PSU - High quality computer components product,COM-G.S-25517,1368.22,,279,G.Skill,1.03,,2023-03-06 16:28:00,2023-03-06 16:28:00
+360,15,Amazon Nest Hub 2nd Gen,Amazon Nest Hub 2nd Gen - High quality smart home product,,211.64,135.83,437,,1.69,true,2023-07-14 05:55:00,2023-07-14 05:55:00
+216,9,Google Cable Modem,Google Cable Modem - High quality networking product,  NET-GOO-55945  	,90.85,52.04,297,,0.51,true,2024-09-13 02:52:00,EMPTY
+58,3,Lenovo Fire HD 10,Lenovo Fire HD 10 - High quality tablets product,TAB-LEN-15105,690.81,422.27,,Len...,0.84,EMPTY,2023-07-03 12:25:00,not a date
+265,11,Harman Kardon Portable Speaker,Harman Kardon Portable Speaker - High quality audio product,AUD-HAR-73750,963.92,635.35USD,20,Harman...,2.89,  true  ,2024-10-06 12:41:00,2024-10-06 12:41:00
+14,1,OnePlus SE 64GB,OnePlus SE 64GB - High quality smartphones product,SMA-ONE-23091,1141.32,-576.71,132,ONEPLUS,0.46,true,2022-01-26 04:08:00,2022-01-26 04:08:00
+169,7,Nintendo Gaming Mouse,Nintendo Gaming Mouse - High quality gaming product,GAM-NIN-96697,400.02,263.95,UNKNOWN,Nintendo,4.66,true,2022-01-28 03:20:00,
+449,18,Adobe Antivirus Plus,Adobe Antivirus Plus - Hig...,SOF-ADO-76824,,$213.41,-2440,ADOBE,0.09,TRUE,2024-03-05 04:29:00,
+141,6,Samsung Sense 2,Samsung Sense 2 - High quality smartwatches product,SMA-SAM-58236,-775.56,596.13,,Samsung,0.08,TRUE,2024-05-04 21:46:00,2024-05-04 21:46:00
+252,11,Harman Kardon Subwoofer,,AUD-HAR-44689,-286.35,210.33,40,Harman Kardon,1.96,true,,2024-04-20 08:42:00
+50,2,"Asus Workstation 17""","Asus Workstation 17"" - High quality laptops product",LAP-ASU-84355,$1165.55,510.27,116,"Asus
+",5.19,true,2024-10-07 02:51:00,2024-10-07 02:51:00
+69,3,,"Microsoft Mini 8.3"" - High quality tablets product",TAB-MI...,330.92,142.04,470,Microsoft,,true,2023-07-16 17:28:00,3023-07-16 17:28:00
+7,1,Samsung Ultra 5G,Samsung Ultra 5G - High q...,,239.83,N/A,441,Samsung,-0.35,true,2023-10-09 16:49:00,2023-10-09 16:49:00
+224,9,Netgear WiFi 6E Router,Netgear WiFi 6E Router - High quality networking product,NET-NET-17225,50.61,35.57,352,,1.62,true,not available,2022-07-15 22:15:00
+9,1,--,Google SE 64GB - High quality smartphones product,SMA-GOO-21262,1261.67,#N/A,325,Google,0.43,true,2023-07-18 07:59:00,2023-07-18 07:59:00
+332,14,AMD Core i7 CPU,AMD Core i7 CPU - High quality computer components product,COM-AMD-23168,not available,533.94,303,AMD,1.82,true,17.07.2024,2024-07-17 03:28:00
+48,2,"  MSI Chromebook 14""  	","MSI Chromebook 14"" - High quality laptops product",LAP-MSI-71316,2966.34,1394.42,,MSI,4.22,false,2023-05-11 04:33:00,2023-05-11 04:33:00
+211,9,,Ubiquiti WiFi Adapter - Hig...,NET-UBI-25964,409.14,315.15,35,Ubiquiti,0.62,true,2022-06-22 03:55:00,2022-06-22 03:55:00
+104,5,Canon Z50 Kit,,CAM-CAN-89174,272.65,151.76,,Ca...,0.53,true_typo,2022-03-08 10:46:00,2022-03-08 10:46:00
+226,10,Kingston 1TB Portable SSD,Kingston 1TB Portable SSD - High quality storage product,STO-KIN-88201,56.08,40.04,,Kingston,-0.88,true,2024-12-19 05:21:00,2024-12-19 05:21:00
+138,6,None,Fitbit Pixel Watch 2 - High quality smartwatches product,,#N/A,239.29,434,Fitbit,-5,true,2024-05-20 23:51:00,2024-05-20 23:51:00
+327,14,NVIDIA CPU Cooler AIO,NVIDIA CPU Cooler AIO - High quality computer components product,COM-NVI-98355,1285.37,667.73,364,NVI...,2.36,true,2024-11-18 19:36:00,2024-11-18 19:36:00
+113,5,Canon Z50 Kit,Canon Z50 Kit - High quality cameras product,CAM-CAN-30344,-214416,976.58,466,Canon,-4,true,2024-06-23 18:54:00,2024-06-23 18:54:00
+240,10,SanDisk 128GB USB Drive,SanDisk 128GB USB Drive - High quality storage product,STO-SAN-60298,,243.07,,SanDisk,0.74,true,2023-09-11 14:17:00,
+470,19,Oura Charge 6,Oura Charge 6 - High quality wearables product,WEA-OUR-25386,54.63,37.87,-45300,Oura,0.03,true,2022-07-22 07:21:00,2022-07-22 07:21:00
+29,2,"HP Business 15""","HP Business 15"" - High quality laptops product",LAP-HP-83706,1135.87,570.99,371,HP,5.26,true,2022-05-08 04:11:00,
+238,10,Seagate 4TB Desktop HDD,Seagate 4TB Desktop HDD - High quality storage product,STO-SEA-29025,None,150.79,225,Sea...,0.56,true,2024-05-01 14:49:00,2024-05-01 14:49:00
+3,1,Google Plus 128GB,Google Plus 128GB - High quality smartphones product,SMA-GOO-48063,1008.02,646.91,129,Google,0.43,true,2024-03-16 21:48:00,2024-03-16 21:48:00
+428,18,  Adobe Antivirus Plus  	,Adobe Antivirus Plus - High quality software product,SOF-ADO-41268,48.66,true,437,Adobe,,,2023/11/05 16:06:00,2023-11-05 16:06:00
+105,5,???,Nikon Hero 12 Black - High quality cameras product,CAM-NIK-99114,567.74,351.53,264,Nikon,Inf,,,2024-08-10 11:51:00
+73,3,,Samsung Surface Go - High quality tablets product,TAB-SAM-40466,1156.17,489.54,495,Saamsuung,0.95,false,2023-12-06 06:02:00,2023-12-06 06:02:00
+31,2,"HP Business 15""",,not available,675.45,480.61,80,HP,-367,true_typo,,2024-04-18 18:11:00
+496,20,,--,PHO-CAS-19757,28.38,-14.9,244,Casetify,0.11,true,2024-04-02 11:17:00,not available
+94,4,Sennheiser Free Buds,Sennheiser Free Buds - High quality headphones product,HEA-SEN-47661,-4459.8,221.7,3,Sennheiser,0.38,true,2024-02-18 02:57:00,2024-02-18 02:57:00
+274,11,Haarmaan Kaardoon Stuudiioo Mooniitoor,,AUD-HAR-89619,162.82,EMPTY,238,Haarmaan Kaardoon,4.74,true,2023-07-25 14:39:00,2023-07-25 14:39:00
+2,1,Google SE 64GB,Google SE 64GB - High quality smartphones product,SMA-GOO-63036,1154.24,-774.65,,Google,0.5,true,2022-08-04 06:12:00,2022-08-04 06:12:00
+312,13,Epson Portable Printer,Epson Portable Printer - High quality printers product,PRI-EPS-67984,450.22,243.15,445,Epson,11.18,true,2022-07-28 18:48:00,2022-07-28 18:48:00
+212,9,Asus Gigabit Switch 8-Port,Asus Gigabit Switch 8-Port - High quality networking product,NET-ASU-95855,209.67,,N/A,ASUS,0.69,true,2022-09-10 18:56:00,2022-09-10 18:56:00
+399,16,Autel Air 3,Autel Air 3 - High quality drones product,DRO-AUT-27089,1068.78,,252,Au...,0.74,TRUE,2022-07-11 19:26:00,2022-07-11 19:26:00
+178,8,Belkin Wireless Charging Pad,Beelkiin Wiireeleess Chaargiing Paad - Hiigh quuaaliity aacceessooriiees prooduuct,ACC-BEL-51969,-99,-659,-471,Belkin,0.21,true,2024-09-22 20:35:00,2024-09-22 20:35:00
+109,5,DJI Action 4,DJI Action 4 - High quality cameras product,CAM-DJI-84635,2118.98,1061.72,91,DJI,0.86,TRUE,2022-09-08 20:19:00,2022-09-08 20:19:00
+232,10,TBD,WESTERN DIGITAL 256GB MICROSD - HIGH QUALITY STORAGE PRODUCT,STOO-WEES-18209,,200.01,439,Western Digital,0.2,,2024-02-22 07:33:00,3024-02-22 07:33:00
+491,20,Caaseetiify Moonaarch Seeriiees,  Casetify Monarch Series - High quality phone cases product  	,PHO-CAS-27740,42.61,34.08,468,Casetify,0.15,true,None,2024-02-27 06:16:00
+24,1,Apple Ultra 5G,Apple Ultra 5G - High quality smartphones product,  SMA-APP-31162  	,1167.12,821.08,290,,,,2022-08-21 15:34:00,None
+291,12,"Sony 32"" 4K IPS",,TVS-SON-29202,182.59,???,348,SONY,11.51,true,2022-05-17 04:41:00,2022-05-17 04:41:00
+63,3,Microsoft Tab S9,Microsoft Tab S9 - High quality tablets product,"TAB-MIC-42035
+",1194.69,869.62,null,Microsoft,,true,2023-09-04 11:14:00,2023-09-04 11:14:00
+409,17,,,CAB-ANK-98597,37.02,23.03,94,Anker,0.23,true,2024-06-21 22:22:00,2024-06-21 22:22:00
+134,6,Fitbit Pixel Watch 2,Fitbit Pixel Watch 2 - High ...,SMA-FIT-63067,142.15,98.18,62,Fitbit,#N/A,true,2024-02-04 07:31:00,2024-02-04 07:31:00
+266,11,"Bang & Olufsen Subwoofer
+",,AUD-BAN-55448,922.08,439.44,332,Bang & Olufsen,5.24,false,2023-02-23 20:59:00,2023-02-23 20:59:00
+488,20,Spigen Tough Armor,Spigen Tough Armor - High quality phone cases product,PHO-SPI-74058,,27760,315,Spigen,0.05,true,2023-07-08 19:58:00,2023-07-08 19:58:00
+111,5,Canon EOS R50,Canon EOS R50 - High quality cameras product,CAM-CAN-60646,792.13,abc,,Canon,,true,2023-11-07 17:33:00,2023-11-07 17:33:00
+440,18,Intuit Antivirus Plus,Intuit Antivirus Plus - High quality software product,SOF-INT-88532,$394.51,,114,Intuit,true,true,  2024-02-04 13:45:00  ,2024-02-04 13:45:00
+381,16,Skydio EVO Nano+,Skydio EVO Nano+ - High...,DRO-SKY-86743,983.8,470.37,193,Skydio,1.4,true,2024-12-15 19:47:00,2024-12-15 19:47:00
+347,14,,AMD ATX Motherboard - High quality computer components product,???,637.22,,60,AMD,1.79,false,--,2023-06-12 08:02:00
+383,16,Autel Mini 4 Pro,Autel Mini 4 Pro - High quality drones product,DRO-AUT-64355,1381.3,760.04,239,Au...,1.39,true,,2024-05-12 18:25:00
+107,5,Sony D...,,TBD,-913.39,622.13,218,So...,1.16,TRUE,  2024-06-02 16:29:00  ,2024-06-02 16:29:00
+276,12,,"Samsung 24"" FHD Monitor - High quality tvs & monitors product",TVS-SAM-26601,,1340.67,206,Samsung,20.31,true,2022-05-15 18:04:00,2022-05-15 18:04:00
+119,5,Fujifilm EOS R50,Fujifilm EOS R50 - High quality cameras product,CAM-FUJ-95482,575.9,456.43,306,Fuujiifiilm,1.1,true,2023-07-10 18:11:00,2023-07-10 18:11:00
+200,8,Belkin Stylus Pen,Belkin Stylus Pen - High q...,ACC-BEL-30641,,44.11,84,Bel...,0.18,true,2023-01-13 19:45:00,2023-01-13 19:45:00
+262,11,Harman Kardon Home Speaker,Harman Kardon Home Speaker ...,AUD-HA...,448.21,232.23,201,Harman Kardon,2.78,false,2023-06-02 00:36:00,2023-06-02 00:36:00
+247,10,Crucial 256GB microSD,Crucial 256GB microSD - High quality storage product,STO-CRU-72013,89.93,0,475,Crucial,0.67,true,2023-09-05 19:39:00,2023-09-05 19:39:00
+98,4,Bose Free Buds,Boosee Freeee Buuds - Hiigh quuaaliity heeaadphoonees prooduuct,HEA-BOS-97827,92.28,37.5,81,BOSE,0.1,true,2024-07-10 21:10:00,07-10-2024
+219,9,ASUS GIGABIT SWITCH 8-PORT,Asus Gigabit Switch 8-Port - High quality networking product,NET-ASU-40252,,65.03,150,Asus,-57.99999999999999,true,2024-04-16 02:01:00,2024-04-16 02:01:00
+44,2,"HP Air 13""","HP Air 13"" - High quality laptops product",LAP-HP-27013,827.87,616.03,-19200,HP,3.71,true,2023-03-23 12:29:00,
+354,15,Wyze Nest Hub 2nd Gen,Wyze Nest Hub 2nd Gen - High quality smart home product,SMA-WYZ-48295,107.21,70.79,429,,0.98,true,2023-09-21 09:44:00,2023-09-21 09:44:00
+343,14,Intel ATX Motherboard,Intel ATX Motherboard - High quality computer components product,COM-INT-34405,1919.46,911.34,439,Intel,2.42,true,2023-05-27 19:57:00,2023-05-27 19:57:00
+316,13,Brother Port...,Brother Portable Printer - High quality printers product,,not available,,223,Brother,17.89,true,2024-06-28 18:48:00,2024-06-28 18:48:00
+442,18,  Intuit QuickBooks Online  	,#N/A,???,336.88,254.85,-35600,,0.03,TRUE,2024-12-26 05:51:00,2024-12-26 05:51:00
+423,17,,UGREEN HDMI 2.1 Cable 10ft - High quality cables & adapters product,  CAB-UGR-91637  	,20.84,16.56,389,UGREEN,0.26,true,null,2023-10-15 19:06:00
+426,18,Intuit VPN 2-Year Plan,Intuit VPN 2-Year Plan - High quality software product,SOF-INT-72151,255.48,129.22,-9600,INTUIT,0.06,true,2023-07-05 09:49:00,2023-07-05 09:49:00
+443,18,McAfee Creative Cloud Sub,McAfee Creative Cloud Sub - High quality software product,SOF-MCA-65559,-191.24,102.04,-3770,McAfee,0.09,true,2022-11-15 19:46:00,2022-11-15 19:46:00
+112,5,Canon Mirr...,,CAM-CAN-89261,-27314.999999999996,123.24,104,Ca...,0.7,true,2024-09-26 15:24:00,2024-09-26 15:24:00
+398,16,,Skydio Mini 4 Pro - High quality drones product,DRO-SKY-57102,,$367.68,11,Skydio,-0.31,true,2023-01-18 17:17:00,2023-01-18 17:17:00
+424,17,Anker Ethernet Cat6 50ft,Anker Ethernet Cat6 50ft - High quality cables & adapters product,CAB-ANK-89882,37.76,25.26,254000,Anker,0.02,TRUE,2023-12-20 02:38:00,2023-12-20 02:38:00
+414,17,Apple Thunderbolt 4 Cable,Apple Thunderbolt 4 Cable - High quality cables & adapters product,CAB-APP-79768,13.58,5.83,261,Apple,0.23,true,2022-06-17 18:32:00,2022-06-17 18:32:00
+416,17,Cable Matters HDMI 2.1 Cable 10ft,Cable Matters HDMI 2.1 Cable 10ft - High quality cables & adapters product,CAB-CAB-63661,20.81,,266,,0.26,true,2022-08-18 16:48:00,2022-08-18 16:48:00
+459,19,"Amazfit Band 4.0
+",Amazfit Band 4.0 - High quality wearables product,WEA-AMA-94084,0,209.65,435,Amazfit,0.08,TRUE,2024-12-13 05:10:00,
+386,16,,"Autel Anafi - High quality drones product
+",DRO-AUT-71073,1672.37,,$455.00,Autel,-3.7,true,2024-12-14 14:57:00,2024-12-14 14:57:00
+32,2,"Asus Ultra 16""",,N/A,2095.21,1236.85,367,,5.29,true,2023-03-06 09:47:00,2023-03-06 09:47:00
+408,17,,  Apple USB-C to USB-A 3-Pack - High quality cables & adapters product  	,CAB-APP-26940,37.12,16.81,None,Apple,0.05,true,2024-09-26 16:48:00,2024-09-26 16:48:00
+186,8,Samsung Screen Protector 3-Pack,Samsung Screen Protector 3-Pack - High quality accessories product,ACC-SA...,81.56,55.65,,"Samsung
+",0.38,true,2024-05-09 11:48:00,2024-05-09 11:48:00
+92,4,Sennheiser Momentum 4,Sennheiser Momentum 4 - Hig...,HEA-SEN-43328,455.3,250.63,423,Sennheiser,0.35,true,2024-07-16 13:48:00,2024-07-16 13:48:00
+139,6,Fitbit Watch Ultra 2,Fitbit Watch Ultra 2 - High quality smartwatches product,SMA-FIT-90893,494680,256.19,,Fitbit,,true_typo,2024-08-06 05:11:00,UNKNOWN
+498,20,UAG Tough Armor,,PHO-UAG-74567,51.07,39.45,479,U...,0.1,true,"Dec 21, 2023",2023-12-21 11:07:00
+272,11,JBL Home Speaker,JBL Home Speaker - High quality audio product,AUD-JBL-47596,910.21,691.09,112,JBL,4.57,true,,2022-05-17 21:52:00
+6,1,APPLE Z FOLD,Apple Z Fold - High quality smartphones product,None,796.97,457.53,435,,0.46,TRUE,2024-06-20 18:11:00,2024-06-20 18:11:00
+394,16,Skydio Air 3,Skydio Air 3 - High quality drones product,DRO-SKY-67128,70.52,43.3USD,142,Skydio,1.13,true,2022-03-06 10:17:00,2022-03-06 10:17:00
+285,12,,"SAMSUNG 27"" GAMING 165HZ - HIGH QUALITY TVS & MONITORS PRODUCT",,,,184,Samsung,16.48000000000001,true,2022-12-02 16:16:00,2022-12-02 16:16:00
+497,20,Casetify Si...,Casetify Silicone Case - High quality phone cases product,PHO-CAS-58434,-1068,6.88,312,Casetify,0.14,,UNKNOWN,2022-12-05 20:52:00
+110,5,DJII EEOOS R50,DJI EOS R50 - High quality cameras product,CAM-DJ...,,590.79,146,DJI,1.48,true,2022-10-24 21:26:00,2022-10-24 21:26:00
+391,16,,Holy Stone FPV Drone - High quality drones product,DRO-HOL-84483,,null,63,Holy Stone ,1.55,true,EMPTY,2024-11-23 12:18:00
+457,19,Amazfit Health Monitor Band,Amazfit Health Monitor Band - High quality wearables product,WEA-AMA-65638,377.34,252.06,440,Amazfit,0.05,N/A,2024-10-20 16:07:00,2024-10-20 16:07:00
+38,2,"Asus Workstation 17""","Asus Workstation 17"" - High quality laptops product",LAP-ASU-71840,2623.56,1215.08,156,Asus,$5.39,true,2023-10-11 16:48:00,2023-10-11 16:48:00
+294,12,"BenQ 27"" Gaming 165Hz",,TVS-BEN-98641,306.37,226.42,406,BenQ,,true,2023-12-21 15:15:00,2023-12-21 15:15:00
+131,6,Google Sense 2,Google Sense 2 - High quality smartwatches product,SMAA-GOOOO-71282,750.44,370.39,,  Google  	,0.03,true,2023-12-11 16:35:00,2023-12-11 16:35:00
+67,3,Lenovo M...,"Lenovo Mini 8.3"" - High quality tablets product",TAB-LEN-68909,596.57,399.25,135,Lenovo,1.05,true,,--
+397,16,,DJI EVO Nano+ - High quality drones product,DRO-DJ...,760.45,0,226,D...,1.52,true,04-03-2024,2024-04-03 08:32:00
+469,19,Oura Vivosmart 5,Oura Vivosmart 5 - High quality wearables product,,437.93,#N/A,350,Oura,0.04,false,2022-10-17 03:50:00,2022-10-17 03:50:00
+13,1,Samsung Z Fold,Samsung Z Fold - High quality smartphones product,SMA-SAM-87519,943.45,391.19,74,Samsung,UNKNOWN,  true  ,2023-12-01 15:51:00,
+17,1,Motorola Lite Edition,Motorola Lite Edition - High quality smartphones product,SMA-MOT-24093,1422.94,815.77,191,Mootooroolaa,0.31,true,2023-08-17 17:57:00 ,2023-08-17 17:57:00
+122,5,GoPro Alpha a7 IV,GoPro Alpha a7 IV - High quality cameras product,CAM-GOP-32020,,964.22,467,GoPro,-4.8,true,2024-11-09 11:42:00,2024-11-09 11:42:00
+305,13,HP All-in-One Inkjet,HP All-in-One Inkjet - High quality printers product,PRI-HP-67249,,abc,0,HP,8.79,true,2022-01-08 05:24:00,2022-01-08 05:24:00
+375,15,Amazon Smart Thermostat,Amazon Smart Thermostat - High quality smart home product,SMA-AMA-81753,,,,,0.79,true,2024-08-09 05:49:00,2024-08-09 05:49:00
+136,6,Apple Venu 3,Apple Venu 3 - High quality smartwatches product,SMA-APP-49617,398.63,,178,Apple,,false,2024/03/05 11:54:00,2024-03-05 11:54:00
+304,13,,,PRI-BRO-93151,332.27,EMPTY,442,Brother,0,TRUE,2024-09-18 06:32:00,2024-09-18 06:32:00
+270,11,Sonos Home Speaker,Sonos Home Speaker - High quality audio product,AUD-SO...,496.65,227.76,452,Sonos,1.88,true,2022-07-11 11:17:00,2022-07-11 11:17:00
+139,6,Fitbit Watch Ultra 2,Fitbit Watch Ultra 2 - High quality smartwatches product,SMA-FIT-90893,494680,256.19,,Fitbit,,true_typo,2024-08-06 05:11:00,UNKNOWN
+284,12,,"Samsung 43"" Smart TV - High quality tvs & monitors product",TVS-SAM-21736,611.29,true,84,Samsung,N/A,true,2023-12-27 23:51:00,2023-12-27 23:51:00
+471,19,Amazfit Charge 6,,WEA-AM...,383.55,255.34,20,Amazfit,0.07,true,2024-09-05 13:35:00,
+149,6,Apple Watch Series 9,Apple Watch Series 9 - High quality smartwatches product,SMA-APP-17277,true,62.6,107,Apple,N/A,true,2024-02-02 07:49:00,2024-02-02 07:49:00
+407,17,Anker USB-C to Lightning 6ft,Anker USB-C to Lightning 6ft - High quality cables & adapters product,,43.27,N/A,161,Anker,0.18,TRUE,2023-10-02 07:11:00,2023-10-02 07:11:00
+236,10,Seagate 2TB External HDD,Seagate 2TB External HDD - High quality storage product,STO-SEA-78784,85.36,abc,383,Seagate,0.57,true,2022-03-28 14:50:00,2022-03-28 14:50:00
+12,1,Motorola Ultra 5G,Motorola Ultra 5G - High quality smartphones product,,1196.9,831.88,306,Motorola,0.43,true,,2022-06-17 04:51:00
+326,14,EVGA RTX 4070 GPU,EVGA RTX 4070 GPU - High quality computer components product,COM-EVG-86686,1938.96,1162.18,EMPTY,EVGA,1.33,false,2022-12-19 19:09:00,UNKNOWN
+223,9,TP-Link Access Point,,NET-TP--19351,238.09,134.94,,TP-Link,-103,true,2022-12-26 19:02:00,2022-12-26 19:02:00
+403,17,Cable Matters DisplayPort Cable,Cable Matters DisplayPort Cable - High quality cables & adapters product,,46.44,-32.3,431,CABLE MATTERS,0.03,true,2022-06-10 19:58:00,2022-06-10 19:58:00
+28,2,,"MSI 16"" Creator - High quality laptops product",LAP-MSI-33930,2380.28,,-390,MSI,2.09,true,2022-07-28 13:30:00,2022-07-28 13:30:00
+35,2,"Razer Pro 14""",null,LAP-RAZ-60134,1957.39,1007.66,164,--,3.69USD,,2022-12-15 14:37:00,2022-12-15 14:37:00
+448,18,Adobe QuickBooks Online,AAdoobee QuuiickBooooks OOnliinee - Hiigh quuaaliity sooftwaaree prooduuct,  SOF-ADO-31344  	,356.81,255.48,-386,Adobe,0.01,true,2022-03-23 15:52:00,2022-03-23 15:52:00
+168,7,Microsoft PS5 Controller,,GAM-MIC-25909,141.45,81.32,286,Microsoft,2.41,true,2022-11-03 13:36:00,2022-11-03 13:36:00
+482,20,Apple Clear Case MagSafe,Apple Clear Case MagSafe - High quality phone cases product,PHO-APP-88680,45350,20.91,--,AApplee,0.12,TBD,2023-11-14 16:04:00,2023-11-14 16:04:00
+295,12,"ASUS 55"" 4K OLED","ASUS 55"" 4K OLED - High quality tvs & monitors product",TVS-AS...,2337.98,1285.43USD,461,TBD,8.27,true,,2024-09-05 09:02:00
+455,19,Garmin GTR 4,"Garmin GTR 4 - High quality wearables product
+",WEA-GA...,482.98,299.09,N/A,Garmin,0.06,TRUE,2022-09-16 00:59:00,09-16-2022
+280,12,"  LG 43"" Smart TV  	","LG 43"" Smart TV - High quality tvs & monitors product",TVS-LG-78847,2334.65,1540.29,337,None,11.42,true,2024-09-17 07:49:00,2024-09-17 07:49:00
+361,999992,ecobee Security Camera,ecobee Security Camera - High quality smart home product,SMA-ECO-79560,262.85,0,207,eecoobeeee,-5.4,true_typo,2023-01-23 20:24:00,2023-01-23 20:24:00
+164,7,Nintendo Switch Pro Controller,Nintendo Switch Pro Controller - High quality gaming product,GAM-NIN-63229,260.31,106.35,271,Nintendo,4.42,TRUE,2022-03-07 00:55:00,2022-03-07 00:55:00
+287,12,"BenQ 32"" 4K IPS","BenQ 32"" 4K IPS - High quality tvs & monitors product",TVS-BEN-33866,1977520,-143216,N/A,,20.96,true,2023-05-23 01:27:00,2023-05-23 01:27:00
+54,3,,Amazon Tab A9 - High quality tablets product,TAB-AMA-66136,592.71,343.43,N/A,Amazon,830,true,2022-07-20 04:59:00,2022-07-20 04:59:00
+463,19,Whoop Charge 6,Whoop Charge 6 - High quality wearables product,WEA-WHO-93074,-49773,343.52,448,Whoop,0.04,???,2023-11-17 16:18:00,2023-11-17 16:18:00
+248,10,,SanDisk 2TB Internal SSD - High quality storage product,STO-SAN-93785,332.95,209.82,256,SanDisk,0.43,TRUE,,2023-07-04 03:22:00
+153,7,Sony Gaming Headset,Sony Gaming Headset - High quality gaming product,GAM-SON-86831,418.58,318.35,151,SONY,2.41USD,true_typo,2024-11-12 02:35:00,2024-11-12 02:35:00
+368,15,Amazon Smart Thermostat,Amazon Smart Thermostat - High quality smart home product,SMA-AMA-50642,145.23,100.95,3,Amazon,0.44,true,2024-04-22 12:03:00,2024-04-22 12:03:00
+339,14,,Corsair Core i7 CPU - High quality computer components product,COM-COR-85693,742.11,460.98,104,Corsair,,false,2022-12-12 00:18:00,2022-12-12 00:18:00
+245,10,Seagate 128GB USB Drive ,Seagate 128GB USB Drive - H...,STO-SEA-24759,,49.31,,Seagate,-0.22,true,2022-06-09 20:42:00,2022-06-09 20:42:00
+133,6,Samsung Galaxy Watch 6,Samsung Galaxy Watch 6 - High quality smartwatches product,SMA-SAM-31080,-555.17,283.2,182,,0.07,false,,2022-04-23 14:04:00
+185,8,Samsung Phone Stand,Samsung Phone Stand - High quality accessories product,ACC-SAM-30950,9.7,-4.71,275,Samsung,0.24,true,2024-02-23 21:15:00,2024-02-23 21:15:00
+490,20,Apple Silicone Case,,PHO-APP-96620,-3779.9999999999995,16.4,186,Apple,N/A,true,2023-07-09 00:35:00,2023-07-09 00:35:00
+88,4,Soony Stuudiioo Proo,,HEA-SON-27062,68610,40.82,485,Sony,0.32,true,2024-07-23 07:49:00,2024-07-23 07:49:00
+480,20,Casetify Impact Case,CASETIFY IMPACT CASE - HIGH QUALITY PHONE CASES PRODUCT,PHO-CAS-83579,60.76,46.98,412,Casetify,0.07,true,,15/01/2023,extra_col_value
+446,18,Microsoft VPN 2-Year Plan,Microsoft VPN 2-Year Plan - ...,SOF-MIC-51235,103.41,53.14,224,Microsoft,-0.08,true,2022-02-19 10:24:00,2022-02-19 10:24:00
+114,5,GoPro DSLR Kit,,CAM-GOP-75565,660.27,384.89,151,GoPro,1.72,true,2022-09-20 21:01:00,2022-09-20 21:01:00
+370,15,Philips Hue Smart Bulb 4-Pack,Philips Hue Smart Bulb 4-Pack - High quality smart home product,SMA-PHI-62530,80.03,N/A,423,Philips Hue,1.54,true,2022-06-03 21:21:00,2022-06-03 21:21:00
+377,16,Holy Stone Anafi,Holy Stone Anafi - High quality drones product,DRO-HOL-40697,1964.55,1453.21,N/A,Holy Stone,940,TRUE,2023-03-10 16:40:00,2023-03-10 16:40:00
+437,18,Microsoft Crea...,Microsoft Creative Cloud Sub -...,SOF-MI...,,175.5,396,Microsoft,0.03,TRUE,2024-06-28 17:23:00,2024-06-28 17:23:00
+444,18,McAfee Office 365 1-Year,McAfee Office 365 1-Year - High quality software product,SOF-MCA-76224,330.71,179.56,388,MCAFEE,0.04,true,2024-11-03 23:21:00,2024-11-03 23:21:00
+364,15,Amazon Nest Hub 2nd Gen,Amazon Nest Hub 2nd Gen - High quality smart home product,SMA-AMA-51158,,102.05,298,Amazon,1.86,true,2023-06-23 09:53:00,2023-06-23 09:53:00
+26,2,,"HP Pro 14"" - High quality laptops product",LAP-HP-97290,580.51,404.34,240,HP,3.59,true,2024-01-17 15:54:00,2024-01-17 15:54:00
+19,1,Sony Lite Edition,SONY LITE EDITION - HIGH QUALITY SMARTPHONES PRODUCT,SMA-SON-62466,1039.13,740.39,true,  Sony  	,0.37,true,2022-02-07 04:47:00,not a date
+338,14,G.Skill 32GB DDR5 RAM,G.Skill 32GB DDR5 RAM - High quality computer components product,COM-G.S-10278,,1195.59,466,G.S...,,true,2022-07-25 17:39:00,2022-07-25 17:39:00
+227,10,Seagate 256GB microSD,SEAGATE 256GB MICROSD - HIGH QUALITY STORAGE PRODUCT,STOO-SEEAA-19841,265.89,null,57,SEAGATE,0.06,TRUE,2023-11-20 12:35:00,
+91,4,Sony QuietComfort 45,Sony QuietComfort 45 - High quality headphones product,HEA-SON-28907,401.59,null,176,Sony,0.2,true,2024-04-12 22:08:00,2024-04-12 22:08:00
+161,7,LOGITECH SWITCH PRO CONTROLLER,,,Inf,183.27,95,Logitech,0,true,2023-08-22 13:06:00,2023-08-22 13:06:00
+451,19,Oura Vivosmart 5,Oura Vivosmart 5 - High quality wearables product,WEA-OUR-24900,137.33,,463,Oura,0.1,true,2022-06-16 06:41:00,2022-06-16 06:41:00
+163,7,Logitech Arcade Stick,Logitech Arcade Stick - High quality gaming product,GAM-LOG-49171,443.82,#N/A,371,,3.72,,,2024-05-17 14:24:00
+59,3,Samsung Surface Go,Samsung Surface Go - High quality tablets product,TAB-SAM-97457,1086.32,473.76,256,Sam...,Inf,true,2023-11-20 22:54:00,2023-11-20 22:54:00
+37,2,"Acer Business 15""","Acer Business 15"" - High quality laptops product",LAP-ACE-96254,1497.69,945.69,401,AAceer,2.22,true,2023-05-17 19:00:00,2023-05-17 19:00:00
+235,10,CRUCIAL 2TB INTERNAL SSD,Crucial 2TB Internal SSD - High quality storage product,STO-CRU-63426,279.32,153.78,307,Crucial,0.57,TRUE,2023-02-13 12:27:00,2023-02-13 12:27:00
+461,19,OURA BAND 4.0,Oura Band 4.0 - High quality wearables product,WEA-OUR-99057,87.96,$56.72,,Oura,0.05,true,2024-07-12 21:51:00,2024-07-12 21:51:00
+8,1,Google Plus 128GB,Google Plus 128GB - High quality smartphones product,SMA-GOO-48110,460.91,286.37,-378,Google,0.37,true,2024-02-13 14:54:00,2024-02-13 14:54:00
+217,9,Linksys Mesh System 3-Pack,Linksys Mesh System 3-Pack - High quality networking product,NET-LIN-47456,N/A,,174,Linksys,1.35,true,2023-10-19 06:56:00,2023-10-19 06:56:00
+135,6,Google Sense 2,Google Sense 2 - High quality smartwatches product,  SMA-GOO-38924  	,642.37,-3951.8,373,Google,0.09,true,2024-09-11 17:46:00,2024-09-11 17:46:00
+25,1,Google Ultra 5G,GOOGLE ULTRA 5G - HIGH QUALITY SMARTPHONES PRODUCT,SMAA-GOOOO-65663,N/A,229.59,355,,0.35,true,12.03.2022,
+417,17,,Cable Matters USB-C to USB-A 3-Pack - High quality cables & adapters product,"CAB-CAB-33501
+",N/A,22.04,-5,Cable Matters,0.13,false,???,2022-12-17 21:49:00
+404,17,Anker USB-C Hub 7-in-1,Anker USB-C Hub 7-in-1 - High quality cables & adapters product,CAB-ANK-15369,25.34,14.13,36,Anker,0.17,true,3024-06-07 16:15:00,2024-06-07 16:15:00
+456,19,Fitbit Charge 6,Fitbit Charge 6 - High q...,WEA-FIT-55963,221.62,103.39,244,,0.1,true,2023-07-27 12:49:00,2023-07-27 12:49:00
+231,10,Samsung 2TB Internal SSD,Samsung 2TB Internal SSD - High quality storage product,STO-SAM-10338,-397.38,260.61USD,493,Samsung,0.02,true,2024-07-27 21:04:00,2024-07-27 21:04:00
+296,12,"LG 43"" SMART TV","LG 43"" Smart TV - High quality tvs & monitors product",TVS-LG-81433,2454.05,null,,LG,9.4,TRUE,2023-01-05 13:47:00,2023-01-05 13:47:00
+438,18,Intuit Antivirus Plus,,SOF-IN...,0,191.34,399,,0.01,true,2022-09-19 03:14:00,2022-09-19 03:14:00
+322,13,Canon Photo Printer,Canon Photo Printer - High quality printers product,"PRI-CAN-75024
+",-466.67,370.34,77,TBD,,false,2023-01-23 06:09:00,2023-01-23 06:09:00
+137,6,Google Sense 2,Google Sense 2 - High quality smartwatches product,SMA-GOO-73788,728.24,579,UNKNOWN,TBD,80,true,2022-07-10 03:35:00,2022-07-10 03:35:00
+353,15,"Ring Security Camera
+",,SMA-RIN-76136,329.81,262.34,-48500,Ring,1.98,true,2023-03-13 01:05:00,2023-03-13 01:05:00
+99,4,Sony Air...,Sony AirPods Pro - High q...,HEA-SON-86618,516.44,295.12,470,Sony,0.11,true,2022-10-08 23:22:00,#N/A
+374,15,Philips Hue Security Camera,Philips Hue Security Camera - High quality smart home product,SMA-PHI-14844,123.47,77.79,255,Phili...,0.99,true_typo,2022-05-04 19:03:00,2022-05-04 19:03:00
+313,13,Xerox All-in-One Inkjet,XEROX ALL-IN-ONE INKJET - HIGH QUALITY PRINTERS PRODUCT,PRI-XER-57433,265.09,179.51,464,Xerox,13.36,true,2023-02-24 00:05:00,2023-02-24 00:05:00
+255,11,Sonos Party Speaker,,AUD-SON-13893,972.72,764.61,-27500,Sonos,4.77,true,2024-06-08 02:22:00,2024-06-08 02:22:00
+281,12,"Dell 49"" Ultrawide","Dell 49"" Ultrawide - High quality tvs & monitors product",,792.4,--,68,Dell,-26.89,true,,???
+114,5,GoPro DSLR Kit,,CAM-GOP-75565,660.27,384.9,151,GoPro,1.72,true,2022-09-20 21:01:00,2022-09-20 21:01:00
+84,4,Sony QuietComfort 45,Sony QuietComfort 45 - High quality headphones product,HEA-SON-62363,349.94,203.68,466,Sony,0.19,EMPTY,2023-10-18 07:56:00,2023-10-18 07:56:00
+215,9,TP-Link WiFi 6E Router,  TP-Link WiFi 6E Router - High quality networking product  	,NET-TP--86440,259.14,true,242,TP-Link,0,true,2023-03-27 21:00:00,2023-03-27 21:00:00
+371,15,,Philips Hue Smart Plug 2-Pack - High quality smart home product,,60.49,38.83,UNKNOWN,Philips Hue,1.82,TRUE,2024-04-20 17:02:00,2024-04-20 17:02:00
+137,6,Google Sense 2,Google Sense 2 - High quality smartwatches product,SMA-GOO-73788,728.24,579,UNKNOWN,TBD,80,true,2022-07-10 03:35:00,2022-07-10 03:35:00
+328,14,G.Skill Ryzen 9 CPU,G.Skill Ryzen 9 CPU - High quality computer components product,COM-G.S-70447,1032.28,Inf,NaN,G.Skill,0.13,true,2024-03-27 10:37:00,N/A
+173,7,SteelSeries Arcade Stick,SteelSeries Arcade Stick - ...,GAM-STE-91198,,-243.78,$75.00,SteelSeries,1.37,UNKNOWN,2024-01-16 01:17:00,2024-01-16 01:17:00
+249,10,SanDisk 2TB Internal SSD,SanDisk 2TB Internal SSD - High quality storage product,STO-SAN-39369,169.11,104.34,,SanDisk,0.84,false,2022-12-08 20:59:00,2022-12-08 20:59:00
+344,14,EVGA CPU Cooler AIO,EVGA CPU Cooler AIO - High quality computer components product,--,N/A,651.25,,EVGA,0.98,true,2022-07-15 13:23:00,2022-07-15 13:23:00
+302,13,HP Color LaserJet,HP Color LaserJet - High quality printers product,PRI-HP-45946,199.05,122.9,102,HP,12.09,true,2024-04-18 11:15:00,2024-04-18 11:15:00
+10,1,Apple Lite Edition,  Apple Lite Edition - High quality smartphones product  	,SMA-APP-73372,458.66,N/A,326,Apple,0.4,true,2024-11-27 04:17:00,2024-11-27 04:17:00
+205,9,TP-Link WiFi Adapter,TP-Link WiFi Adapter - High quality networking product,NET-TP--72970,222.12,115.36,153,TP-Liink,0.39,true,,2023-12-02 12:11:00
+160,7,SteelSeries Gaming Mouse,None,GAM-STE-51623,,282.71,469,SteelSeries,4.44,true,2022-11-11 13:54:00,
+43,2,"Apple Air 13""","Apple Air 13"" - High quality laptops product",LAP-APP-77476,2147.8,927.26,-33900,Ap...,2.90000000000001,true,2023-03-14 03:44:00,2023-03-14 03:44:00
+190,8,Apple Stylus Pen,Apple Stylus Pen - High quality accessories product,ACC-APP-13425,78.53,,372,Ap...,0.44,None,,
+282,12,"BENQ 24"" FHD MONITOR","BenQ 24"" FHD Monitor - High quality tvs & monitors product",TVS-BEN-39478,1178.42,793.98,137,BenQ,$17.98,true,2023-06-04 06:59:00,"Jun 4, 2023"
+152,7,Soony Meechaaniicaal Keeybooaard,Sony Mechanical Keyboard - High quality gaming product,GAM-SON-91528,208.97,--,418,Sony,4.01,true,2024-01-24 17:55:00,2024-01-24 17:55:00
+349,14,AMD 32GB DDR5 RAM,AAMD 32GB DDR5 RAAM - Hiigh quuaaliity coompuuteer coompooneents prooduuct,,265.79,137.04,,AMD,0.23,true,  2024-10-26 18:06:00  ,2024-10-26 18:06:00
+483,20,Spigen Silicone Case,SPIGEN SILICONE CASE - HIGH QUALITY PHONE CASES PRODUCT,PHO-SPI-65452,19.05,10.77,271,,None,true,2022-11-25 02:26:00,2022-11-25 02:26:00
+144,6,Google Forerunner 265,Google Forerunner 265 - High quality smartwatches product,not available,-512.2,305440,2,Google,0.07,true,2022-09-23 07:23:00,2022-09-23 07:23:00
+324,13,Epson Wireless Laser,Epson Wireless Laser - High quality printers product,PRI-EPS-90288,476.43,214.04,TBD,Epson,10.66,true,2023-10-20 19:23:00,2023-10-20 19:23:00
+23,1,UNKNOWN,Motorola Pro Max 256GB - High quality smartphones product,SMA-MOT-65884,695.09,,207,Motorola,0.48,TRUE,2022-09-03 07:18:00,
+254,11,JBL HOME SPEAKER,JBL Home Speaker - High quality audio product,AUD-JBL-73820,$697.48,386.22,,JBL,7.64,true,2022-02-26 14:08:00,2022-02-26 14:08:00,extra_col_value
+17,1,Motorola Lite Edition,Motorola Lite Edition - High quality smartphones product,SMA-MOT-24093,1422.94,815.77,191,Mootooroolaa,0.31,true,2023-08-17 17:57:00,2023-08-17 17:57:00
+103,5,Nikon DSLR Kit,Nikon DSLR Kit - High quality cameras product,CAAM-NIIK-74041,not available,552.82,25,Nikon,-195,true,2023-08-13 07:51:00,2023-08-13 07:51:00
+61,3,Microsoft Surface Go,Microsoft Surface Go - Hi...,TAB-MIC-18574,1054.91,675.47,431,Microsoft,0.84,true,2023-01-03 05:38:00,2023-01-03 05:38:00
+70,3,"Lenovo Air 10.9""","Lenovo Air 10.9"" - High...",TAB-LEN-65084,,389.19,345,,1.01,true,2024-08-23 15:53:00,2024-08-23 15:53:00
+380,16,Skydio Air 3,Skydio Air 3 - High quality drones product,DRO-SKY-81922,NaN,703.39,$160.00,Skydio,1.33,true,2022-04-12 02:18:00,
+307,13,Canon Lab...,Caanoon Laabeel Priinteer - Hiigh quuaaliity priinteers prooduuct,PRI-CAN-42499,208.89,151.7,404,,13.22,true,2023-05-09 01:46:00,2023-05-09 01:46:00
+147,6,Apple Venu 3,,SMA-APP-79834,562.02,325.26,169,Apple,,false,2022-09-05 00:28:00,
+278,12,,N/A,TVS-BEN-88409,N/A,1497.67,364,BenQ,14.96,true,2023-01-09 20:28:00,2023-01-09 20:28:00
+475,19,  Fitbit Health Monitor Band  	,Fitbit Health Monitor Band - High quality wearables product,WEA-FIT-25867,117.44,91.53,24,Fitbit,0.1,true,2023-04-20 11:20:00,2023-04-20 11:20:00
+93,4,Bose Tune 770NC,BOSE TUNE 770NC - HIGH QUALITY HEADPHONES PRODUCT,HEA-BOS-81658,,208.24,,Bose,null,false,2024-09-27 05:38:00,2024-09-27 05:38:00
+300,12,"ASUS 32"" 4K IPS","ASUS 32"" 4K IPS - High quality tvs & monitors product",???,-23552.7,1133.13,26,ASUS,14.92000000000001,false,2023-02-27 09:20:00,2023-02-27 09:20:00
+75,3,Apple Fire HD 10,Apple Fire HD 10 - High quality tablets product,TAB-APP-16109,271.06,120.78,415,Apple,1.18,true,2024-11-21 05:27:00,2024-11-21 05:27:00
+162,7,Sony Switch Pro Controller,Sony Switch Pro Controller -...,GAM-SON-46035,-31852.999999999996,214.91,165,,1.75,true,2024-10-03 04:11:00,
+366,15,Wyze Smart Plug 2-Pack,Wyze Smart Plug 2-Pack - High quality smart home product,SMA-WYZ-93427,???,$43.76,-34600,Wyze,0.61,true,2024-02-12 17:31:00,2024-02-12 17:31:00
+267,11,JBL Subwoofer,JBL Subwoofer - High quality audio product,AUD-JBL-17378,951.44,N/A,250,JBL,7.93,true,2023-08-14 13:49:00,
+498,20,UAG Tough Armor,,PHO-UAG-74567,51.07,39.45,479,U...,0.1,true,"Dec 21, 2023",2023-12-21 11:07:00
+465,19,Garmin GTR 4,Garmin GTR 4 - High quality wearables product,WEA-GAR-38108,$309.83,N/A,101,Gar...,0.09,TRUE,2024-02-18 23:47:00,2024-02-18 23:47:00
+172,7,SteeeelSeeriiees Gaamiing Moouusee,SteelSeries Gaming Mouse - High quality gaming product,GAM-STE-78645,73.22,47.87,396,SteelSeries,-146,true,2024-10-22 03:37:00,2024-10-22 03:37:00
+430,18,  McAfee Creative Cloud Sub  	,McAfee Creative Cloud Sub - High quality software product,SOF-MCA-10679,383.84,268.53,NaN,McAfee,0.09,true,2023-08-15 19:30:00,2023-08-15 19:30:00
+315,13,Brother All-in-One Inkjet,Brother All-in-One Inkjet - High quality printers product,PRII-BROO-40107,468.35,194.96,454,Brother,7.04,true,2024-12-24 14:14:00,2024-12-24 14:14:00
+132,6,Fitbit Sense 2,Fitbit Sense 2 - High quality smartwatches product,SMA-FIT-40154,769.57,,155,Fitbit,0.06,true,2024-11-22 05:28:00,2024-11-22 05:28:00
+245,10,Seagate 128GB USB Drive,Seagate 128GB USB Drive - H...,STO-SEA-24759,,49.31,,Seagate,-0.22,true,2022-06-09 20:42:00,2022-06-09 20:42:00
+72,3,Lenovo M...,"LENOVO MINI 8.3"" - HIGH QUALITY TABLETS PRODUCT",,None,278.74,397,Lenovo,-57.99999999999999,true,2022-05-17 15:54:00,2022-05-17 15:54:00
+191,8,Samsung Mag...,Samsung MagSafe Charger - High quality accessories product,ACC-SAM-59789,53.8,-3517,368,Samsung,0.32,true,2024-09-22 02:31:00,N/A
+52,3,Apple Tab S9,,TAB-APP-41302,918.14,551.49,334,,0.95,true,3023-05-28 19:18:00,2023-05-28 19:18:00
+42,2,--,"Asus Chromebook 14"" - High quality laptops product",???,1895.83,1215.15,174,Asus,,,null,2024-03-21 10:34:00
+283,12,EMPTY,not available,TVS-SAM-96335,2967.16,,68,Samsung,#N/A,true,2024-01-15 00:28:00,2024-01-15 00:28:00
+145,999993,Samsung Pixel Watch 2,Samsung Pixel Watch 2 - High quality smartwatches product,"SMA-SAM-49179
+",202.43,,,,Inf,true,2023-12-08 17:44:00,2023-12-08 17:44:00
+333,999997,AMD Core i7 CPU,,COM-AMD-91886,None,844.92,443,AMD,0.95,true,2022-09-05 05:01:00,2022-09-05 05:01:00
+167,7,Nintendo Arcade Stick,Nintendo Arcade Stick - High quality gaming product,GAM-NIN-53306,342.58,137.4,-2180,Nintendo,true,true,2022-08-18 21:14:00,2022-08-18 21:14:00
+206,9,Asus Gigabit Switch 8-Port,Asus Gigabit Switch 8-Port - High quality networking product,NET-ASU-45714,140.5,58.8,156,null,1.02,,2022-07-27 00:28:00,2022-07-27 00:28:00
+83,4,Soony Spoort EEaarbuuds,,HEA-SON-62841,173.1,86.84,104,null,0.32,,2023-12-03 09:57:00,2023-12-03 09:57:00
+68,3,"Samsung Tab S9
+",Samsung Tab S9 - High quality tablets product,,709.48,410.47,,Samsung,1.49,true,2024-07-07 03:56:00,2024-07-07 03:56:00
+488,20,Spigen Tough Armor,Spigen Tough Armor - High quality phone cases product,PHO-SPI-74058,,27760,315,Spigen,0.05,true,2023-07-08 19:58:00,2023-07-08 19:58:00
+179,8,Spigen Stylus Pen,Spigen Stylus Pen - High quality accessories product,ACC-SPI-27576,61.82,31.29,105,Spigen,0.38,true,2024-06-14 18:56:00,2024-06-14 18:56:00
+258,11,Bose Subwoofer,Bose Subwoofer - High quality audio product,AAUUD-BOOS-25306,Inf,171.98,-1060,Bose,4.35,true,,2023-02-08 11:14:00
+292,12,"AASUUS 32"" 4K IIPS","ASUS 32"" 4K IPS - HIGH QUALITY TVS & MONITORS PRODUCT",TVS-ASU-38723,,-2032.85,171,ASUS,25.72,true,2022-09-22 05:21:00,2022-09-22 05:21:00
+182,8,Anker Power Strip,Anker Power Strip - High quality accessories product,ACC-ANK-44034,N/A,-19.21,211,Anker,0.47,true_typo,,2024-04-10 21:41:00
+340,14,Intel RTX 4070 GPU,Intel RTX 4070 GPU - High quality computer components product,,862.13,#N/A,365,Intel,1.07,true,2022-01-10 04:29:00,2022/01/10 04:29:00
+365,15,Wyze Smart Plug 2-Pack,Wyze Smart Plug 2-Pack - High quality smart home product ,"SMA-WYZ-60635
+",306.73,187.13,179,Wyze,1.87,true,2023-02-13 00:35:00,2023-02-13 00:35:00
+201,9,Google Access Point,Google Access Point - High quality networking product,NET-GOO-29568,385.26,,215,Goo...,1.39,true,2023-12-03 13:30:00,2023-12-03 13:30:00
+279,12,"BenQ 55"" 4K OLED",,TVS-BEN-92321,1280.78,577.79,TBD,"BenQ
+",20.57,true,2023-11-15 03:51:00,2023-11-15 03:51:00
+260,11,"Bose Portable Speaker
+",,AUD-BOS-87758,915.26,506.04,,Bose,-352,true,2023-10-03 05:31:00,2023-10-03 05:31:00
+277,12,"ASUS 49"" ULTRAWIDE","ASUS 49"" Ultrawide - High quality tvs & monitors product",,,1995.21,58,ASUS,23.96,true,2022-02-18 10:41:00,2022-02-18 10:41:00
+392,16,Parrot Mini 4 Pro,Parrot Mini 4 Pro - High quality drones product,DRO-PAR-82268,1980.56,1442.49USD,,EMPTY,1.79,true,2024-04-20 15:58:00,2024-04-20 15:58:00
+96,4,Sennheiser QuietComfort 45,Sennheiser QuietComfort 45 - High quality headphones product,,414.49,330.19,,Sennheiser,-31,true,2024-10-22 01:32:00,2024-10-22 01:32:00
+363,15,AAmaazoon Viideeoo Doooorbeell Proo,Amazon Video Doorbell Pro - High quality smart home product,SMA-AMA-85044,138.12,-8933,292,Amazon,-1.29,true,2023-02-19 00:59:00,2023-02-19 00:59:00
+168,999990,Microsoft PS5 Controller,,GAM-MIC-25909,141.45,81.32,286,Microsoft,2.41,true,2022-11-03 13:36:00,2022-11-03 13:36:00
+351,15,Wyze Nest Hub 2nd Gen,Wyze Nest Hub 2nd Gen - High quality smart home product,SMA-WYZ-75763,,195.43,,None,1.31,true,2024-03-06 18:45:00,2024-03-06 18:45:00
+71,3,Amazon Fire HD 10,Amazon Fire HD 10 - High quality tablets product,TAB-AMA-30422,,522.74,264,Amazon,1.05,TRUE,2024-04-26 13:15:00,26/04/2024
+210,9,Ubiquiti Mesh System 3-Pack,TBD,NET-UBI-20588,260.26,151.26USD,354,Ubiquiti,0.95,true,2024-03-28 08:29:00,2024-03-28 08:29:00
+221,9,,Ubiquiti Gigabit Switch 8-Port - High quality networking product,NET-UBI-74870,--,66.72,294,,1.82,true,2022-04-09 05:51:00,2022-04-09 05:51:00
+199,8,Belkin Wireless Charging Pad,Belkin Wireless Charging Pad - High quality accessories product,ACC-BEL-76309,58.81,33.44,426,Belkin,240,true,2023-03-11 23:32:00,  2023-03-11 23:32:00  
+123,5,Fujifilm DSLR Kit,Fujifilm DSLR Kit - High quality cameras product,,949.13,396.57,494,Fujifilm,1.36,  true  ,2023-06-15 13:53:00,2023-06-15 13:53:00
+66,3,Apple Surface Go,Apple Surface Go - High quality tablets product,TAB-AP...,717500,-326.1,246,APPLE,$0.96,true,2022-05-10 16:13:00,2022-05-10 16:13:00
+239,10,  SanDisk 2TB External HDD  	,SaanDiisk 2TB EExteernaal HDD - Hiigh quuaaliity stooraagee prooduuct,STO-SAN-78514,125.36,89.07,13,SanDisk,0.33,true,2024-12-07 18:46:00,2024-12-07 18:46:00 
+181,8,Apple Phone Stand,AApplee Phoonee Staand - Hiigh quuaaliity aacceessooriiees prooduuct,ACC-APP-71948,,7.04,318,Apple,TBD,UNKNOWN,N/A,2023-12-20 05:01:00
+230,10,SanDisk 2TB Internal SSD,SanDisk 2TB Internal SSD - High quality storage product,"STO-SAN-73149
+",372.58,209.06,N/A,SanDisk,-1.1,,2024-02-26 00:12:00,2024-02-26 00:12:00
+402,17,Apple USB-C to USB-A 3-Pack,Apple USB-C to USB-A 3-Pack - High quality cables & adapters product,CAB-APP-26134,18.61,12.07,100,Ap...,TBD,true,2023-11-21 18:02:00,2023-11-21 18:02:00
+261,11,Bose Soundbar 5.1,Bose Soundbar 5.1 - Hig...,AUD-BOS-15158,275.33,208.05,246,Boosee,3.25,true,2023-07-24 23:53:00,2023-07-24 23:53:00
+259,11,Harman Kardon...,Harman Kardon Party Speaker - High quality audio product,,623.74,388.69,279,Harman Kardon,-36.9,true,,2023-02-22 00:09:00
+317,13,Canon Wireless Laser,Canon Wireless Laser - High quality printers product,PRI-CAN-60237,220.31,141.92,196,Canon,#N/A,true,N/A,2023-09-09 05:53:00
+257,11,Harman Kardon Party Speaker,Harman Kardon Party Speaker - High quality audio product,AUD-HAR-95664,183.6USD,-144.66,Inf,Harman Kardon,5.69,true,2022-12-23 20:04:00,2022-12-23 20:04:00
+114,5,GoPro DSLR Kit,,CAM-GOP-75565,660.27,384.89,151,GoPro,1.72,true,2022-09-20 21:01:00,2022-09-20 21:01:00
+90,4,,Sony Free Buds - High qu...,HEA-SON-25843,297.53,#REF!,194,,0.23,false,2024-03-19 02:04:00,2024-03-19 02:04:00
+128,6,Samsung Watch Series 9,Samsung Watch Series 9 - High quality smartwatches product,SMA-SAM-85804,,111.86,181,Saamsuung,,true,2022-01-22 18:14:00,2022-01-22 18:14:00
+228,10,Seagate 128GB USB Drive,,STO-SEA-79619,322.2,217.69,418,EMPTY,N/A,,2024-10-22 20:19:00,2024-10-22 20:19:00
+464,19,Whoop Vivosmart 5,Whoop Vivosmart 5 - High quality wearables product,WEA-WHO-67115,286.95,161.22,-48200,Wh...,0.04,true,TBD,2022-09-04 22:37:00
+479,20,???,UAG Impact Case - High quality phone cases product,TBD,74.59,43.25,7,UAG,0.12,true,2024-10-25 18:52:00,2024-10-25 18:52:00
+388,16,Holy Stone Beginner Drone,Holy Stone Beginner Drone - High quality drones product,DRO-HOL-67587,1928.25,999.64,109,Holy Stone,0.45,TRUE,2022-10-04 17:12:00,2022-10-04 17:12:00
+22,1,OnePlu...,OnePlus FE 5G - High quality smartphones product,SMA-ONE-89294,-931.45,739.11,63,OnePlus,0.37,  true  ,2022-07-08 06:40:00,2022-07-08 06:40:00
+420,17,UGREEN DisplayPort Cable,UGREEN DisplayPort Cable - High quality cables & adapters product,CAB-UGR-70217,26.58,,#N/A,UGREEN,0.26,true,2024-09-09 06:59:00,2024-09-09 06:59:00
+275,11,Harman Kardon Party Speaker,Haarmaan Kaardoon Paarty Speeaakeer - Hiigh quuaaliity aauudiioo prooduuct,AUD-HAR-40472,447.72,,78,Harman...,1.95,  true  ,2022-01-20 06:28:00,
+151,7,Razer Arcade Stick,Razer Arcade Stick - High quality gaming product,#N/A,-148.79,98.41,471,,2.78,true,2022-04-06 17:00:00,2022-04-06 17:00:00
+417,17,,Cable Matters USB-C to USB-A 3-Pack - High quality cables & adapters product,"CAB-CAB-33501
+",N/A,22.04,-5,Cable Matters,0.13,false,???,2022-12-17 21:49:00
+468,19,Oura Ring Gen 3,Oura Ring Gen 3 - High quality wearables product,  WEA-OUR-39374  	,,177.33,221,Oura,0.09,false,2024-09-11 16:33:00,2024-09-11 16:33:00
+159,7,Microsoft Arcade Stick,Microsoft Arcade Stick - High quality gaming product,GAM-MIC-22203,355.07,200.91,309,Microsoft,1.64,true,2024-02-27 04:11:00,
+355,15,Wyze Smart Bulb 4-Pack,Wyze Smart Bulb 4-Pack - High quality smart home product,SMA-WYZ-78189,$123.99,95.6,333,Wyze,0.51,true,,2024-07-04 06:24:00
+225,9,Netgear Mesh System 3-Pack,Netgear Mesh System 3-Pack - High quality networking product,NET-NET-41409,49.68,34.33,#REF!,Netgear,,true,2022-08-16 19:55:00,2022-08-16 19:55:00
+331,14,,Intel CPU Cooler AIO - High quality computer components product,COM-INT-40520,-139146,-9482.3,36,Intel,1.34,true,2024-01-28 06:45:00,2024-01-28 06:45:00
+435,18,McAfee VPN 2-Year Plan,McAfee VPN 2-Year Plan - High quality software product,,334.46,,263,McAfee,N/A,true,2022-01-23 07:59:00,2022-01-23 07:59:00
+81,4,JBL WH-1000XM5,JBL WH-1000XM5 - High quality headphones product,  HEA-JBL-31677  	,-3153.8,213.23,222,JBL,0.21,--,2023-08-07 06:12:00,2023-08-07 06:12:00
+453,19,Garmin GTR 4,Garmin GTR 4 - High quality wearables product,WEA-GAR-14537,386.12,245.62,334,Garmin,0.07,true,,2023-12-02 22:59:00
+450,18,Microsoft VPN 2-Year Plan,Microsoft VPN 2-Year Plan - High quality software product,,,99.79,,Microsoft,0.06,true,2023-02-02 13:16:00,2023-02-02 13:16:00
+208,9,ASUS GIGABIT SWITCH 8-PORT,Asus Gigabit Switch 8-Port - High quality networking product,NET-ASU-70987,44.84,18.67,0,Asus,0.82,true,2023-02-06 23:52:00,2023-02-06 23:52:00
+468,19,Oura Ring Gen 3,Oura Ring Gen 3 - High quality wearables product,  WEA-OUR-39374  	,,177.33,221,Oura,0.09,false,2024-09-11 16:33:00,2024-09-11 16:33:00
+499,20,UAG Monarch Series,UAG Monarch Series - High quality phone cases product,N/A,28.8,21.92,65,UAG,0.1,true,2024-04-07 04:32:00,2024-04-07 04:32:00
+1,1,Motorola Pro Max 256GB,Motorola Pro Max 256GB - High quality smartphones product,SMA-MOT-90851,,210.51,172,,abc,true,2023-11-16 19:25:00,2023-11-16 19:25:00
+322,13,Canon Photo Printer,Canon Photo Printer - High quality printers product,"PRI-CAN-75024
+",-466.67,370.34,77,TBD,,false,2023-01-23 06:09:00,2023-01-23 06:09:00
+494,20,APPLE TOUGH ARMOR,Apple Tough Armor - High quality phone cases product,PHO-APP-42975,-336.9,25.92,85,Apple,$0.03,true,2022-02-27 19:09:00,2022-02-27 19:09:00
+334,14,Intel 32GB DDR5 RAM,Intel 32GB DDR5 RAM - High quality computer components product,COM-INT-61716,,562.09,384,Intel,,true,2022-03-07 23:30:00,
+290,12,"Sony 65"" QLED","Sony 65"" QLED - High quality tvs & monitors product
+",TVS-SON-13792,-11437.7,596.38,340,Sony,27.98,TRUE,2024-03-11 11:28:00,2024-03-11 11:28:00
+306,13,Brother Color LaserJet,Brother Color LaserJet - High quality printers product,PRI-BRO-75155,238.51,134.05,232,Bro...,19.71,true,2024-12-21 21:34:00,2024-12-21 21:34:00
+140,6,Gaarmiin Veenuu 3,Garmin Venu 3 - High quality smartwatches product,SMA-GAR-27795,286.85,,263,Garmin,0.05,true,2022-04-13 22:21:00,2022-04-13 22:21:00
+308,13,HP Photo Printer ,HP Photo Printer - High ...,PRI-HP-84519,170.65,not available,150,HP,N/A,TRUE,2023-04-02 18:05:00,2023-04-02 18:05:00
+60,3,Apple Surface Go,Apple Surface Go - High quality tablets product,TAB-APP-39408,164.67,104.12,455,APPLE,0.74,true,2024-11-09 00:49:00,2024-11-09 00:49:00
+202,9,Linksys Cable Modem,Linksys Cable Modem - High quality networking product,  NET-LIN-11832  	,372.28,165.63,179,Linksys,0.33,TRUE,2024-10-07 07:03:00,2024-10-07 07:03:00
+58,3,Lenovo Fire HD 10,Lenovo Fire HD 10 - High quality tablets product,TAB-LEN-15105,690.81,422.27,,Len...,0.84,EMPTY,2023-07-03 12:25:00,not a date
+427,18,  Microsoft QuickBooks Online  	,Microsoft QuickBooks Online -...,SOF-MIC-47412,abc,,-200,Microsoft,0.1,,2022-03-09 10:24:00,2022-03-09 10:24:00
+369,15,Google Smart Thermostat,Google Smart Thermostat - High quality smart home product,SMA-GOO-96177,147.14,116.59,-2770,Google,1.82,true,2022-09-02 09:14:00,2022-09-02 09:14:00
+108,5,DJI Alpha a7 IV,DJI Alpha a7 IV - High ...,CAM-DJI-28155,1337.52,1022.81,abc,  DJI  	,1.22,true,2023-12-22 05:26:00,2023-12-22 05:26:00
+454,19,Oura GTR 4,Oura GTR 4 - High quality wearables product,#N/A,324.45,176.29,306,"Oura
+",-3,true,2023-01-28 20:55:00,2023-01-28 20:55:00
+187,8,Anker Power Strip,Anker Power Strip - High quality accessories product,ACC-AN...,54.04,27.53,20,???,0.32,true,2024-06-14 01:00:00,1718326800
+391,16,,Holy Stone FPV Drone - High quality drones product,DRO-HOL-84483,,null,63,Holy Stone,1.55,true,EMPTY,2024-11-23 12:18:00
+401,17,UGREEN HDMI 2.1 Cable 10ft,UGREEN HDMI 2.1 Cable 10ft - High...,,25.14,$19.61,162,UGREEN,290,true,2022-11-27 09:49:00,2022-11-27 09:49:00
+15,1,Sony Pro Max 256GB,not available,SMA-SON-88735,491.15,202.47,-448,Sony,0.47,false,2024-03-23 00:27:00,2024-03-23 00:27:00
+218,9,Linksys Range Extender,  Linksys Range Extender - High quality networking product  	,NET-LIN-15714,304.97,189.21,230,Lin...,-191,,02-02-2023,2023-02-02 23:52:00
+387,16,Skydio Mavic 3 Classic,Skydio Mavic 3 Classic - High quality drones product,DRO-SKY-85008,TBD,550.47,None,Skydio,1.17,true,2022-12-21 21:55:00,
+486,20,,UAG Wallet Folio - High quality phone cases product,PHO-UAG-36240,11.5,9.14,342,UAG,-0.15,,2024-10-17 01:29:00,2024-10-17 01:29:00
+241,10,Crucial 128...,Crucial 128GB USB Drive - High quality storage product,STO-CRU-42289,293.11,211.85,29,Cruuciiaal,0.33,true,,
+64,3,APPLE FIRE HD 10,Apple Fire HD 10 - High quality tablets product,TAB-APP-44485,284.09,197.83,56,Apple,0.77,null,2023-07-10 03:06:00,2023-07-10 03:06:00
+134,6,Fitbit Pixel Watch 2,Fitbit Pixel Watch 2 - High ...,SMA-FIT-63067,142.15,98.18,62,Fitbit,#N/A,true,2024-02-04 07:31:00,2024-02-04 07:31:00
+213,9,TP-Link WiFi 6E Router,TP-Link WiFi 6E Router - High quality networking product,NET-TP--45701,356.59,,111,TP-Link,,true,2022-10-10 21:45:00,2022-10-10 21:45:00
+391,16,,Holy Stone FPV Drone - High quality drones product,DRO-HOL-84483,,null,63,Holy Stone,1.55,true,EMPTY,2024-11-23 12:18:00
+445,18,Adobe Office 365 1-Year,Adobe Office 365 1-Year - High quality software product,SOF-ADO-63737,280.72,134.62,393,,-0.04,true,2023-11-07 18:20:00,2023-11-07 18:20:00
+329,14,EVGA 32GB DDR5 RAM,EVGA 32GB DDR5 RAM - High quality computer components product,COM-EVG-82844,,-5157.200000000001,280,,570,true,,
+184,8,Belkin Screen Protector 3-Pack,Belkin Screen Protector 3-Pack - High quality accessories product,ACC-BEL-44468,29.21,16.97,459,,0.39,true,2023-02-08 22:28:00,2023-02-08 22:28:00
+325,13,UNKNOWN,HP All-in-One Inkjet - High quality printers product,PRI-HP-27633,210.49,101.3,388,HP,,true,2024-09-10 19:15:00,2024-09-10 19:15:00
+79,4,APPLE FREE BUDS,Apple Free Buds - High quality headphones product,HEA-APP-29664,N/A,68.97,491,Apple,null,true,2023-08-10 01:41:00,2023-08-10 01:41:00
+422,17,  Apple USB-C to Lightning 6ft  	,Apple USB-C to Lightning 6ft - High quality cables & adapters product,CAB-AP...,15.52,8.69,56,Ap...,0.07,true_typo,2022-11-16 19:39:00,
+116,5,Sony Hero 12 Black,SONY HERO 12 BLACK - HIGH QUALITY CAMERAS PRODUCT,CAM-SON-18090,453.8,209.58,123,Sony,0.59,,2024-04-07 02:46:00,2024-04-07 02:46:00
+314,13,Xerox Color LaserJet,Xerox Color LaserJet - High quality printers product,PRI-XER-90537,-194.45,113.32,0,Xe...,9.66,true,2023-07-12 00:51:00,2023-07-12 00:51:00
+16,1,Google Pro Max 256GB,Google Pro Max 256GB - High quality smartphones product,TBD,1075.44,,Inf,Google,EMPTY,TRUE,2024-09-23 14:29:00,2024-09-23 14:29:00
+384,16,Autel Beginner Drone,AUTEL BEGINNER DRONE - HIGH QUALITY DRONES PRODUCT,,133.8,58.19,182,Au...,,true,,2022-07-14 19:58:00
+12,1,Motorola Ultra 5G,Motorola Ultra 5G - High quality smartphones product,,1196.9,831.88,306,Motorola,0.43,true,,2022-06-17 04:51:00
+118,5,EMPTY,Caanoon EEOOS R50 - Hiigh quuaaliity caameeraas prooduuct,CAM-CAN-72055,309.46,,288,Canon,,TRUE,2024-04-20 10:20:00,2024-04-20 10:20:00
+57,3,"LENOVO MINI 8.3""","Lenovo Mini 8.3"" - High quality tablets product",,206.29,106.2,-2700,Lenovo,1.33,true,2023-10-15 01:51:00,2023-10-15 01:51:00
+21,1,Apple Z Flip,Apple Z Flip - High quality smartphones product,SMA-APP-94895,1194.48,726.99,117.00000000000001,Apple,0.3,true,2024-12-25 09:11:00,2024-12-25 09:11:00
+321,13,Epson Tank Printer,Epson Tank Printer - High quality printers product,PRI-EPS-81243,465.62,261.53,404,Epson,11.82,true,2024-04-03 14:46:00,2024-04-03 14:46:00
+359,15,ecobee Smart Thermostat,ecobee Smart Thermostat - High quality smart home product,SMA-EC...,N/A,111.14,310,ecobee,1.26,true,2024-10-18 10:23:00,2024-10-18 10:23:00
+264,11,Bose Bookshelf Speakers,Bose Bookshelf Speakers - High quality audio product,AAUUD-BOOS-57249,416.11,None,292,Bose,4.66,true,2023-09-24 22:47:00,2023-09-24 22:47:00
+180,8,"Apple MagSafe Charger
+",Apple MagSafe Charger - High quality accessories product,  ACC-APP-49472  	,34.7,,484,Ap...,N/A,true,2024-06-13 01:48:00,2024-06-13 01:48:00
+268,11,  Sonos Bookshelf Speakers  	,Sonos Bookshelf Speakers -...,AUD-SON-60468,-454.59,,414,Sonos,7.11,  true  ,2023-05-10 05:42:00,2023-05-10 05:42:00
+76,4,Apple Tune 770NC,Apple Tune 770NC - High quality headphones product,HEA-APP-81534,88.35,,195,Apple,0.27,false,2022-09-06 08:32:00,2022-09-06 08:32:00
+356,15,Philips Hue Smart Plug 2-Pack,Philips Hue Smart Plug 2-Pack - High quality smart home product,SMA-PHI-14256,287.96,138.13,,Philips Hue,1.69,true,2023-05-10 10:13:00,2023-05-10 10:13:00
+311,13,Xerox Portable Printer,Xerox Portable Printer - High quality printers product,PRI-XER-93113,253.11,,356,Xerox,12.52,true,2022-04-12 02:41:00,2022-04-12 02:41:00
+492,20,Casetify Silicone Case,Casetify Silicone Case - High quality phone cases product,PHO-CAS-61352,12.11,7.25,120,,0.12,true_typo,2022-06-09 17:38:00,
+121,5,DJI EOS R50,DJI EOS R50 - High quality cameras product,CAM-DJI-20717,NaN,N/A,209,DJI,1.01,true,2023-06-20 18:30:00,
+34,2,"Razer Chromebook 14""","Razer Chromebook 14"" - High quality laptops product",,EMPTY,$251.16,137,Razer,4.73,true,2022-10-16 21:36:00,2022-10-16 21:36:00
+49,2,"MSI Business 15""","MSI Business 15"" - High quality laptops product",LAP-MSI-31964,1546.73,1190.02,206,MSI,4.77,,,2024-04-14 05:15:00
+80,4,Sony QuietComfort 45,Sony QuietComfort 45 - High quality headphones product,HEA-SON-74581,538.35USD,264.06,197,Sony,-2.6,,  2023-05-03 17:53:00  ,2023-05-03 17:53:00
+183,8,,Belkin Power Strip - High quality accessories product,ACC-BEL-27560,91.53,46.08,144,Belkin,N/A,true,2024-05-09 01:22:00,2024-05-09 01:22:00
+346,14,--,G.Skill Ryzen 9 CPU - High quality computer components product,null,,542.69,50,G.Skill,1.21,true,TBD,2023-06-20 04:02:00
+472,19,Amazfit R...,,WEA-AMA-21247,237.45,150.43,82.00000000000001,Ama...,0.09,true,2024-01-20 08:22:00,2024-01-20 08:22:00
+253,11,Harman Kardon Studio Monitor,Harman Kardon Studio Monitor - High quality audio product,AUD-HAR-49744,591.26,-327.79,EMPTY,Harman Kardon,2.51,false,  2024-07-01 11:26:00  ,2024-13-45
+298,12,"SONY 43"" SMART TV","Sony 43"" Smart TV - High quality tvs & monitors product",TVS-SON-49680,174.86,138.04,null,Sony,12.6,true,2023-01-14 23:03:00,2023-01-14 23:03:00
+170,7,not available,Nintendo Gaming Headset - High quality gaming product,,88.55,52.14,16,Nintendo,2.37,true,2023-11-06 19:46:00,2023-11-06 19:46:00
+172,7,SteeeelSeeriiees Gaamiing Moouusee,SteelSeries Gaming Mouse - High quality gaming product,GAM-STE-78645,73.22,47.87,396,SteelSeries,-146,true,2024-10-22 03:37:00,2024-10-22 03:37:00
+27,2,"Razer Pro 14""",,LAP-RAZ-49237,1644.23USD,939.31,,Razer,4.31,true,2022-05-23 02:56:00,2022-05-23 02:56:00
+114,5,GoPro DSLR Kit,,CAM-GOP-75565,660.27,384.89,151,GoPro,1.72,true,2022-09-20 21:01:00,2022-09-20 21:01:00
+124,5,,DJI DSLR Kit - High quality cameras product,CAM-DJI-27796,268.15,208.75,Inf,DJI,1.31,true,2023-06-18 17:58:00,2023-06-18 17:58:00
+18,1,Soony FEE 5G,Sony FE 5G - High quality smartphones product,SMA-SON-30814,580.92,-3409,162,,0,true,2024-06-08 02:11:00,2024-06-08 02:11:00
+195,8,Anker Phone Stand,Anker Phone Stand - High quality accessories product,ACC-ANK-11608,90.98,51.98,-379,Anker,0.09,true,2022-07-25 12:18:00,2022-07-25 12:18:00
+286,12,"BenQ 49"" Ultrawide","BenQ 49"" Ultrawide - High quality tvs & monitors product",TVS-BEEN-40588,2462.98,1088.68,302,,-20.2,TRUE,2024-04-04 20:04:00,2024-04-04 20:04:00
+178,8,Belkin Wireless Charging Pad,Beelkiin Wiireeleess Chaargiing Paad - Hiigh quuaaliity aacceessooriiees prooduuct,ACC-BEL-51969 ,-99,-659,-471,Belkin,0.21,true,2024-09-22 20:35:00,2024-09-22 20:35:00
+487,20,Casetify W...,Casetify Wallet Folio - High quality phone cases product,PHO-CAS-32987,31.36,23.09,365,Casetify,0.1,TRUE,2024-12-27 21:14:00,2024-12-27 21:14:00
+102,5,,,CAM-NIK-22575,1266.45,598.53,276,Nikon,1.33,null,2023-01-09 10:53:00,2023-01-09 10:53:00
+155,7,SteelSeries Arcade Stick,SteelSeries Arcade Stick - High quality gaming product,GAM-ST...,UNKNOWN,62.68,474,SteelSeries,1.55,,2024-02-11 15:58:00,2024-02-11 15:58:00
+452,19,Fitbit Ring Gen 3,Fitbit Ring Gen 3 - High quality wearables product,,189.52,85.38,91,Fitbit,0.08,true,2023-08-03 04:35:00,2023-08-03 04:35:00
+458,19,Oura Health Monitor Band,Oura Health Monitor Band - High quality wearables product,WEA-OUR-64117,-2290.3,97.6,,Oura,,true,2022-03-28 00:33:00,2022-03-28 00:33:00
+337,14,Intel RTX 4070 GPU,Intel RTX 4070 GPU - High quality computer components product,COM-INT-78691,"1,053.26",589.06,140,Intel,2.11,,2022-10-06 20:37:00,2022-10-06 20:37:00
+86,4,Sony WH-1000XM5,Sony WH-1000XM5 - High quality headphones product,HEA-SON-87611,500.57,287.39,79,Sony,0.14,false,2024-04-06 13:02:00,2024-04-06 13:02:00
+117,5,Fujifilm Action 4,,CAM-FUJ-52429,897.79,565.52,319,Fuji...,0.31,true,2022-01-17 08:37:00,2022-01-17 08:37:00
+323,13,HP TANK PRINTER,HP Tank Printer - High quality printers product,PRI-HP-57673,501.23,326.6,206,HP,,true,2023-10-08 03:05:00,2023-10-08 03:05:00
+289,12,"Sony 65"" QLED","Soony 65"" QLEED - Hiigh quuaaliity tvs & mooniitoors prooduuct",TVS-SON-18659,1532.46,-748.97,246,Sony,19.12,true,2023-12-11 04:01:00,2023-12-11 04:01:00
+142,999994,Garmin Venu 3,GARMIN VENU 3 - HIGH QUALITY SMARTWATCHES PRODUCT,SMA-GAR-87121,,337.64,339,Garmin,-0.04,true,2023-05-07 01:02:00,2023-05-07 01:02:00
+20,1,OnePlus Mini,OnePlus Mini - High quality smartphones product,SMA-ONE-60379,242.45,160.24,286,OnePlus,0.41,true,2024-06-16 23:21:00,2024-06-16 23:21:00
+56,3,Microsoft Surface Go,Microsoft Surface Go - High quality tablets product,TAB-MIC-16121,1102.12,685.24,219,Microsoft,1.3,,2024-08-03 22:43:00,2024-08-03 22:43:00
+474,19,Whoop C...,Whoop Charge 6 - High quality wearables product,WEA-WHO-63868,212.23,N/A,,Whoop,-7.000000000000001,true,2024-03-16 01:27:00,
+96,4,Sennheiser QuietComfort 45,Sennheiser QuietComfort 45 - High quality headphones product,,414.49,330.19,,Sennheiser,-31,true,2024-10-22 01:32:00,2024-10-22 01:32:00
+95,999999,Beeaats Stuudiioo Proo,"Beats Studio Pro - High quality headphones product
+",HEA-BEA-56580,534.2,396.71,NaN,Beats,0.21,#N/A,2022-05-25 17:47:00,2022-05-25 17:47:00
+487,20,Casetify W...,Casetify Wallet Folio - High quality phone cases product,PHO-CAS-32987,31.36,23.09,365,Casetify,0.1,TRUE,2024-12-27 21:14:00,2024-12-27 21:14:00
+393,16,DJI Air 3,DJI Air 3 - High qu...,DRO-DJ...,986.57,615.55,,DJII,0,,08-28-2024,2024-08-28 19:41:00
+126,6,,Google Pixel Watch 2 - High quality smartwatches product,SMA-GOO-61298,766.95,419.99,286,Google,0.08,true,2023-07-24 03:01:00,2023-07-24 03:01:00

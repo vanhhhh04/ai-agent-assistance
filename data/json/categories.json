@@ -1,0 +1,149 @@
+[
+  {
+    "id": 1,
+    "name": "Smartphones",
+    "description": "Mobile phones and accessories from top brands",
+    "parent_category_id": null,
+    "created_at": "2022-01-01 00:00:00"
+  },
+  {
+    "id": 2,
+    "name": "Laptops",
+    "description": "Notebooks, ultrabooks, and gaming laptops",
+    "parent_category_id": null,
+    "created_at": "2022-01-01 00:00:00"
+  },
+  {
+    "id": 5,
+    "name": "Cameras",
+    "description": "Digital cameras, action cameras, and camcorders",
+    "parent_category_id": null,
+    "created_at": "2022-01-01 00:00:00"
+  },
+  {
+    "id": 16,
+    "name": "Drones",
+    "description": "Consumer and professional drones and drone accessories",
+    "parent_category_id": null,
+    "created_at": "2022-01-01 00:00:00"
+  },
+  {
+    "id": 15,
+    "name": "Smart Home",
+    "description": "SMART SPEAKERS, LIGHTS, THERMOSTATS, AND SECURITY CAMERAS",
+    "parent_category_id": null,
+    "created_at": "2022-01-01 00:00:00"
+  },
+  {
+    "id": 14,
+    "name": "COMPUTER COMPONENTS",
+    "description": "CPUs, GPUs, RAM, motherboards, and power supplies\n",
+    "parent_category_id": null,
+    "created_at": "2022-01-01 00:00:00"
+  },
+  {
+    "id": 4,
+    "name": "HEADPHONES",
+    "description": "Over-ear, on-ear, and in-ear headphones",
+    "parent_category_id": null,
+    "created_at": "2022-01-01 00:00:00"
+  },
+  {
+    "id": 6,
+    "name": "Smartwatches",
+    "description": "Wearable smartwatches and fitness trackers",
+    "parent_category_id": null,
+    "created_at": "2022-01-01 00:00:00"
+  },
+  {
+    "id": 18,
+    "name": "null",
+    "description": "Operating systems, productivity suites, and security software",
+    "parent_category_id": null,
+    "created_at": "2022-01-01 00:00:00"
+  },
+  {
+    "id": 12,
+    "name": "TVs & M...",
+    "description": "Smart TVs, monitors, and display screens",
+    "parent_category_id": null,
+    "created_at": "2022-01-01 00:00:00"
+  },
+  {
+    "id": 9,
+    "name": "Networking",
+    "description": "Routers, switches, modems, and network adapters",
+    "parent_category_id": null,
+    "created_at": "2022-01-01 00:00:00"
+  },
+  {
+    "id": 7,
+    "name": "Gaming",
+    "description": "",
+    "parent_category_id": null,
+    "created_at": "2022-01-01 00:00:00"
+  },
+  {
+    "id": 20,
+    "name": "Phone Cases",
+    "description": "Protective cases, screen protectors, and phone stands",
+    "parent_category_id": null,
+    "created_at": "2022-01-01 00:00:00"
+  },
+  {
+    "id": 11,
+    "name": "Audio",
+    "description": null,
+    "parent_category_id": null,
+    "created_at": "2022-01-01 00:00:00"
+  },
+  {
+    "id": 19,
+    "name": "Wear...",
+    "description": "Fitness bands, smart rings, and health monitors",
+    "parent_category_id": null,
+    "created_at": "2022-01-01 00:00:00"
+  },
+  {
+    "id": 17,
+    "name": "Cables & Adapters",
+    "description": "HDMII, UUSB-C, Liightniing, aand diisplaay aadaapteers",
+    "parent_category_id": null,
+    "created_at": "2022-01-01 00:00:00"
+  },
+  {
+    "id": 3,
+    "name": "Tablets",
+    "description": "Tablets and e-readers for work and play",
+    "parent_category_id": null,
+    "created_at": "2022-01-01 00:00:00"
+  },
+  {
+    "id": 10,
+    "name": "Sto...",
+    "description": "TBD",
+    "parent_category_id": null,
+    "created_at": "2022-01-01 00:00:00"
+  },
+  {
+    "id": 8,
+    "name": "Acces...",
+    "description": null,
+    "parent_category_id": null,
+    "created_at": "2022-01-01 00:00:00"
+  },
+  {
+    "id": 3,
+    "name": "Tablets",
+    "description": "Tablets and e-readers for work and play",
+    "parent_category_id": null,
+    "created_at": "2022-01-01 00:00:00"
+  },
+  {
+    "id": 13,
+    "name": "",
+    "description": null,
+    "parent_category_id": null,
+    "created_at": "2022-01-01 00:00:00"
+  }
+]
