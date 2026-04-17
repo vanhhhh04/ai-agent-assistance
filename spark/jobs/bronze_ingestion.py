@@ -1,37 +1,22 @@
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, current_timestamp
+from pyspark.sql import SparkSession, functions as F
+from pyspark.sql.types import *
 
 spark = SparkSession.builder \
-    .appName("Bronze-Ingestion-Orders") \
-    .config("spark.sql.adaptive.enabled", "false") \
+    .appName("DataCleaningPipeline") \
     .getOrCreate()
 
-spark.sparkContext.setLogLevel("WARN")
+def clean_table(df, table_name, schema_config):
+    """Pipeline lam sach tong hop cho mot bang"""
+    print(f"\n{'='*50}")
+    print(f"Cleaning: {table_name}")
+    print(f"Original rows: {df.count()}")
 
-print("=== Reading from Kafka ===")
+    # Step 1: Remove corrupt records
+    if "_corrupt_record" in df.columns:
+        df = df.filter(F.col("_corrupt_record").isNull()).drop("_corrupt_record")
 
-df = spark.read \
-    .format("kafka") \
-    .option("kafka.bootstrap.servers", "kafka:29092") \
-    .option("kafka.security.protocol", "PLAINTEXT") \
-    .option("subscribe", "ecommerce-orders") \
-    .option("startingOffsets", "earliest") \
-    .option("failOnDataLoss", "false") \
-    .load()
-
-df_parsed = df.select(
-    col("value").cast("string").alias("raw_data"),
-    col("timestamp").alias("kafka_timestamp"),
-    current_timestamp().alias("ingestion_time")
-)
-
-count = df_parsed.count()
-print(f"=== Total records: {count} ===")
-df_parsed.show(5, truncate=False)
-
-df_parsed.write \
-    .mode("overwrite") \
-    .parquet("hdfs://namenode:9000/datalake/bronze/orders")
-
-print("=== Bronze ingestion complete! ===")
-spark.stop()
+    # Step 2: Normalize placeholders to null
+    placeholders = ["UNKNOWN","N/A","#N/A","None","null","EMPTY","--","???","TBD","not available"]
+    for c in df.columns:
+        df = df.withColumn(c,
+            F.when(F.col(c).isin(placeholders, None))
