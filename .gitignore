@@ -214,3 +214,15 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Project-specific generated data (simulators / local infra)
+data-source/csv_output/
+hdfs/namenode/
+hdfs/datanode/
+data/postgres/
+nifi/logs/
+
+# Local editor/runtime noise
+*.swp
+*.swo
+*.tmp

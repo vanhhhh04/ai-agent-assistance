@@ -376,7 +376,7 @@ def clean_table(df, table_name, schema_config):
     placeholders = ["UNKNOWN","N/A","#N/A","None","null","EMPTY","--","???","TBD","not available"]
     for c in df.columns:
         df = df.withColumn(c,
-            F.when(F.col(c).isin(placeholders), None)
+            F.when(F.col(c).is in(placeholders), None)
              .when(F.trim(F.col(c)) == "", None)
              .otherwise(F.col(c)))
 

@@ -124,17 +124,17 @@ services:
       SPARK_WORKER_MEMORY: 2G
       SPARK_WORKER_CORES: 2
 
-  ollama:
-    image: ollama/ollama:latest
-    container_name: ollama
-    networks:
-      - dataplatform
-    ports:
-      - "11434:11434"
-    volumes:
-      - ollama_models:/root/.ollama
-    environment:
-      - OLLAMA_HOST=0.0.0.0
+  # ollama:
+  #   image: ollama/ollama:latest
+  #   container_name: ollama
+  #   networks:
+  #     - dataplatform
+  #   ports:
+  #     - "11434:11434"
+  #   volumes:
+  #     - ollama_models:/root/.ollama
+  #   environment:
+  #     - OLLAMA_HOST=0.0.0.0
 
   ai-agent:
     build:
@@ -154,7 +154,27 @@ services:
       OLLAMA_HOST: http://ollama:11434
     depends_on:
       - postgres
-      - ollama
+      # - ollama
+
+  data-source:
+    build:
+      context: ./data-source
+      dockerfile: Dockerfile
+    container_name: data-source
+    networks:
+      - dataplatform
+    env_file:
+      - ./.env
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+    working_dir: /app
+    volumes:
+      - ./data-source:/app
+    depends_on:
+      - postgres
+      - kafka
+    command: sleep infinity
 
 networks:
   dataplatform:
