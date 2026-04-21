@@ -56,8 +56,7 @@ DB_CONFIG = {
     "password": os.getenv("DB_PASSWORD", "postgres"),
 }
 
-NIFI_ENDPOINT = os.getenv("NIFI_ENDPOINT", "http://localhost:8080/payment-events")
-
+NIFI_ENDPOINT = os.getenv("NIFI_ENDPOINT", "http://nifi:8181/payment-events")
 INTERVAL_NEW_PAYMENT    = 3
 INTERVAL_UPDATE_PAYMENT = 5
 INTERVAL_SHIPPING       = 15
@@ -171,7 +170,7 @@ def maybe_dirty_payment(payload: dict) -> tuple[dict, str]:
         )
 
     elif dirty_type == "invalid_payment_method":
-        invalid_methods = ["bitcoin", "barter", "TRANSFER", "e-wallet", ""]
+        invalid_methods = ["bitcoin", "barter", "CREDIT_CARD", "e-wallet", ""]
         payload["payment_method"] = random.choice(invalid_methods)
         payload["_dirty_reason"]  = f"invalid method: '{payload['payment_method']}' — not in allowed enum"
 
@@ -226,10 +225,10 @@ def to_serializable(d: dict) -> dict:
     return json.loads(json.dumps(d, default=str))
 
 
-PAYMENT_METHODS = ["credit_card", "momo", "vnpay", "bank_transfer", "cod", "paypal"]
-CARRIERS        = ["GHN", "GHTK", "ViettelPost", "J&T Express", "Ninja Van"]
+PAYMENT_METHODS = ["credit_card", "debit_card", "paypal", "apple_pay", "google_pay"]
+CARRIERS        = ["UPS", "FedEx", "USPS", "DHL"]
 SHIPPING_STATUS_FLOW = ["pending", "picked_up", "in_transit", "out_for_delivery", "delivered"]
-PAYMENT_STATUS_FLOW  = ["pending", "processing", "success"]
+PAYMENT_STATUS_FLOW  = ["pending", "completed"]  # DB CHECK: pending|completed|failed|refunded
 
 
 def gateway_meta(method: str) -> dict:
@@ -238,24 +237,24 @@ def gateway_meta(method: str) -> dict:
                 "card_brand": random.choice(["Visa", "Mastercard", "JCB"]),
                 "card_last4": str(random.randint(1000, 9999)),
                 "stripe_charge_id": f"ch_{fake.bothify('?' * 24)}"}
-    if method == "momo":
-        return {"gateway": "MoMo",
-                "momo_order_id": f"MOMO{random.randint(10**9, 10**10-1)}",
-                "momo_trans_id": random.randint(10**12, 10**13-1)}
-    if method == "vnpay":
-        return {"gateway": "VNPay",
-                "vnp_TxnRef": str(random.randint(10**9, 10**10-1)),
-                "vnp_BankCode": random.choice(["VCB", "TCB", "ACB", "BIDV", "MB"]),
-                "vnp_ResponseCode": "00"}
-    if method == "bank_transfer":
-        return {"gateway": "Bank",
-                "bank_name": random.choice(["Vietcombank", "Techcombank", "ACB"]),
-                "ref_code": f"REF{random.randint(100000, 999999)}"}
+    if method == "debit_card":
+        return {"gateway": "Stripe",
+                "card_brand": random.choice(["Visa Debit", "Mastercard Debit"]),
+                "card_last4": str(random.randint(1000, 9999)),
+                "stripe_charge_id": f"ch_{fake.bothify('?' * 24)}"}
     if method == "paypal":
         return {"gateway": "PayPal",
                 "paypal_order": f"PAYID-{fake.bothify('?' * 20).upper()}",
                 "payer_email": fake.email()}
-    return {"gateway": "COD", "collected_by": fake.name()}
+    if method == "apple_pay":
+        return {"gateway": "Apple Pay",
+                "device_id": f"APPLE-{fake.bothify('?' * 16).upper()}",
+                "apple_transaction_id": f"AT{random.randint(10**12, 10**13-1)}"}
+    if method == "google_pay":
+        return {"gateway": "Google Pay",
+                "device_id": f"GPAY-{fake.bothify('?' * 16).upper()}",
+                "google_transaction_id": f"GT{random.randint(10**12, 10**13-1)}"}
+    return {"gateway": "Unknown", "note": f"unsupported method: {method}"}
 
 
 # ─────────────────────────────────────────────
@@ -313,7 +312,7 @@ def handle_new_payment(cur, conn):
             log.info(f"  [DIRTY] Late arrival: POST trước commit cho order #{order_id}")
 
         # DB INSERT (sau POST nếu dirty, trước POST nếu clean)
-        safe_method = method if method in PAYMENT_METHODS else "cod"
+        safe_method = method if method in PAYMENT_METHODS else "credit_card"
         cur.execute(
             """INSERT INTO payments
                (order_id, payment_method, amount, status, transaction_id, paid_at, created_at)
@@ -342,7 +341,15 @@ def handle_new_payment(cur, conn):
 
 
 def handle_update_payment(cur, conn):
-    for from_status, to_status in [("pending", "processing"), ("processing", "success")]:
+    # DB CHECK: payments.status IN ('pending','completed','failed','refunded')
+    # Flow: pending → completed (đa số) | pending → failed (một phần)
+    #       completed → refunded (khi order bị cancel/return)
+    transitions = [
+        ("pending",   "completed"),
+        ("pending",   "failed"),
+        ("completed", "refunded"),
+    ]
+    for from_status, to_status in transitions:
         cur.execute(
             """SELECT id, order_id, payment_method, amount, transaction_id
                FROM payments WHERE status=%s ORDER BY RANDOM() LIMIT 10""",
@@ -353,7 +360,7 @@ def handle_update_payment(cur, conn):
             cur.execute(
                 """UPDATE payments
                    SET status=%s,
-                       paid_at = CASE WHEN %s='success' THEN NOW() ELSE NULL END,
+                       paid_at = CASE WHEN %s='completed' THEN NOW() ELSE paid_at END,
                        created_at = created_at
                    WHERE id=%s""",
                 (to_status, to_status, pid),
@@ -375,13 +382,13 @@ def handle_update_payment(cur, conn):
 
 
 def handle_shipping(cur, conn):
-    # INSERT shipping mới cho orders đã có payment success nhưng chưa có shipping
+    # INSERT shipping mới cho orders đã có payment completed nhưng chưa có shipping
     cur.execute("""
         SELECT o.id FROM orders o
         JOIN payments p ON p.order_id = o.id
         LEFT JOIN shipping s ON s.order_id = o.id
-        WHERE p.status = 'success' AND s.id IS NULL
-        AND o.status NOT IN ('cancelled', 'refunded')
+        WHERE p.status = 'completed' AND s.id IS NULL
+        AND o.status NOT IN ('cancelled', 'returned')
         ORDER BY RANDOM() LIMIT 3
     """)
     for (order_id,) in cur.fetchall():
@@ -525,14 +532,16 @@ def handle_review(cur, conn):
 
 
 def handle_feedback(cur, conn):
-    types    = ["complaint", "suggestion", "compliment", "other"]
+    # DB CHECK: feedback.type IN ('complaint','suggestion','praise','question')
+    # DB CHECK: feedback.priority IN ('low','medium','high')
+    types    = ["complaint", "suggestion", "praise", "question"]
     subjects = {
         "complaint":  ["Sản phẩm lỗi khi nhận", "Giao hàng sai địa chỉ", "Không nhận được hàng"],
         "suggestion": ["Thêm tính năng trả góp", "Cải thiện giao diện"],
-        "compliment": ["Nhân viên hỗ trợ tận tình", "Giao hàng nhanh hơn dự kiến"],
-        "other":      ["Hỏi về chính sách đổi trả", "Cần hóa đơn VAT"],
+        "praise":     ["Nhân viên hỗ trợ tận tình", "Giao hàng nhanh hơn dự kiến"],
+        "question":   ["Hỏi về chính sách đổi trả", "Cần hóa đơn VAT"],
     }
-    priorities = ["low", "medium", "high", "urgent"]
+    priorities = ["low", "medium", "high"]
 
     cur.execute("SELECT id FROM customers ORDER BY RANDOM() LIMIT 1")
     row = cur.fetchone()
@@ -546,7 +555,8 @@ def handle_feedback(cur, conn):
 
     fb_type  = random.choice(types)
     subject  = random.choice(subjects[fb_type])
-    priority = "urgent" if fb_type == "complaint" and random.random() > 0.7 else random.choice(priorities)
+    # Complaints thường có priority cao hơn
+    priority = "high" if fb_type == "complaint" and random.random() > 0.5 else random.choice(priorities)
 
     cur.execute(
         """INSERT INTO feedback

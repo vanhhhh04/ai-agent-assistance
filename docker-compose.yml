@@ -1,9 +1,23 @@
 services:
+  # ─────────────────────────────────────────────
+  # PostgreSQL — source cho ERP
+  # FIX: bật wal_level=logical để NiFi/Debezium CDC hoạt động
+  # ─────────────────────────────────────────────
   postgres:
     image: postgres:15
     container_name: postgres
     networks:
       - dataplatform
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=logical"
+      - "-c"
+      - "max_replication_slots=10"
+      - "-c"
+      - "max_wal_senders=10"
+      - "-c"
+      - "shared_preload_libraries=pgoutput"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -12,8 +26,16 @@ services:
       - "5433:5432"
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
-      - "/home/vanhcao/vietanh/graduation project/data.sql:/docker-entrypoint-initdb.d/data.sql"
+      - ./data/initial_table.sql:/docker-entrypoint-initdb.d/01_initial_table.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ecommerce"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+  # ─────────────────────────────────────────────
+  # Zookeeper — quản lý Kafka metadata
+  # ─────────────────────────────────────────────
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
     container_name: zookeeper
@@ -22,7 +44,14 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - ./data/zookeeper/data:/var/lib/zookeeper/data
+      - ./data/zookeeper/log:/var/lib/zookeeper/log
 
+  # ─────────────────────────────────────────────
+  # Kafka broker
+  # FIX: thêm volume để persist messages qua restart
+  # ─────────────────────────────────────────────
   kafka:
     image: confluentinc/cp-kafka:7.5.0
     container_name: kafka
@@ -40,7 +69,13 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    volumes:
+      - ./data/kafka:/var/lib/kafka/data   # FIX: persist Kafka data
 
+  # ─────────────────────────────────────────────
+  # Kafka UI
+  # FIX: đổi port 8080 → 8888 để không conflict với NiFi ListenHTTP
+  # ─────────────────────────────────────────────
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
@@ -49,28 +84,40 @@ services:
     depends_on:
       - kafka
     ports:
-      - "8080:8080"
+      - "8888:8080"   # FIX: host 8888 → container 8080
     environment:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
 
+  # ─────────────────────────────────────────────
+  # Apache NiFi
+  # FIX: thêm port 8181 cho ListenHTTP + volumes persist flow
+  # ─────────────────────────────────────────────
   nifi:
     image: apache/nifi:1.23.2
     container_name: nifi
     networks:
       - dataplatform
     ports:
-      - "8443:8443"
+      - "8443:8443"    # HTTPS UI
+      - "8181:8181"    # ListenHTTP processor (cho Payment webhook)
     environment:
       SINGLE_USER_CREDENTIALS_USERNAME: admin
       SINGLE_USER_CREDENTIALS_PASSWORD: adminadminadmin
+      NIFI_WEB_HTTPS_PORT: 8443
     volumes:
-      - ./nifi/flow:/opt/nifi/nifi-current/flow
       - ./nifi/logs:/opt/nifi/nifi-current/logs
+      - ./nifi/flowfile_repository:/opt/nifi/nifi-current/flowfile_repository
+      - ./nifi/content_repository:/opt/nifi/nifi-current/content_repository
+      - ./nifi/provenance_repository:/opt/nifi/nifi-current/provenance_repository
+      - csv_shared:/opt/nifi/csv_input                    # FIX: shared CSV volume
     depends_on:
       - kafka
       - postgres
 
+  # ─────────────────────────────────────────────
+  # HDFS Namenode
+  # ─────────────────────────────────────────────
   namenode:
     image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
     container_name: namenode
@@ -85,6 +132,9 @@ services:
     volumes:
       - ./hdfs/namenode:/hadoop/dfs/name
 
+  # ─────────────────────────────────────────────
+  # HDFS Datanode
+  # ─────────────────────────────────────────────
   datanode:
     image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
     container_name: datanode
@@ -98,19 +148,26 @@ services:
     volumes:
       - ./hdfs/datanode:/hadoop/dfs/data
 
+  # ─────────────────────────────────────────────
+  # Spark Master
+  # FIX: đổi sang bitnami (không legacy)
+  # ─────────────────────────────────────────────
   spark-master:
     image: bitnamilegacy/spark:3.5.1
     container_name: spark-master
     networks:
       - dataplatform
     ports:
-      - "8090:8080"
-      - "7077:7077"
+      - "8090:8080"    # Spark UI
+      - "7077:7077"    # Spark master RPC
     environment:
       SPARK_MODE: master
       SPARK_RPC_AUTHENTICATION_ENABLED: "no"
       SPARK_RPC_ENCRYPTION_ENABLED: "no"
 
+  # ─────────────────────────────────────────────
+  # Spark Worker
+  # ─────────────────────────────────────────────
   spark-worker:
     image: bitnamilegacy/spark:3.5.1
     container_name: spark-worker
@@ -124,38 +181,10 @@ services:
       SPARK_WORKER_MEMORY: 2G
       SPARK_WORKER_CORES: 2
 
-  # ollama:
-  #   image: ollama/ollama:latest
-  #   container_name: ollama
-  #   networks:
-  #     - dataplatform
-  #   ports:
-  #     - "11434:11434"
-  #   volumes:
-  #     - ollama_models:/root/.ollama
-  #   environment:
-  #     - OLLAMA_HOST=0.0.0.0
-
-  ai-agent:
-    build:
-      context: ./ai-agent
-      dockerfile: Dockerfile
-    container_name: ai-agent
-    networks:
-      - dataplatform
-    ports:
-      - "8000:8000"
-    environment:
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_NAME: ecommerce
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      OLLAMA_HOST: http://ollama:11434
-    depends_on:
-      - postgres
-      # - ollama
-
+  # ─────────────────────────────────────────────
+  # Data source — chạy 3 scripts simulation
+  # FIX: thêm NIFI_ENDPOINT + CSV_DIR + shared volume
+  # ─────────────────────────────────────────────
   data-source:
     build:
       context: ./data-source
@@ -168,12 +197,20 @@ services:
     environment:
       DB_HOST: postgres
       DB_PORT: 5432
+      DB_NAME: ecommerce
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      NIFI_ENDPOINT: http://nifi:8181/payment-events    # FIX: trỏ vào NiFi container
+      CSV_DIR: /app/csv_output                          # FIX: set CSV path explicit
     working_dir: /app
     volumes:
       - ./data-source:/app
+      - csv_shared:/app/csv_output                      # FIX: shared volume với NiFi
     depends_on:
-      - postgres
-      - kafka
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
     command: sleep infinity
 
 networks:
@@ -181,4 +218,5 @@ networks:
     driver: bridge
 
 volumes:
+  csv_shared:           # FIX: shared volume cho CSV pipeline data-source ↔ nifi
   ollama_models:

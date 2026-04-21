@@ -275,7 +275,11 @@ BRANDS = [
 def make_product_row(category_id: int) -> dict:
     price = round(random.randint(50, 50_000) * 1_000, -3)
     cost  = round(price * random.uniform(0.5, 0.8), -3)
-    sku   = f"SKU-{fake.unique.bothify('??####??').upper()}"
+    # BUG FIX: bothify mặc định letters=ascii_letters (cả hoa+thường, 52 chars).
+    # fake.unique track chuỗi TRƯỚC .upper() nên "Ab####Cd" vs "aB####CD" được
+    # coi là unique nhưng sau .upper() chúng trùng → birthday collision ở 100k rows.
+    # Fix: UUID-based SKU (guaranteed unique across runs), giữ format dễ đọc.
+    sku   = f"SKU-{uuid.uuid4().hex[:10].upper()}"
     _used_skus.append(sku)  # track để inject duplicate sau này
     return {
         "category_id":    category_id,

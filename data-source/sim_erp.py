@@ -266,7 +266,7 @@ def rand_price(lo: float, hi: float) -> Decimal:
 #  ROW MAKERS
 # ─────────────────────────────────────────────
 ORDER_STATUSES = ["pending", "processing", "shipped", "delivered",
-                  "delivered", "delivered", "cancelled", "refunded"]
+                  "delivered", "delivered", "cancelled", "returned"]
 STATUS_FLOW = {
     "pending":    "processing",
     "processing": "shipped",
@@ -316,8 +316,12 @@ def make_coupon() -> tuple:
              else random.randint(1, 500) * 10_000)
     valid_from  = rand_date(90)
     valid_until = (datetime.now() + timedelta(days=random.randint(7, 180))).date()
+    # UUID-based code đảm bảo unique KHẮP các lần chạy (non-deterministic).
+    # Trước đây dùng fake.unique.bothify('??###') + seed 1001 → cùng seed thì
+    # cùng sequence → crash nếu DB đã có coupons từ lần chạy trước.
+    code = f"COUPON{uuid.uuid4().hex[:10].upper()}"
     return (
-        f"COUPON{fake.unique.bothify('??###').upper()}",
+        code,
         discount_type,
         Decimal(str(value)),
         Decimal(str(random.randint(0, 500) * 1_000)),
@@ -438,7 +442,9 @@ def bootstrap_coupons(cur) -> list[int]:
         """INSERT INTO coupons
            (code, discount_type, discount_value, min_order_amount, max_uses,
             times_used, valid_from, valid_until, is_active, created_at)
-           VALUES %s RETURNING id""",
+           VALUES %s
+           ON CONFLICT (code) DO NOTHING
+           RETURNING id""",
         rows,
     )
     ids = [r[0] for r in cur.fetchall()]
@@ -469,7 +475,7 @@ def bootstrap_orders(cur, customer_ids, address_map, coupon_ids, product_ids) ->
 
             # Normalize status: typo → "pending" để DB không reject
             status = dirty_row["status"]
-            if status not in ("pending", "processing", "shipped", "delivered", "cancelled", "refunded"):
+            if status not in ("pending", "processing", "shipped", "delivered", "cancelled", "returned"):
                 status = "pending"  # DE note: trong thực tế đây là DIRTY record cần routing
 
             order_rows.append((
@@ -589,7 +595,7 @@ def realtime_loop(customer_ids, address_map, coupon_ids, order_ids, product_ids)
                         time.sleep(delay)
 
                     status = dirty_row["status"]
-                    if status not in ("pending", "processing", "shipped", "delivered", "cancelled", "refunded"):
+                    if status not in ("pending", "processing", "shipped", "delivered", "cancelled", "returned"):
                         status = "pending"
 
                     cur.execute(
@@ -687,14 +693,21 @@ def realtime_loop(customer_ids, address_map, coupon_ids, order_ids, product_ids)
                     """INSERT INTO coupons
                        (code, discount_type, discount_value, min_order_amount, max_uses,
                         times_used, valid_from, valid_until, is_active, created_at)
-                       VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,NOW()) RETURNING id""",
+                       VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                       ON CONFLICT (code) DO NOTHING
+                       RETURNING id""",
                     make_coupon(),
                 )
-                new_cid = cur.fetchone()[0]
-                coupon_ids.append(new_cid)
-                cur.execute("UPDATE coupons SET is_active=FALSE WHERE valid_until < NOW() AND is_active=TRUE")
-                conn.commit()
-                log.info(f"INSERT coupon #{new_cid}, deactivate expired coupons")
+                result = cur.fetchone()
+                if result:
+                    new_cid = result[0]
+                    coupon_ids.append(new_cid)
+                    cur.execute("UPDATE coupons SET is_active=FALSE WHERE valid_until < NOW() AND is_active=TRUE")
+                    conn.commit()
+                    log.info(f"INSERT coupon #{new_cid}, deactivate expired coupons")
+                else:
+                    conn.commit()
+                    log.debug("Coupon code trùng (hiếm với UUID) — skipped")
             finally:
                 cur.close(); conn.close()
             last_coupon = now
