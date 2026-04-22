@@ -220,9 +220,13 @@ data-source/csv_output/
 hdfs/namenode/
 hdfs/datanode/
 data/postgres/
+data/kafka/
+data/zookeeper/
+nifi/
 nifi/logs/
 
 # Local editor/runtime noise
 *.swp
 *.swo
 *.tmp
+.~lock.*
