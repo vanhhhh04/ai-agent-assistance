@@ -509,6 +509,8 @@ def realtime_loop(category_ids: list[int], product_ids: list[int]):
             last_new_product = now
 
         # ── INSERT danh mục mới (mỗi 10p) ──
+        # Faker có pool từ vựng hạn chế → tên ngẫu nhiên có thể trùng.
+        # ON CONFLICT DO NOTHING giữ sim chạy liên tục thay vì crash.
         if now - last_new_category >= INTERVAL_NEW_CATEGORY:
             conn = get_conn()
             cur  = conn.cursor()
@@ -517,13 +519,22 @@ def realtime_loop(category_ids: list[int], product_ids: list[int]):
                 parent   = random.choice(category_ids[:10])
                 cur.execute(
                     """INSERT INTO categories (name, description, parent_category_id, created_at)
-                       VALUES (%s, %s, %s, NOW()) RETURNING id""",
+                       VALUES (%s, %s, %s, NOW())
+                       ON CONFLICT (name) DO NOTHING
+                       RETURNING id""",
                     (new_name, fake.sentence(), parent),
                 )
-                new_id = cur.fetchone()[0]
-                category_ids.append(new_id)
+                result = cur.fetchone()
                 conn.commit()
-                log.info(f"INSERT category mới: '{new_name}' (id={new_id})")
+                if result:
+                    new_id = result[0]
+                    category_ids.append(new_id)
+                    log.info(f"INSERT category mới: '{new_name}' (id={new_id})")
+                else:
+                    log.info(f"Category '{new_name}' đã tồn tại — skip")
+            except Exception as e:
+                conn.rollback()
+                log.warning(f"Category insert failed: {e}")
             finally:
                 cur.close(); conn.close()
             last_new_category = now

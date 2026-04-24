@@ -45,6 +45,7 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+      KAFKA_HEAP_OPTS: "-Xmx256m"
     volumes:
       - ./data/zookeeper/data:/var/lib/zookeeper/data
       - ./data/zookeeper/log:/var/lib/zookeeper/log
@@ -70,6 +71,7 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_HEAP_OPTS: "-Xms512m -Xmx1g"
     volumes:
       - ./data/kafka:/var/lib/kafka/data   # FIX: persist Kafka data
 
@@ -106,6 +108,8 @@ services:
       SINGLE_USER_CREDENTIALS_USERNAME: admin
       SINGLE_USER_CREDENTIALS_PASSWORD: adminadminadmin
       NIFI_WEB_HTTPS_PORT: 8443
+      NIFI_JVM_HEAP_INIT: "512m"
+      NIFI_JVM_HEAP_MAX: "1g"
     volumes:
       - ./nifi/logs:/opt/nifi/nifi-current/logs
       - ./nifi/flowfile_repository:/opt/nifi/nifi-current/flowfile_repository
@@ -212,12 +216,16 @@ services:
     volumes:
       - ./data-source:/app
       - csv_shared:/app/csv_output                      # FIX: shared volume với NiFi
+      - ./logs:/app/logs                                # sim logs visible on host at ./logs/
     depends_on:
       postgres:
         condition: service_healthy
       kafka:
         condition: service_started
-    command: sleep infinity
+    # chmod the shared CSV volume on every start — same volume is also mounted in
+    # the nifi container at /opt/nifi/csv_input, and NiFi (running as `nifi` user)
+    # needs write access to delete files after processing them.
+    command: bash -c "mkdir -p /app/csv_output && chmod 777 /app/csv_output && sleep infinity"
 
   # ─────────────────────────────────────────────
   # Debezium Kafka Connect — PostgreSQL CDC for ERP source
@@ -240,6 +248,7 @@ services:
       CONFIG_STORAGE_REPLICATION_FACTOR: "1"
       OFFSET_STORAGE_REPLICATION_FACTOR: "1"
       STATUS_STORAGE_REPLICATION_FACTOR: "1"
+      KAFKA_HEAP_OPTS: "-Xms256m -Xmx768m"
     depends_on:
       postgres:
         condition: service_healthy
