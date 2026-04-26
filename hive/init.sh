@@ -1,7 +1,7 @@
 #!/bin/bash
 # Hive Metastore startup: initialize schema on first run, then start service.
 # Using a script file avoids argument re-splitting by the bde2020/hive entrypoint.
-set -x
+set -eux
 
 # schematool fails harmlessly on subsequent runs (schema already exists)
 /opt/hive/bin/schematool -dbType postgres -initSchema || true

@@ -344,17 +344,31 @@ def handle_update_payment(cur, conn):
     # DB CHECK: payments.status IN ('pending','completed','failed','refunded')
     # Flow: pending → completed (đa số) | pending → failed (một phần)
     #       completed → refunded (khi order bị cancel/return)
+    # Bug fix: previously each iteration picked LIMIT 10 from each from-status,
+    # so the same call could complete and then refund the same payments. Now
+    # refunds happen at a low rate (~5% of completed) and are sampled from
+    # payments completed at least 60s ago (so they spend time as "completed").
     transitions = [
-        ("pending",   "completed"),
-        ("pending",   "failed"),
-        ("completed", "refunded"),
+        ("pending",   "completed", 10),
+        ("pending",   "failed",     2),
+        ("completed", "refunded",   1),   # rare — preserves completed pool
     ]
-    for from_status, to_status in transitions:
-        cur.execute(
-            """SELECT id, order_id, payment_method, amount, transaction_id
-               FROM payments WHERE status=%s ORDER BY RANDOM() LIMIT 10""",
-            (from_status,),
-        )
+    for from_status, to_status, limit in transitions:
+        if to_status == "refunded":
+            cur.execute(
+                """SELECT id, order_id, payment_method, amount, transaction_id
+                   FROM payments
+                   WHERE status='completed'
+                     AND paid_at < NOW() - INTERVAL '60 seconds'
+                   ORDER BY RANDOM() LIMIT %s""",
+                (limit,),
+            )
+        else:
+            cur.execute(
+                """SELECT id, order_id, payment_method, amount, transaction_id
+                   FROM payments WHERE status=%s ORDER BY RANDOM() LIMIT %s""",
+                (from_status, limit),
+            )
         rows = cur.fetchall()
         for pid, order_id, method, amount, txn_id in rows:
             cur.execute(
@@ -633,15 +647,20 @@ def main():
     log.info(f"  NiFi endpoint: {NIFI_ENDPOINT}")
     log.info("=" * 60)
 
-    conn = get_conn()
-    cur  = conn.cursor()
-    cur.execute("SELECT COUNT(*) FROM orders")
-    order_count = cur.fetchone()[0]
-    cur.close(); conn.close()
-
-    if order_count == 0:
-        log.error("Chưa có orders! Hãy chạy sim_erp.py trước.")
-        return
+    # Wait for ERP to populate orders (sim_erp's bootstrap takes a while).
+    waited = 0
+    while True:
+        conn = get_conn(); cur = conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM orders")
+        order_count = cur.fetchone()[0]
+        cur.close(); conn.close()
+        if order_count > 0:
+            break
+        log.info(f"  waiting for orders from sim_erp… ({waited}s)")
+        time.sleep(15); waited += 15
+        if waited >= 1800:
+            log.error("orders still empty after 30 min — aborting")
+            return
 
     log.info(f"Tìm thấy {order_count:,} orders — bắt đầu simulate payment events...")
     realtime_loop()

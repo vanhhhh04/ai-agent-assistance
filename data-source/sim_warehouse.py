@@ -54,9 +54,9 @@ DB_CONFIG = {
     "password": os.getenv("DB_PASSWORD", "postgres"),
 }
 
-BOOTSTRAP_CATEGORIES = 1_000
-BOOTSTRAP_PRODUCTS   = 100_000
-BATCH_SIZE           = 5_000
+BOOTSTRAP_CATEGORIES = int(os.getenv("BOOTSTRAP_CATEGORIES", "1000"))
+BOOTSTRAP_PRODUCTS   = int(os.getenv("BOOTSTRAP_PRODUCTS",   "100000"))
+BATCH_SIZE           = int(os.getenv("BATCH_SIZE",           "5000"))
 CSV_OUTPUT_DIR       = Path(os.getenv("CSV_DIR", "./csv_output"))
 
 INTERVAL_NEW_PRODUCT  = 120

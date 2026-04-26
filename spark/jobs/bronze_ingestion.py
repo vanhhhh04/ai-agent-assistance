@@ -1,17 +1,25 @@
 """
-Bronze Ingestion Job
-====================
-Reads raw events from all 5 source topics and writes partitioned Parquet to HDFS.
+Bronze Ingestion Job — Trigger.AvailableNow streaming
+======================================================
+Reads new Kafka messages since the last run and APPENDS to HDFS Bronze layer.
+
+Why Trigger.AvailableNow?
+  - Same exactly-once + offset tracking as continuous streaming
+  - But the job EXITS when no more data is available (batch-like lifecycle)
+  - Airflow can schedule it hourly without leaving a long-running Spark process
+  - Subsequent runs read only NEW offsets (checkpoint persisted on HDFS)
 
 Topic sources:
   ERP (Debezium CDC) ── erp.public.customers
-                        erp.public.orders          → hdfs/.../bronze/erp_raw
+                        erp.public.orders          → hdfs:///datalake/bronze/erp_raw
                         erp.public.order_items
                         erp.public.coupons
-  Warehouse (NiFi CSV→JSON) ── warehouse.events    → hdfs/.../bronze/wh_raw
-  Payment (NiFi HTTP) ──────── payment.events      → hdfs/.../bronze/pay_raw
+  Warehouse (NiFi)   ── warehouse.events           → hdfs:///datalake/bronze/wh_raw
+                        warehouse.events.dlq       → hdfs:///datalake/bronze/wh_dlq
+  Payment (NiFi)    ── payment.events              → hdfs:///datalake/bronze/pay_raw
+                        payment.events.dlq         → hdfs:///datalake/bronze/pay_dlq
 
-Bronze rule: store raw data as-is, only add Kafka lineage metadata.
+Bronze rule: keep raw value as-is, only add Kafka lineage + ingest_date partition.
 No business logic. No transformation.
 """
 
@@ -20,35 +28,49 @@ from pyspark.sql import functions as F
 
 KAFKA_BOOTSTRAP = "kafka:29092"
 HDFS_BASE       = "hdfs://namenode:9000/datalake/bronze"
+CHECKPOINT_BASE = "hdfs://namenode:9000/datalake/_checkpoints/bronze"
 
-spark = SparkSession.builder \
-    .appName("Bronze-Ingestion") \
+spark = (
+    SparkSession.builder
+    .appName("Bronze-Ingestion")
+    .config("spark.sql.streaming.schemaInference",         "true")
+    .config("spark.sql.streaming.stopActiveRunOnRestart",  "true")
     .getOrCreate()
-
+)
 spark.sparkContext.setLogLevel("WARN")
 
 
-def ingest_topics(topics: list, hdfs_path: str) -> int:
+def ingest_topics(topic_pattern: str, sink_name: str):
     """
-    Read one or more Kafka topics (earliest→latest) and write raw Parquet to HDFS.
-    Multiple topics are merged into one bronze table — _source_topic identifies origin.
-    """
-    topic_str = ",".join(topics)
-    print(f"\n[BRONZE] topics={topics}")
-    print(f"[BRONZE] → {hdfs_path}")
+    Read Kafka topics matching a regex pattern with Trigger.AvailableNow
+    and append to HDFS.
 
-    df_raw = (
-        spark.read
+    `subscribePattern` (vs `subscribe`) tolerates topics that don't exist yet —
+    important for DLQ topics that are auto-created on first publish.
+
+    Idempotency: Spark's checkpoint at CHECKPOINT_BASE/<sink_name> records
+    consumed Kafka offsets. Re-running the job does not re-read old messages.
+    """
+    sink_path  = f"{HDFS_BASE}/{sink_name}"
+    ckpt_path  = f"{CHECKPOINT_BASE}/{sink_name}"
+    print(f"\n[BRONZE] sink={sink_name}")
+    print(f"[BRONZE]   pattern = {topic_pattern}")
+    print(f"[BRONZE]   sink    = {sink_path}")
+    print(f"[BRONZE]   ckpt    = {ckpt_path}")
+
+    df = (
+        spark.readStream
         .format("kafka")
-        .option("kafka.bootstrap.servers", KAFKA_BOOTSTRAP)
-        .option("subscribe", topic_str)
-        .option("startingOffsets", "earliest")
-        .option("endingOffsets",   "latest")
-        .option("failOnDataLoss",  "false")
+        .option("kafka.bootstrap.servers",  KAFKA_BOOTSTRAP)
+        .option("subscribePattern",         topic_pattern)
+        # Only used on the FIRST run (no checkpoint yet). After that
+        # the checkpoint pins the next offset to read.
+        .option("startingOffsets",          "earliest")
+        .option("failOnDataLoss",           "false")
         .load()
     )
 
-    df_bronze = df_raw.select(
+    bronze = df.select(
         F.col("value").cast("string").alias("raw_data"),
         F.col("key").cast("string").alias("kafka_key"),
         F.col("topic").alias("_source_topic"),
@@ -56,44 +78,39 @@ def ingest_topics(topics: list, hdfs_path: str) -> int:
         F.col("offset").alias("_kafka_offset"),
         F.col("timestamp").alias("_kafka_timestamp"),
         F.current_timestamp().alias("_bronze_ingested_at"),
+        # Date partition — Silver vacuums + retention rely on this
+        F.to_date(F.col("timestamp")).alias("ingest_date"),
     )
 
-    count = df_bronze.count()
-    print(f"[BRONZE]   records ingested: {count:,}")
-
-    (
-        df_bronze.write
-        .mode("overwrite")
-        .partitionBy("_source_topic", "_kafka_partition")
-        .parquet(hdfs_path)
+    query = (
+        bronze.writeStream
+        .format("parquet")
+        .outputMode("append")
+        .trigger(availableNow=True)
+        .option("checkpointLocation", ckpt_path)
+        .partitionBy("_source_topic", "ingest_date")
+        .start(sink_path)
     )
-    print(f"[BRONZE]   written ✓")
-    return count
+    query.awaitTermination()
+    print(f"[BRONZE]   ✓ {sink_name} done. lastProgress={query.lastProgress.get('numInputRows', 0) if query.lastProgress else 0} rows")
 
 
-# ERP: all 4 Debezium topics → single erp_raw bronze table
-erp_count = ingest_topics(
-    topics=[
-        "erp.public.customers",
-        "erp.public.orders",
-        "erp.public.order_items",
-        "erp.public.coupons",
-    ],
-    hdfs_path=f"{HDFS_BASE}/erp_raw",
-)
+# ─────────────────────────────────────────────────────────────
+#  ERP CDC — 4 Debezium topics → erp_raw
+# ─────────────────────────────────────────────────────────────
+ingest_topics(topic_pattern="erp\\.public\\..*",        sink_name="erp_raw")
 
-# Warehouse: NiFi converts CSV → JSON → one message per record
-wh_count = ingest_topics(
-    topics=["warehouse.events"],
-    hdfs_path=f"{HDFS_BASE}/wh_raw",
-)
+# ─────────────────────────────────────────────────────────────
+#  WAREHOUSE — CLEAN + DLQ split into separate Bronze tables
+# ─────────────────────────────────────────────────────────────
+ingest_topics(topic_pattern="warehouse\\.events",       sink_name="wh_raw")
+ingest_topics(topic_pattern="warehouse\\.events\\.dlq", sink_name="wh_dlq")
 
-# Payment: NiFi passes through HTTP POST JSON as-is
-pay_count = ingest_topics(
-    topics=["payment.events"],
-    hdfs_path=f"{HDFS_BASE}/pay_raw",
-)
+# ─────────────────────────────────────────────────────────────
+#  PAYMENT — CLEAN + DLQ split
+# ─────────────────────────────────────────────────────────────
+ingest_topics(topic_pattern="payment\\.events",         sink_name="pay_raw")
+ingest_topics(topic_pattern="payment\\.events\\.dlq",   sink_name="pay_dlq")
 
-total = erp_count + wh_count + pay_count
-print(f"\n[BRONZE] Complete. ERP={erp_count:,}  Warehouse={wh_count:,}  Payment={pay_count:,}  Total={total:,}")
+print("\n[BRONZE] All sinks complete.")
 spark.stop()

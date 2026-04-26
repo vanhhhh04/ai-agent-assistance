@@ -56,9 +56,9 @@ DB_CONFIG = {
     "password": os.getenv("DB_PASSWORD", "postgres"),
 }
 
-BOOTSTRAP_CUSTOMERS = 100_000
-BOOTSTRAP_ORDERS    = 500_000
-BATCH_SIZE          = 5_000
+BOOTSTRAP_CUSTOMERS = int(os.getenv("BOOTSTRAP_CUSTOMERS", "100000"))
+BOOTSTRAP_ORDERS    = int(os.getenv("BOOTSTRAP_ORDERS",    "500000"))
+BATCH_SIZE          = int(os.getenv("BATCH_SIZE",          "5000"))
 
 INTERVAL_NEW_CUSTOMER = 30
 INTERVAL_UPDATE_ORDER = 10
@@ -726,12 +726,19 @@ def main():
 
     conn = get_conn()
     cur  = conn.cursor()
-    cur.execute("SELECT COUNT(*) FROM products")
-    prod_count = cur.fetchone()[0]
-    if prod_count == 0:
-        log.error("Chưa có products! Hãy chạy sim_warehouse.py trước.")
-        cur.close(); conn.close()
-        return
+    # Wait for warehouse bootstrap to populate products (sim_warehouse runs first
+    # but its bootstrap of 100k rows takes a few minutes — poll instead of exit).
+    waited = 0
+    while True:
+        cur.execute("SELECT COUNT(*) FROM products")
+        prod_count = cur.fetchone()[0]
+        if prod_count > 0:
+            break
+        log.info(f"  waiting for products from sim_warehouse… ({waited}s)")
+        time.sleep(15); waited += 15
+        if waited >= 1800:
+            log.error("products still empty after 30 min — aborting")
+            cur.close(); conn.close(); return
 
     cur.execute("SELECT id FROM products WHERE is_active = TRUE")
     product_ids = [r[0] for r in cur.fetchall()]

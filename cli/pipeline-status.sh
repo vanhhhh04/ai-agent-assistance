@@ -11,6 +11,17 @@
 
 cd "$(dirname "$0")/.."
 
+# Pick a working Python — Windows Git Bash needs `python`, Linux/macOS `python3`.
+if command -v python3 >/dev/null 2>&1 && python3 --version >/dev/null 2>&1; then
+  PY=python3
+elif [[ -x venv/Scripts/python.exe ]]; then
+  PY=venv/Scripts/python.exe
+elif command -v python >/dev/null 2>&1; then
+  PY=python
+else
+  PY=python3
+fi
+
 B=$'\033[1m'; G=$'\033[32m'; Y=$'\033[33m'; R=$'\033[31m'; N=$'\033[0m'
 
 echo "${B}=== SIMULATOR PROCESSES ===${N}"
@@ -60,7 +71,7 @@ TOKEN=$(curl -sk -d "username=admin&password=adminadminadmin" \
 if [[ -n "${TOKEN}" ]]; then
   curl -sk -H "Authorization: Bearer ${TOKEN}" \
     "https://localhost:8443/nifi-api/flow/process-groups/root" 2>/dev/null \
-    | python3 -c "
+    | "$PY" -c "
 import json, sys
 d = json.load(sys.stdin)
 procs = d['processGroupFlow']['flow']['processors']
@@ -76,5 +87,5 @@ echo ""
 
 echo "${B}=== DEBEZIUM CONNECTOR STATUS ===${N}"
 curl -sf http://localhost:8083/connectors/erp-postgres-cdc/status 2>/dev/null \
-  | python3 -m json.tool 2>/dev/null \
+  | "$PY" -m json.tool 2>/dev/null \
   | sed 's/^/  /' || echo "  ${R}(connector not registered or kafka-connect down)${N}"

@@ -37,27 +37,35 @@ spark.sql(f"USE {HIVE_DB}")
 
 
 def read_silver(entity: str) -> DataFrame:
-    return spark.read.parquet(f"{HDFS_SILVER}/{entity}")
+    """Read a Silver table; tolerate missing path (Silver may not have run yet)."""
+    path = f"{HDFS_SILVER}/{entity}"
+    try:
+        return spark.read.parquet(path)
+    except Exception as e:
+        if "does not exist" in str(e).lower():
+            print(f"[GOLD]   (skip — {path} missing, returning empty)")
+            return spark.createDataFrame([], "id int")
+        raise
 
 
 def write_gold(df: DataFrame, table_name: str, partition_cols: list = None):
-    """Write Parquet to HDFS then register as a Hive EXTERNAL table."""
+    """
+    Write a Gold table — Parquet on HDFS + register in Hive Metastore.
+    Uses saveAsTable so Spark handles both the data write AND the catalog
+    registration atomically (correct for partitioned tables).
+    """
     path = f"{HDFS_GOLD}/{table_name}"
-    writer = df.write.mode("overwrite").format("parquet")
+    spark.sql(f"DROP TABLE IF EXISTS {HIVE_DB}.{table_name}")
+
+    writer = (
+        df.write
+        .mode("overwrite")
+        .format("parquet")
+        .option("path", path)        # external — data lives outside Hive warehouse
+    )
     if partition_cols:
         writer = writer.partitionBy(*partition_cols)
-    writer.save(path)
-
-    # Register in Hive Metastore
-    spark.sql(f"DROP TABLE IF EXISTS {HIVE_DB}.{table_name}")
-    spark.sql(f"""
-        CREATE EXTERNAL TABLE {HIVE_DB}.{table_name}
-        USING parquet
-        LOCATION '{path}'
-        {("PARTITIONED BY (" + ",".join(partition_cols) + ")") if partition_cols else ""}
-    """)
-    if partition_cols:
-        spark.sql(f"MSCK REPAIR TABLE {HIVE_DB}.{table_name}")
+    writer.saveAsTable(f"{HIVE_DB}.{table_name}")
 
     count = df.count()
     print(f"[GOLD]   ✓ {table_name} ({count:,} rows) → {path}")
