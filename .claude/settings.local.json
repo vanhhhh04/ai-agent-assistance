@@ -85,7 +85,17 @@
       "Bash(venv/Scripts/python.exe -c \"import json,sys;d=json.load\\(sys.stdin\\);print\\(f'  paused={d.get\\(\\\\\"is_paused\\\\\"\\)} schedule={d.get\\(\\\\\"schedule_interval\\\\\",{}\\)}'\\)\")",
       "Bash(curl -s -u admin:admin123 -X POST http://localhost:8080/api/v1/dags/medallion_pipeline/dagRuns -H \"Content-Type: application/json\" -d \"{\\\\\"dag_run_id\\\\\": \\\\\"manual_5min_$\\(date +%s\\)\\\\\"}\")",
       "Bash(venv/Scripts/python.exe -c \"import json,sys;d=json.load\\(sys.stdin\\);print\\(f'  triggered: {d.get\\(\\\\\"dag_run_id\\\\\"\\)} state={d.get\\(\\\\\"state\\\\\"\\)}'\\)\")",
-      "Bash(curl -s -u admin:admin123 -X POST http://localhost:8080/api/v1/dags/medallion_pipeline/dagRuns -H \"Content-Type: application/json\" -d \"{\\\\\"dag_run_id\\\\\": \\\\\"manual_5min_test\\\\\"}\")"
+      "Bash(curl -s -u admin:admin123 -X POST http://localhost:8080/api/v1/dags/medallion_pipeline/dagRuns -H \"Content-Type: application/json\" -d \"{\\\\\"dag_run_id\\\\\": \\\\\"manual_5min_test\\\\\"}\")",
+      "Bash(curl -s -u admin:admin123 http://localhost:8080/api/v1/dags/medallion_pipeline)",
+      "Bash(venv/Scripts/python.exe -c \"import json,sys;d=json.load\\(sys.stdin\\);print\\(f'  paused={d.get\\(\\\\\"is_paused\\\\\"\\)}  schedule={d.get\\(\\\\\"schedule_interval\\\\\"\\)}'\\)\")",
+      "Bash(grep *)",
+      "Bash(venv/Scripts/python.exe -c \"import ast; ast.parse\\(open\\('cli/dashboard.py', encoding='utf-8'\\).read\\(\\)\\); print\\('OK'\\)\")",
+      "Bash(venv/Scripts/python.exe cli/dashboard.py)",
+      "Bash(curl -sf http://localhost:5555/api/status -o /dev/null)",
+      "Bash(curl -s http://localhost:5555/api/status)",
+      "Bash(venv/Scripts/python.exe -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(f'  pg.orders   = {d[\\\\\"pg\\\\\"].get\\(\\\\\"orders\\\\\"\\)}'\\); print\\(f'  cdc         = {d[\\\\\"cdc\\\\\"]}'\\); print\\(f'  nifi        = {d[\\\\\"nifi\\\\\"][\\\\\"running\\\\\"]}/{d[\\\\\"nifi\\\\\"][\\\\\"total\\\\\"]} processors'\\); print\\(f'  airflow     = {d[\\\\\"airflow\\\\\"][\\\\\"state\\\\\"]}'\\)\")",
+      "Bash(curl -s -u admin:admin123 -X POST http://localhost:8080/api/v1/dags/medallion_pipeline/dagRuns -H \"Content-Type: application/json\" -d \"{\\\\\"dag_run_id\\\\\":\\\\\"manual_tsfix_$\\(date +%s\\)\\\\\"}\")",
+      "Bash(curl -s -u admin:admin123 \"http://localhost:8080/api/v1/dags/medallion_pipeline/dagRuns/manual_tsfix_1777218811/taskInstances/gold_transform\")"
     ]
   }
 }

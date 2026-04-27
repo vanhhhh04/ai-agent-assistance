@@ -15,14 +15,28 @@ cd "$(dirname "$0")/.."
 
 B=$'\033[1m'; G=$'\033[32m'; Y=$'\033[33m'; R=$'\033[31m'; N=$'\033[0m'
 
-# Pick a working Python interpreter — Windows Git Bash has `python` but `python3`
-# is a Microsoft Store stub; Linux/macOS usually have `python3` but not `python`.
-if command -v python3 >/dev/null 2>&1 && python3 --version >/dev/null 2>&1; then
+# Pick a Python interpreter that has `requests` installed.
+# Preference order:
+#   1. ./venv/Scripts/python.exe — project venv (Windows Git Bash, has requests)
+#   2. python3 — Linux/macOS canonical
+#   3. python  — fallback
+if [[ -x venv/Scripts/python.exe ]]; then
+  PY=venv/Scripts/python.exe
+elif [[ -x venv/bin/python ]]; then
+  PY=venv/bin/python
+elif command -v python3 >/dev/null 2>&1 && python3 --version >/dev/null 2>&1; then
   PY=python3
 elif command -v python >/dev/null 2>&1; then
   PY=python
 else
   echo "no python interpreter found"; exit 1
+fi
+
+# Verify `requests` is available — setup_flows.py needs it.
+if ! "$PY" -c "import requests" 2>/dev/null; then
+  echo "  ! Python at $PY is missing 'requests'. Installing..."
+  "$PY" -m pip install -r cli-requirements.txt >/dev/null 2>&1 || \
+    echo "  ! pip install failed — run manually: $PY -m pip install -r cli-requirements.txt"
 fi
 
 step() { echo ""; echo "${B}▶ $1${N}"; }

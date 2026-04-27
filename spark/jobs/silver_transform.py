@@ -41,8 +41,14 @@ from pyspark.sql import SparkSession, DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import (
     StructType, StructField,
-    StringType, IntegerType, DecimalType, BooleanType,
+    StringType, IntegerType, LongType, DecimalType, BooleanType,
 )
+
+
+def ms_to_ts(col):
+    """Debezium time.precision.mode=connect emits TIMESTAMP/DATE as int64 ms
+    since epoch. Convert ms → Spark timestamp."""
+    return (F.col(col).cast("long") / 1000).cast("timestamp")
 
 HDFS_BRONZE = "hdfs://namenode:9000/datalake/bronze"
 HDFS_SILVER = "hdfs://namenode:9000/datalake/silver"
@@ -133,11 +139,12 @@ ORDER_SCHEMA = StructType([
     StructField("tax_amount",          StringType()),
     StructField("shipping_cost",       StringType()),
     StructField("total_amount",        StringType()),
-    StructField("order_date",          StringType()),
-    StructField("created_at",          StringType()),
+    # Debezium emits TIMESTAMP as int64 milliseconds since epoch
+    StructField("order_date",          LongType()),
+    StructField("created_at",          LongType()),
     StructField("__op",                StringType()),
     StructField("__table",             StringType()),
-    StructField("__source_ts_ms",      StringType()),
+    StructField("__source_ts_ms",      LongType()),
     StructField("__deleted",           StringType()),
 ])
 
@@ -148,8 +155,8 @@ CUSTOMER_SCHEMA = StructType([
     StructField("email",         StringType()),
     StructField("phone",         StringType()),
     StructField("gender",        StringType()),
-    StructField("date_of_birth", StringType()),
-    StructField("created_at",    StringType()),
+    StructField("date_of_birth", LongType()),    # ms since epoch
+    StructField("created_at",    LongType()),    # ms since epoch
     StructField("__op",          StringType()),
     StructField("__table",       StringType()),
 ])
@@ -176,12 +183,12 @@ ERP_PRODUCT_SCHEMA = StructType([
     StructField("stock_quantity", IntegerType()),
     StructField("brand",          StringType()),
     StructField("weight",         StringType()),
-    StructField("is_active",      StringType()),
-    StructField("created_at",     StringType()),
-    StructField("updated_at",     StringType()),
+    StructField("is_active",      BooleanType()),
+    StructField("created_at",     LongType()),     # ms since epoch
+    StructField("updated_at",     LongType()),     # ms since epoch
     StructField("__op",           StringType()),
     StructField("__table",        StringType()),
-    StructField("__source_ts_ms", StringType()),
+    StructField("__source_ts_ms", LongType()),
 ])
 
 
@@ -210,8 +217,8 @@ df_orders = (
     .withColumn("tax_amount",      F.col("tax_amount").cast(DecimalType(12,2)))
     .withColumn("shipping_cost",   F.col("shipping_cost").cast(DecimalType(12,2)))
     .withColumn("total_amount",    F.col("total_amount").cast(DecimalType(12,2)))
-    .withColumn("order_date",      F.to_timestamp("order_date"))
-    .withColumn("created_at",      F.to_timestamp("created_at"))
+    .withColumn("order_date",      ms_to_ts("order_date"))
+    .withColumn("created_at",      ms_to_ts("created_at"))
     .withColumn("status",
         normalize_status(F.col("status"),
             ["PENDING","PROCESSING","SHIPPED","DELIVERED","CANCELLED","RETURNED"])
@@ -236,8 +243,8 @@ df_customers = (
     .withColumn("first_name",   F.initcap(F.trim(F.col("first_name"))))
     .withColumn("last_name",    F.initcap(F.trim(F.col("last_name"))))
     .withColumn("gender",       F.upper(F.trim(F.col("gender"))))
-    .withColumn("date_of_birth",F.to_date("date_of_birth"))
-    .withColumn("created_at",   F.to_timestamp("created_at"))
+    .withColumn("date_of_birth",ms_to_ts("date_of_birth").cast("date"))
+    .withColumn("created_at",   ms_to_ts("created_at"))
     .filter(F.col("email").rlike(r"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
     .dropDuplicates(["id"])
 )
@@ -267,9 +274,8 @@ df_products_erp = (
     .withColumn("brand",      F.initcap(F.trim(F.col("brand"))))
     .withColumn("price",      F.col("price").cast(DecimalType(12,2)))
     .withColumn("cost",       F.col("cost").cast(DecimalType(12,2)))
-    .withColumn("is_active",  F.col("is_active").cast(BooleanType()))
-    .withColumn("created_at", F.to_timestamp("created_at"))
-    .withColumn("updated_at", F.to_timestamp("updated_at"))
+    .withColumn("created_at", ms_to_ts("created_at"))
+    .withColumn("updated_at", ms_to_ts("updated_at"))
     .filter(F.col("price") > 0)
     # CDC dedup: latest event per id
     .withColumn("_rn", F.row_number().over(

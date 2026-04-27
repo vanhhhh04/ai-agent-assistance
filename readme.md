@@ -20,3 +20,13 @@ docker compose rm -f nifi
   5. CSV perms fixed                                                                                  
   6. Sims started                                           
   7. Status printed 
+
+   bash cli/sim-logs.sh erp        # nên thấy INSERT order/UPDATE status mỗi vài giây
+  bash cli/sim-logs.sh warehouse  # stock_update mỗi 10s, product mới mỗi 2 phút
+  bash cli/sim-logs.sh payment    # INSERT payment mỗi 3s, shipping mỗi 15s
+
+
+  Ngày thường: startup.sh → pipeline-status.sh → làm việc.
+Debug data: sim-logs.sh + sample-data.sh + verify-pipeline.sh.
+NiFi trục trặc: thử nifi-recover.sh trước, chưa ổn mới nifi-reset.sh.
+Làm demo sạch hoàn toàn: wipe.sh rồi startup.sh.

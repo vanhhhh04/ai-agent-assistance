@@ -196,6 +196,14 @@ fact_sales = (
     )
 )
 
+# Drop rows with NULL partition keys — Hive 2.3 chokes on
+# __HIVE_DEFAULT_PARTITION__ when the partition column had NULLs.
+# Rows with NULL order_date come from order_items whose order isn't yet in
+# Silver (race condition or Bronze-to-Silver lag) and can't be queried by date
+# anyway, so they're not useful in fact_sales.
+fact_sales = fact_sales.filter(
+    F.col("order_year").isNotNull() & F.col("order_month").isNotNull()
+)
 write_gold(fact_sales, "fact_sales", partition_cols=["order_year", "order_month"])
 
 

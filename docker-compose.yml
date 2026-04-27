@@ -35,6 +35,22 @@ services:
       retries: 5
 
   # ─────────────────────────────────────────────
+  # Adminer — lightweight web UI for Postgres
+  # Browse tables, run SQL, view data — http://localhost:8081
+  # Login:  System=PostgreSQL  Server=postgres  User=postgres  Password=postgres  DB=ecommerce
+  # ─────────────────────────────────────────────
+  adminer:
+    image: adminer:4.8.1
+    container_name: adminer
+    networks:
+      - dataplatform
+    ports:
+      - "8081:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ─────────────────────────────────────────────
   # Zookeeper — quản lý Kafka metadata
   # ─────────────────────────────────────────────
   zookeeper:
