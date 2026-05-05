@@ -2,7 +2,7 @@
 sim_erp.py  (DE-grade version)
 ================================
 Nguon: PostgreSQL / ERP
-Bang:  customers, addresses, coupons, orders, order_items
+Bang:  customers, addresses, coupons, orders, order_items, reviews, feedback
 
 THAY DOI SO VOI VERSION CU:
   + Source envelope trong moi CDC event (_source_system, _event_id, _op_type)
@@ -38,6 +38,7 @@ import hashlib
 import random
 import time
 import logging
+from contextlib import contextmanager
 from datetime import datetime, timedelta, date
 from decimal import Decimal
 
@@ -63,6 +64,12 @@ BATCH_SIZE          = int(os.getenv("BATCH_SIZE",          "5000"))
 INTERVAL_NEW_CUSTOMER = 30
 INTERVAL_UPDATE_ORDER = 10
 INTERVAL_COUPON       = 300
+INTERVAL_NEW_REVIEW   = 60
+INTERVAL_NEW_FEEDBACK = 120
+
+# Sample sizes for reviews / feedback bootstrap (only delivered orders are eligible)
+BOOTSTRAP_REVIEWS_PER_ORDER  = 0.3   # ~30% of bootstrap delivered orders get a review
+BOOTSTRAP_FEEDBACK_PER_ORDER = 0.05  # ~5% generate feedback
 
 # ── Dirty data control ──────────────────────
 DIRTY_RATE = 0.05
@@ -85,6 +92,10 @@ SCHEMA_VERSION   = "1.0"
 CDC_OP_CREATE = "c"
 CDC_OP_UPDATE = "u"
 CDC_OP_DELETE = "d"
+
+VALID_ORDER_STATUSES = (
+    "pending", "processing", "shipped", "delivered", "cancelled", "returned",
+)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -234,12 +245,25 @@ def get_conn():
     return psycopg2.connect(**DB_CONFIG)
 
 
+@contextmanager
+def db_cursor():
+    """Yield (conn, cur) and guarantee both are closed on exit."""
+    conn = get_conn()
+    cur  = conn.cursor()
+    try:
+        yield conn, cur
+    finally:
+        cur.close()
+        conn.close()
+
+
 def sync_pk_sequences(cur):
     """
     Ensure SERIAL/IDENTITY sequences follow existing max(id) values.
     Useful when tables were seeded with explicit IDs.
     """
-    for table in ("customers", "addresses", "coupons", "orders", "order_items"):
+    for table in ("customers", "addresses", "coupons", "orders", "order_items",
+                   "reviews", "feedback"):
         cur.execute("SELECT pg_get_serial_sequence(%s, 'id')", (table,))
         seq = cur.fetchone()[0]
         if seq:
@@ -359,6 +383,58 @@ def make_order(customer_id: int, ship_addr_id: int, bill_addr_id: int,
     }
 
 
+REVIEW_TITLES = [
+    "Tuyệt vời", "Rất hài lòng", "Đáng tiền", "Bình thường",
+    "Không như mong đợi", "Chất lượng kém", "Sẽ mua lại",
+    "Giao hàng nhanh", "Đóng gói cẩn thận", "Sản phẩm như mô tả",
+]
+REVIEW_COMMENTS = [
+    "Sản phẩm dùng tốt, đúng mô tả.",
+    "Chất lượng vượt mong đợi với mức giá này.",
+    "Hơi khác so với hình, nhưng vẫn ổn.",
+    "Đóng gói cẩn thận, giao đúng hẹn.",
+    "Cần cải thiện chất lượng đóng gói.",
+    "Sẽ ủng hộ shop lần sau.",
+    "Không đúng màu như quảng cáo.",
+    "Rất ưng, recommend cho mọi người.",
+]
+FEEDBACK_TYPES      = ["complaint", "suggestion", "praise", "question"]
+FEEDBACK_PRIORITIES = ["low", "medium", "high"]
+FEEDBACK_STATUSES   = ["open", "in_progress", "resolved", "closed"]
+FEEDBACK_SUBJECTS = {
+    "complaint":  ["Đơn hàng giao chậm", "Sản phẩm bị lỗi", "Phí ship quá cao"],
+    "suggestion": ["Nên có thêm size lớn", "Cải thiện đóng gói", "Thêm mã giảm giá"],
+    "praise":     ["Dịch vụ tốt", "Nhân viên thân thiện", "Sản phẩm chất lượng"],
+    "question":   ["Khi nào có hàng lại?", "Chính sách đổi trả?", "Bảo hành bao lâu?"],
+}
+
+
+def make_review(product_id: int, customer_id: int, order_id: int) -> tuple:
+    rating  = random.choices([1, 2, 3, 4, 5], weights=[5, 5, 15, 35, 40])[0]
+    title   = random.choice(REVIEW_TITLES)
+    comment = random.choice(REVIEW_COMMENTS)
+    return (
+        product_id, customer_id, order_id,
+        rating, title, comment,
+        random.random() < 0.85,   # 85% verified purchases
+        rand_ts(180),
+    )
+
+
+def make_feedback(customer_id: int, order_id) -> tuple:
+    ftype    = random.choice(FEEDBACK_TYPES)
+    priority = random.choice(FEEDBACK_PRIORITIES)
+    status   = random.choice(FEEDBACK_STATUSES)
+    subject  = random.choice(FEEDBACK_SUBJECTS[ftype])
+    message  = f"{subject}. {fake.sentence(nb_words=12)}"
+    created  = rand_ts(180)
+    resolved = (created + timedelta(days=random.randint(1, 14))) if status in ("resolved", "closed") else None
+    return (
+        customer_id, order_id, ftype, subject, message,
+        status, priority, created, resolved,
+    )
+
+
 def make_order_items(order_id: int, product_ids: list[int]) -> list[tuple]:
     n_items  = random.randint(1, 5)
     products = random.sample(product_ids, min(n_items, len(product_ids)))
@@ -475,7 +551,7 @@ def bootstrap_orders(cur, customer_ids, address_map, coupon_ids, product_ids) ->
 
             # Normalize status: typo → "pending" để DB không reject
             status = dirty_row["status"]
-            if status not in ("pending", "processing", "shipped", "delivered", "cancelled", "returned"):
+            if status not in VALID_ORDER_STATUSES:
                 status = "pending"  # DE note: trong thực tế đây là DIRTY record cần routing
 
             order_rows.append((
@@ -528,6 +604,65 @@ def bootstrap_orders(cur, customer_ids, address_map, coupon_ids, product_ids) ->
     return order_ids
 
 
+def bootstrap_reviews_and_feedback(cur, order_ids, customer_ids, product_ids):
+    """
+    Generate reviews + feedback only for orders that exist. Reviews require an
+    order_item link, but for simplicity here we sample any product_id (the FK
+    is to products, not order_items, per the schema).
+    """
+    if not order_ids:
+        return
+    log.info("Bootstrap reviews + feedback for delivered orders…")
+
+    # Need (order_id, customer_id) pairs to satisfy FK consistency
+    cur.execute(
+        "SELECT id, customer_id FROM orders WHERE status='delivered' ORDER BY id"
+    )
+    delivered = cur.fetchall()
+    if not delivered:
+        log.info("  → no delivered orders yet, skipping reviews/feedback bootstrap")
+        return
+
+    # Reviews
+    n_reviews = int(len(delivered) * BOOTSTRAP_REVIEWS_PER_ORDER)
+    review_rows = []
+    for oid, cid in random.sample(delivered, min(n_reviews, len(delivered))):
+        pid = random.choice(product_ids)
+        review_rows.append(make_review(pid, cid, oid))
+    if review_rows:
+        execute_values(
+            cur,
+            """INSERT INTO reviews
+               (product_id, customer_id, order_id, rating, title, comment,
+                is_verified, created_at)
+               VALUES %s""",
+            review_rows,
+        )
+        log.info(f"  → {len(review_rows):,} reviews inserted")
+
+    # Feedback (5% of delivered orders, plus some not tied to an order)
+    n_feedback = int(len(delivered) * BOOTSTRAP_FEEDBACK_PER_ORDER)
+    fb_rows = []
+    for oid, cid in random.sample(delivered, min(n_feedback, len(delivered))):
+        # 80% tied to order, 20% standalone (order_id NULL)
+        oid_for_fb = oid if random.random() < 0.8 else None
+        fb_rows.append(make_feedback(cid, oid_for_fb))
+    # Plus some standalone feedback from random customers
+    extra = max(20, n_feedback // 4)
+    for _ in range(extra):
+        fb_rows.append(make_feedback(random.choice(customer_ids), None))
+    if fb_rows:
+        execute_values(
+            cur,
+            """INSERT INTO feedback
+               (customer_id, order_id, type, subject, message, status, priority,
+                created_at, resolved_at)
+               VALUES %s""",
+            fb_rows,
+        )
+        log.info(f"  → {len(fb_rows):,} feedback inserted")
+
+
 # ─────────────────────────────────────────────
 #  REALTIME LOOP
 # ─────────────────────────────────────────────
@@ -537,6 +672,8 @@ def realtime_loop(customer_ids, address_map, coupon_ids, order_ids, product_ids)
     last_new_order    = time.time()
     last_update_order = time.time()
     last_coupon       = time.time()
+    last_review       = time.time()
+    last_feedback     = time.time()
     coupon_nullable   = coupon_ids + [None] * len(coupon_ids)
 
     # FIX BUG: interval_new_order phải là local variable trong loop
@@ -549,9 +686,7 @@ def realtime_loop(customer_ids, address_map, coupon_ids, order_ids, product_ids)
 
         # ── UPDATE order status (mỗi 10s) ──
         if now - last_update_order >= INTERVAL_UPDATE_ORDER:
-            conn = get_conn()
-            cur  = conn.cursor()
-            try:
+            with db_cursor() as (conn, cur):
                 sample = random.sample(order_ids, min(30, len(order_ids)))
                 for oid in sample:
                     cur.execute("SELECT status FROM orders WHERE id=%s", (oid,))
@@ -569,15 +704,11 @@ def realtime_loop(customer_ids, address_map, coupon_ids, order_ids, product_ids)
                         )
                 conn.commit()
                 log.info(f"UPDATE status cho {len(sample)} orders")
-            finally:
-                cur.close(); conn.close()
             last_update_order = now
 
         # ── INSERT order mới (mỗi 2-5s) ──
         if now - last_new_order >= interval_new_order:
-            conn = get_conn()
-            cur  = conn.cursor()
-            try:
+            with db_cursor() as (conn, cur):
                 cid   = random.choice(customer_ids)
                 addrs = address_map.get(cid, [])
                 if addrs:
@@ -595,7 +726,7 @@ def realtime_loop(customer_ids, address_map, coupon_ids, order_ids, product_ids)
                         time.sleep(delay)
 
                     status = dirty_row["status"]
-                    if status not in ("pending", "processing", "shipped", "delivered", "cancelled", "returned"):
+                    if status not in VALID_ORDER_STATUSES:
                         status = "pending"
 
                     cur.execute(
@@ -642,16 +773,12 @@ def realtime_loop(customer_ids, address_map, coupon_ids, order_ids, product_ids)
                         f"INSERT order #{new_oid} | {len(items)} items | "
                         f"flag={quality_flag} | surrogate={envelope['_surrogate_hint'][:8]}..."
                     )
-            finally:
-                cur.close(); conn.close()
             last_new_order    = now
             interval_new_order = random.randint(2, 5)  # FIX: update local var đúng cách
 
         # ── INSERT customer mới (mỗi 30s) ──
         if now - last_new_customer >= INTERVAL_NEW_CUSTOMER:
-            conn = get_conn()
-            cur  = conn.cursor()
-            try:
+            with db_cursor() as (conn, cur):
                 raw = make_customer()
                 dirty_row, quality_flag = maybe_dirty_customer(raw)
                 if dirty_row.get("email"):
@@ -680,15 +807,11 @@ def realtime_loop(customer_ids, address_map, coupon_ids, order_ids, product_ids)
                         address_map[new_cid] = [new_aid]
                         conn.commit()
                         log.info(f"INSERT customer #{new_cid} | flag={quality_flag}")
-            finally:
-                cur.close(); conn.close()
             last_new_customer = now
 
         # ── INSERT/UPDATE coupon (mỗi 5p) ──
         if now - last_coupon >= INTERVAL_COUPON:
-            conn = get_conn()
-            cur  = conn.cursor()
-            try:
+            with db_cursor() as (conn, cur):
                 cur.execute(
                     """INSERT INTO coupons
                        (code, discount_type, discount_value, min_order_amount, max_uses,
@@ -708,9 +831,54 @@ def realtime_loop(customer_ids, address_map, coupon_ids, order_ids, product_ids)
                 else:
                     conn.commit()
                     log.debug("Coupon code trùng (hiếm với UUID) — skipped")
-            finally:
-                cur.close(); conn.close()
             last_coupon = now
+
+        # ── INSERT review (mỗi 60s, only for delivered orders) ──
+        if now - last_review >= INTERVAL_NEW_REVIEW:
+            with db_cursor() as (conn, cur):
+                cur.execute(
+                    "SELECT id, customer_id FROM orders "
+                    "WHERE status='delivered' ORDER BY id DESC LIMIT 100"
+                )
+                rows = cur.fetchall()
+                if rows and product_ids:
+                    oid, cid = random.choice(rows)
+                    pid = random.choice(product_ids)
+                    cur.execute(
+                        """INSERT INTO reviews
+                           (product_id, customer_id, order_id, rating, title, comment,
+                            is_verified, created_at)
+                           VALUES (%s,%s,%s,%s,%s,%s,%s,NOW())""",
+                        make_review(pid, cid, oid),
+                    )
+                    conn.commit()
+                    log.info(f"INSERT review for order #{oid}")
+            last_review = now
+
+        # ── INSERT feedback (mỗi 120s) ──
+        if now - last_feedback >= INTERVAL_NEW_FEEDBACK:
+            with db_cursor() as (conn, cur):
+                cid = random.choice(customer_ids)
+                # 80% tied to a recent order, else standalone
+                fb_oid = None
+                if random.random() < 0.8:
+                    cur.execute(
+                        "SELECT id FROM orders WHERE customer_id=%s "
+                        "ORDER BY id DESC LIMIT 5", (cid,),
+                    )
+                    rows = cur.fetchall()
+                    if rows:
+                        fb_oid = random.choice(rows)[0]
+                cur.execute(
+                    """INSERT INTO feedback
+                       (customer_id, order_id, type, subject, message, status,
+                        priority, created_at, resolved_at)
+                       VALUES (%s,%s,%s,%s,%s,%s,%s,NOW(),%s)""",
+                    make_feedback(cid, fb_oid),
+                )
+                conn.commit()
+                log.info(f"INSERT feedback from customer #{cid}")
+            last_feedback = now
 
         time.sleep(1)
 
@@ -769,6 +937,8 @@ def main():
         coupon_ids = bootstrap_coupons(cur)
         conn.commit()
         order_ids = bootstrap_orders(cur, customer_ids, address_map, coupon_ids, product_ids)
+        conn.commit()
+        bootstrap_reviews_and_feedback(cur, order_ids, customer_ids, product_ids)
         conn.commit()
         log.info("Bootstrap ERP hoàn thành!")
 

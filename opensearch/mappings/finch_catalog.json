@@ -1,0 +1,52 @@
+{
+  "settings": {
+    "index": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0,
+      "knn": true,
+      "knn.algo_param.ef_search": 100
+    },
+    "analysis": {
+      "analyzer": {
+        "snake_and_text": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": ["lowercase", "asciifolding"]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "doc_id":          { "type": "keyword" },
+      "doc_type":        { "type": "keyword" },
+      "database":        { "type": "keyword" },
+      "table_name":      { "type": "keyword" },
+      "table_grain":     { "type": "keyword" },
+      "table_kind":      { "type": "keyword" },
+      "column_name":     { "type": "keyword" },
+      "column_type":     { "type": "keyword" },
+      "is_partition":    { "type": "boolean" },
+      "is_pii":          { "type": "boolean" },
+      "is_nullable":     { "type": "boolean" },
+      "description":     { "type": "text", "analyzer": "snake_and_text" },
+      "synonyms":        { "type": "text", "analyzer": "snake_and_text" },
+      "sample_values":   { "type": "keyword" },
+      "value_distribution": { "type": "object", "enabled": false },
+      "related_tables":  { "type": "keyword" },
+      "tags":            { "type": "keyword" },
+      "embedding": {
+        "type": "knn_vector",
+        "dimension": 768,
+        "method": {
+          "name": "hnsw",
+          "space_type": "cosinesimil",
+          "engine": "lucene",
+          "parameters": { "ef_construction": 256, "m": 16 }
+        }
+      },
+      "indexed_at":      { "type": "date" },
+      "schema_version":  { "type": "keyword" }
+    }
+  }
+}

@@ -60,10 +60,10 @@ with DAG(
     description="Bronze (streaming, Trigger.AvailableNow) → Silver → Gold ETL",
     default_args=default_args,
     start_date=datetime(2026, 1, 1),
-    # Near-realtime: trigger every 5 minutes. Each run drains new Kafka offsets
+    # Near-realtime: trigger every 15 minutes. Each run drains new Kafka offsets
     # via Bronze (Trigger.AvailableNow) and rebuilds Silver/Gold. End-to-end
-    # freshness ≈ 3-8 minutes. max_active_runs=1 prevents overlap.
-    schedule_interval="*/5 * * * *",
+    # freshness ≈ 15-25 minutes. max_active_runs=1 prevents overlap.
+    schedule_interval="*/15 * * * *",
     catchup=False,
     max_active_runs=1,   # never overlap — one run at a time
     tags=["data-engineering", "medallion", "etl"],

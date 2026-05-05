@@ -1,0 +1,43 @@
+{
+  "settings": {
+    "index": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0,
+      "knn": true,
+      "knn.algo_param.ef_search": 100
+    },
+    "analysis": {
+      "analyzer": {
+        "doc_text": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": ["lowercase", "asciifolding"]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "doc_id":         { "type": "keyword" },
+      "table_name":     { "type": "keyword" },
+      "section":        { "type": "keyword" },
+      "title":          { "type": "text", "analyzer": "doc_text" },
+      "content":        { "type": "text", "analyzer": "doc_text" },
+      "examples":       { "type": "text", "analyzer": "doc_text" },
+      "tags":           { "type": "keyword" },
+      "source_path":    { "type": "keyword" },
+      "git_sha":        { "type": "keyword" },
+      "embedding": {
+        "type": "knn_vector",
+        "dimension": 768,
+        "method": {
+          "name": "hnsw",
+          "space_type": "cosinesimil",
+          "engine": "lucene",
+          "parameters": { "ef_construction": 256, "m": 16 }
+        }
+      },
+      "indexed_at":     { "type": "date" }
+    }
+  }
+}

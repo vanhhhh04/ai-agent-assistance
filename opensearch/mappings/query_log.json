@@ -1,0 +1,49 @@
+{
+  "settings": {
+    "index": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0,
+      "knn": true,
+      "knn.algo_param.ef_search": 100
+    },
+    "analysis": {
+      "analyzer": {
+        "nl_text": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": ["lowercase", "asciifolding"]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "query_id":         { "type": "keyword" },
+      "user_id":          { "type": "keyword" },
+      "session_id":       { "type": "keyword" },
+      "nl_question":      { "type": "text", "analyzer": "nl_text" },
+      "generated_sql":    { "type": "text", "index": false },
+      "tables_used":      { "type": "keyword" },
+      "columns_used":     { "type": "keyword" },
+      "status":           { "type": "keyword" },
+      "error_message":    { "type": "text", "index": false },
+      "row_count":        { "type": "long" },
+      "exec_ms":          { "type": "long" },
+      "user_thumbs_up":   { "type": "boolean" },
+      "user_feedback":    { "type": "text", "analyzer": "nl_text" },
+      "model":            { "type": "keyword" },
+      "retrieval_top_k":  { "type": "object", "enabled": false },
+      "embedding": {
+        "type": "knn_vector",
+        "dimension": 768,
+        "method": {
+          "name": "hnsw",
+          "space_type": "cosinesimil",
+          "engine": "lucene",
+          "parameters": { "ef_construction": 256, "m": 16 }
+        }
+      },
+      "created_at":       { "type": "date" }
+    }
+  }
+}

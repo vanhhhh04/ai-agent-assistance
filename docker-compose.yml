@@ -468,6 +468,119 @@ services:
       postgres:
         condition: service_healthy
 
+  # ─────────────────────────────────────────────
+  # OpenSearch — retrieval backbone for AI Agent
+  # Stores: finch_catalog (table/column metadata), table_docs (business docs),
+  # query_log (NL question + SQL history). Single-node, security disabled
+  # for local dev — DO NOT use this config in production.
+  # REST API: http://localhost:9200
+  # ─────────────────────────────────────────────
+  opensearch:
+    image: opensearchproject/opensearch:2.13.0
+    container_name: opensearch
+    networks:
+      - dataplatform
+    environment:
+      cluster.name: finch-cluster
+      node.name: opensearch
+      discovery.type: single-node
+      bootstrap.memory_lock: "true"
+      OPENSEARCH_JAVA_OPTS: "-Xms512m -Xmx1g"
+      DISABLE_SECURITY_PLUGIN: "true"
+      DISABLE_INSTALL_DEMO_CONFIG: "true"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - "9200:9200"
+      - "9600:9600"   # Performance Analyzer
+    volumes:
+      - opensearch_data:/usr/share/opensearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+
+  # ─────────────────────────────────────────────
+  # AI Agent — DataFinch (Uber Finch architecture clone)
+  # FastAPI multi-agent NL→SQL service. Talks to:
+  #   - OpenSearch  (semantic layer + query log)
+  #   - HiveServer2 (gold warehouse)
+  #   - Postgres    (bronze ERP, optional)
+  # API + docs: http://localhost:8000  /docs
+  # ─────────────────────────────────────────────
+  ai-agent:
+    build:
+      context: .
+      dockerfile: ./ai-agent/Dockerfile
+    container_name: ai-agent
+    networks:
+      - dataplatform
+    ports:
+      - "8000:8000"
+    # Variables substituted from the project root .env (loaded automatically by
+    # docker compose). Don't add `env_file:` — it would force users to maintain
+    # ai-agent/.env separately. ANTHROPIC_API_KEY is required; everything else
+    # has sane defaults baked into core/settings.py.
+    environment:
+      LLM_PROVIDER:                "${LLM_PROVIDER:-anthropic}"
+      ANTHROPIC_API_KEY:           "${ANTHROPIC_API_KEY:-}"
+      ANTHROPIC_MODEL_SUPERVISOR:  "${ANTHROPIC_MODEL_SUPERVISOR:-claude-haiku-4-5-20251001}"
+      ANTHROPIC_MODEL_SQL_WRITER:  "${ANTHROPIC_MODEL_SQL_WRITER:-claude-sonnet-4-6}"
+      GEMINI_API_KEY:              "${GEMINI_API_KEY:-}"
+      GEMINI_MODEL_SUPERVISOR:     "${GEMINI_MODEL_SUPERVISOR:-gemini-2.5-flash}"
+      GEMINI_MODEL_SQL_WRITER:     "${GEMINI_MODEL_SQL_WRITER:-gemini-2.5-flash}"
+      HIVE_HOST:                   hiveserver2
+      HIVE_PORT:                   "10000"
+      HIVE_DB:                     gold
+      HIVE_AUTH:                   NOSASL
+      OPENSEARCH_URL:              http://opensearch:9200
+      POSTGRES_URL:                postgresql://postgres:postgres@postgres:5432/ecommerce
+      ENABLE_POSTGRES_BACKEND:     "true"
+      LOG_LEVEL:                   INFO
+    volumes:
+      # Hot-reload during development — bind-mount source over the image copy
+      - ./ai-agent:/app/ai-agent
+      - ./opensearch:/app/opensearch
+      # Persist model cache across container restarts (sentence-transformers ~420MB)
+      - aiagent_model_cache:/cache
+    depends_on:
+      opensearch:
+        condition: service_healthy
+      hiveserver2:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8000/api/health/ping || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ─────────────────────────────────────────────
+  # OpenSearch Dashboards — UI for browsing indices
+  # http://localhost:5601
+  # ─────────────────────────────────────────────
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:2.13.0
+    container_name: opensearch-dashboards
+    networks:
+      - dataplatform
+    environment:
+      OPENSEARCH_HOSTS: '["http://opensearch:9200"]'
+      DISABLE_SECURITY_DASHBOARDS_PLUGIN: "true"
+    ports:
+      - "5601:5601"
+    depends_on:
+      opensearch:
+        condition: service_healthy
+
 networks:
   dataplatform:
     driver: bridge
@@ -477,3 +590,5 @@ volumes:
   ollama_models:
   hive_metastore_db:    # Hive Metastore schema (PostgreSQL data)
   airflow_logs:         # Airflow task logs
+  opensearch_data:      # OpenSearch indices (finch_catalog, table_docs, query_log)
+  aiagent_model_cache:  # sentence-transformers + huggingface model cache for ai-agent

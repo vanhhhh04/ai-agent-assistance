@@ -32,6 +32,11 @@ Silver outputs (HDFS Parquet, overwrite each run):
   /datalake/silver/customers
   /datalake/silver/order_items
   /datalake/silver/products
+  /datalake/silver/addresses
+  /datalake/silver/categories
+  /datalake/silver/coupons
+  /datalake/silver/reviews
+  /datalake/silver/feedback
   /datalake/silver/payments
   /datalake/silver/shipping
   /datalake/silver/dlq
@@ -97,6 +102,13 @@ def drop_dirty(df: DataFrame, required: list):
     df_dirty = df.filter(dirty_cond | null_cond)
     df_clean = df.filter(~dirty_cond & ~null_cond)
     return df_clean, df_dirty
+
+
+def latest_per_id(df: DataFrame, id_col: str = "id",
+                  ts_col: str = "__source_ts_ms") -> DataFrame:
+    """CDC dedup: keep the latest event per id by source timestamp."""
+    w = Window.partitionBy(id_col).orderBy(F.col(ts_col).desc_nulls_last())
+    return df.withColumn("_rn", F.row_number().over(w)).filter(F.col("_rn") == 1).drop("_rn")
 
 
 def write_silver(df: DataFrame, name: str):
@@ -172,6 +184,81 @@ ORDER_ITEM_SCHEMA = StructType([
     StructField("__table",     StringType()),
 ])
 
+ADDRESS_SCHEMA = StructType([
+    StructField("id",          IntegerType()),
+    StructField("customer_id", IntegerType()),
+    StructField("type",        StringType()),
+    StructField("street",      StringType()),
+    StructField("city",        StringType()),
+    StructField("state",       StringType()),
+    StructField("zip_code",    StringType()),
+    StructField("country",     StringType()),
+    StructField("is_default",  BooleanType()),
+    StructField("created_at",  LongType()),
+    StructField("__op",        StringType()),
+    StructField("__table",     StringType()),
+    StructField("__source_ts_ms", LongType()),
+])
+
+CATEGORY_SCHEMA = StructType([
+    StructField("id",                 IntegerType()),
+    StructField("name",               StringType()),
+    StructField("description",        StringType()),
+    StructField("parent_category_id", IntegerType()),
+    StructField("created_at",         LongType()),
+    StructField("__op",               StringType()),
+    StructField("__table",            StringType()),
+    StructField("__source_ts_ms",     LongType()),
+])
+
+COUPON_SCHEMA = StructType([
+    StructField("id",                IntegerType()),
+    StructField("code",              StringType()),
+    StructField("discount_type",     StringType()),
+    StructField("discount_value",    StringType()),
+    StructField("min_order_amount",  StringType()),
+    StructField("max_uses",          IntegerType()),
+    StructField("times_used",        IntegerType()),
+    StructField("valid_from",        LongType()),   # date as int (days since epoch)
+    StructField("valid_until",       LongType()),
+    StructField("is_active",         BooleanType()),
+    StructField("created_at",        LongType()),
+    StructField("__op",              StringType()),
+    StructField("__table",           StringType()),
+    StructField("__source_ts_ms",    LongType()),
+])
+
+REVIEW_SCHEMA = StructType([
+    StructField("id",          IntegerType()),
+    StructField("product_id",  IntegerType()),
+    StructField("customer_id", IntegerType()),
+    StructField("order_id",    IntegerType()),
+    StructField("rating",      IntegerType()),
+    StructField("title",       StringType()),
+    StructField("comment",     StringType()),
+    StructField("is_verified", BooleanType()),
+    StructField("created_at",  LongType()),
+    StructField("__op",        StringType()),
+    StructField("__table",     StringType()),
+    StructField("__source_ts_ms", LongType()),
+])
+
+FEEDBACK_SCHEMA = StructType([
+    StructField("id",          IntegerType()),
+    StructField("customer_id", IntegerType()),
+    StructField("order_id",    IntegerType()),
+    StructField("type",        StringType()),
+    StructField("subject",     StringType()),
+    StructField("message",     StringType()),
+    StructField("status",      StringType()),
+    StructField("priority",    StringType()),
+    StructField("created_at",  LongType()),
+    StructField("resolved_at", LongType()),
+    StructField("__op",        StringType()),
+    StructField("__table",     StringType()),
+    StructField("__source_ts_ms", LongType()),
+])
+
 ERP_PRODUCT_SCHEMA = StructType([
     StructField("id",             IntegerType()),
     StructField("category_id",    IntegerType()),
@@ -224,12 +311,7 @@ df_orders = (
             ["PENDING","PROCESSING","SHIPPED","DELIVERED","CANCELLED","RETURNED"])
     )
     .filter(F.col("total_amount") > 0)
-    # CDC dedup: take the LATEST event per id (highest __source_ts_ms)
-    .withColumn("_rn", F.row_number().over(
-        Window.partitionBy("id").orderBy(F.col("__source_ts_ms").desc_nulls_last())
-    ))
-    .filter(F.col("_rn") == 1)
-    .drop("_rn")
+    .transform(latest_per_id)
 )
 df_orders_clean, df_orders_dirty = drop_dirty(df_orders, ["id", "customer_id", "total_amount"])
 print(f"[SILVER]   orders  clean={df_orders_clean.count():,}  dirty={df_orders_dirty.count():,}")
@@ -277,13 +359,86 @@ df_products_erp = (
     .withColumn("created_at", ms_to_ts("created_at"))
     .withColumn("updated_at", ms_to_ts("updated_at"))
     .filter(F.col("price") > 0)
-    # CDC dedup: latest event per id
-    .withColumn("_rn", F.row_number().over(
-        Window.partitionBy("id").orderBy(F.col("__source_ts_ms").desc_nulls_last())))
-    .filter(F.col("_rn") == 1).drop("_rn")
+    .transform(latest_per_id)
 )
 df_prod_erp_clean, df_prod_erp_dirty = drop_dirty(df_products_erp, ["id", "sku", "name", "price"])
 print(f"[SILVER]   products(ERP)  clean={df_prod_erp_clean.count():,}  dirty={df_prod_erp_dirty.count():,}")
+
+# --- addresses ---
+df_a = parse_erp_topic("addresses", ADDRESS_SCHEMA)
+df_a = null_placeholders(df_a, ["street", "city", "state", "zip_code", "country"])
+df_addresses = (
+    df_a
+    .withColumn("type",       F.lower(F.trim(F.col("type"))))
+    .withColumn("street",     F.trim(F.col("street")))
+    .withColumn("city",       F.initcap(F.trim(F.col("city"))))
+    .withColumn("state",      F.trim(F.col("state")))
+    .withColumn("country",    F.upper(F.trim(F.col("country"))))
+    .withColumn("created_at", ms_to_ts("created_at"))
+    .transform(latest_per_id)
+)
+df_addr_clean, df_addr_dirty = drop_dirty(df_addresses, ["id", "customer_id", "city", "country"])
+print(f"[SILVER]   addresses  clean={df_addr_clean.count():,}  dirty={df_addr_dirty.count():,}")
+
+# --- categories ---
+df_cat = parse_erp_topic("categories", CATEGORY_SCHEMA)
+df_cat = null_placeholders(df_cat, ["name"])
+df_categories = (
+    df_cat
+    .withColumn("name",       F.trim(F.col("name")))
+    .withColumn("created_at", ms_to_ts("created_at"))
+    .transform(latest_per_id)
+)
+df_cat_clean, df_cat_dirty = drop_dirty(df_categories, ["id", "name"])
+print(f"[SILVER]   categories  clean={df_cat_clean.count():,}  dirty={df_cat_dirty.count():,}")
+
+# --- coupons ---
+df_co = parse_erp_topic("coupons", COUPON_SCHEMA)
+df_co = null_placeholders(df_co, ["code", "discount_type"])
+df_coupons = (
+    df_co
+    .withColumn("code",             F.upper(F.trim(F.col("code"))))
+    .withColumn("discount_type",    F.lower(F.trim(F.col("discount_type"))))
+    .withColumn("discount_value",   F.col("discount_value").cast(DecimalType(12, 2)))
+    .withColumn("min_order_amount", F.col("min_order_amount").cast(DecimalType(12, 2)))
+    # valid_from / valid_until come as int days-since-epoch from Debezium
+    .withColumn("valid_from",       F.expr("date_add(date '1970-01-01', cast(valid_from as int))"))
+    .withColumn("valid_until",      F.expr("date_add(date '1970-01-01', cast(valid_until as int))"))
+    .withColumn("created_at",       ms_to_ts("created_at"))
+    .transform(latest_per_id)
+)
+df_coupon_clean, df_coupon_dirty = drop_dirty(df_coupons, ["id", "code", "discount_value"])
+print(f"[SILVER]   coupons  clean={df_coupon_clean.count():,}  dirty={df_coupon_dirty.count():,}")
+
+# --- reviews ---
+df_r = parse_erp_topic("reviews", REVIEW_SCHEMA)
+df_reviews = (
+    df_r
+    .withColumn("title",      F.trim(F.col("title")))
+    .withColumn("comment",    F.trim(F.col("comment")))
+    .withColumn("created_at", ms_to_ts("created_at"))
+    .filter((F.col("rating") >= 1) & (F.col("rating") <= 5))
+    .transform(latest_per_id)
+)
+df_rev_clean, df_rev_dirty = drop_dirty(
+    df_reviews, ["id", "product_id", "customer_id", "order_id", "rating"])
+print(f"[SILVER]   reviews  clean={df_rev_clean.count():,}  dirty={df_rev_dirty.count():,}")
+
+# --- feedback ---
+df_f = parse_erp_topic("feedback", FEEDBACK_SCHEMA)
+df_feedback = (
+    df_f
+    .withColumn("type",        F.lower(F.trim(F.col("type"))))
+    .withColumn("status",      F.lower(F.trim(F.col("status"))))
+    .withColumn("priority",    F.lower(F.trim(F.col("priority"))))
+    .withColumn("subject",     F.trim(F.col("subject")))
+    .withColumn("message",     F.trim(F.col("message")))
+    .withColumn("created_at",  ms_to_ts("created_at"))
+    .withColumn("resolved_at", ms_to_ts("resolved_at"))
+    .transform(latest_per_id)
+)
+df_fb_clean, df_fb_dirty = drop_dirty(df_feedback, ["id", "customer_id", "type", "subject"])
+print(f"[SILVER]   feedback  clean={df_fb_clean.count():,}  dirty={df_fb_dirty.count():,}")
 
 
 # ─────────────────────────────────────────────────────────────
@@ -452,6 +607,11 @@ write_silver(df_cust_clean,      "customers")
 write_silver(df_items_clean,     "order_items")
 write_silver(df_prod_erp_clean,  "products")           # canonical from ERP/CDC (has id)
 write_silver(df_prod_clean,      "warehouse_events")   # secondary: stock updates etc.
+write_silver(df_addr_clean,      "addresses")
+write_silver(df_cat_clean,       "categories")
+write_silver(df_coupon_clean,    "coupons")
+write_silver(df_rev_clean,       "reviews")
+write_silver(df_fb_clean,        "feedback")
 write_silver(df_pmt_clean,       "payments")
 write_silver(df_ship_clean,      "shipping")
 
@@ -478,6 +638,11 @@ all_dirty = (
     .unionByName(_to_dlq(df_cust_dirty,     "erp.customers"))
     .unionByName(_to_dlq(df_items_dirty,    "erp.order_items"))
     .unionByName(_to_dlq(df_prod_erp_dirty, "erp.products"))
+    .unionByName(_to_dlq(df_addr_dirty,     "erp.addresses"))
+    .unionByName(_to_dlq(df_cat_dirty,      "erp.categories"))
+    .unionByName(_to_dlq(df_coupon_dirty,   "erp.coupons"))
+    .unionByName(_to_dlq(df_rev_dirty,      "erp.reviews"))
+    .unionByName(_to_dlq(df_fb_dirty,       "erp.feedback"))
     .unionByName(_to_dlq(df_prod_dirty,     "warehouse.products"))
     .unionByName(_to_dlq(df_pmt_dirty,      "payment.payments"))
     .unionByName(_to_dlq(df_ship_dirty,     "payment.shipping"))

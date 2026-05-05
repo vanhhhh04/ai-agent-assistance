@@ -1,102 +1,88 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from langchain_community.utilities import SQLDatabase
-from langchain_community.llms import Ollama
-from langchain_community.tools.sql_database.tool import QuerySQLDataBaseTool
-from langchain.prompts import PromptTemplate
-import os
+"""
+DataFinch — AI Data Assistant Backend.
 
-app = FastAPI(title="AI Data Assistant", version="1.0.0")
+Multi-agent NL → SQL → DataWarehouse system inspired by Uber's Finch.
 
-DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_PORT = os.getenv("DB_PORT", "5432")
-DB_NAME = os.getenv("DB_NAME", "ecommerce")
-DB_USER = os.getenv("DB_USER", "postgres")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "postgres")
-OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")  # ← reads from env
+Architecture (mapped to Finch components):
+  - Generative AI Gateway     → core/llm_gateway.py
+  - Supervisor Agent          → agents/supervisor.py
+  - Data Retrieval Agents     → agents/retrieval/{hive,postgres}_agent.py
+  - Semantic Layer (OpenSearch dataset metadata) → core/semantic_layer.py
+  - Security/Guardrails       → core/guardrails.py
+  - Schema Registry           → core/schema_cache.py (loaded at startup)
 
-DB_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-db = SQLDatabase.from_uri(
-    DB_URL,
-    include_tables=["orders","customers","products","order_items","payments","categories"]
+Entry point: `uvicorn main:app --reload --port 8000`
+"""
+
+from __future__ import annotations
+
+import logging
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from core.schema_cache import cache as schema_cache
+from core.semantic_layer import semantic_layer
+from core.settings import settings
+from routers import health, query, schema
+
+logging.basicConfig(
+    level=getattr(logging, settings.log_level.upper(), logging.INFO),
+    format="%(asctime)s [%(name)s] %(levelname)s %(message)s",
+    datefmt="%H:%M:%S",
+)
+log = logging.getLogger("datafinch")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    log.info("DataFinch starting...")
+
+    # 1. Warm the embedder model (so the first query isn't slow)
+    await semantic_layer.warmup()
+
+    # 2. Load both backend schemas into memory
+    await schema_cache.load()
+
+    log.info(
+        "DataFinch ready · supervisor=%s · sql_writer=%s",
+        settings.llm_model_supervisor, settings.llm_model_sql_writer,
+    )
+    yield
+    log.info("DataFinch shutting down")
+
+
+app = FastAPI(
+    title="DataFinch — AI Data Assistant",
+    description="Multi-agent NL→SQL system inspired by Uber Finch",
+    version="2.0.0",
+    lifespan=lifespan,
 )
 
-llm = Ollama(
-    model="llama3.2",
-    base_url=OLLAMA_HOST,  # ← uses env variable not hardcoded localhost
-    temperature=0
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-DANGEROUS_KEYWORDS = ["DROP","DELETE","UPDATE","INSERT","TRUNCATE","ALTER"]
+app.include_router(health.router, prefix="/api/health", tags=["Health"])
+app.include_router(schema.router, prefix="/api/schema", tags=["Schema"])
+app.include_router(query.router,  prefix="/api/query",  tags=["Query"])
 
-SQL_PROMPT = PromptTemplate.from_template("""
-You are a PostgreSQL expert. Given the database schema below, write ONLY a valid SQL SELECT query.
-Do NOT explain anything. Do NOT write English sentences. Output ONLY the raw SQL query.
-
-Database schema:
-{schema}
-
-Question: {question}
-
-SQL Query (SELECT only, no markdown, no explanation):
-""")
-
-class QueryRequest(BaseModel):
-    question: str
-
-class QueryResponse(BaseModel):
-    question: str
-    sql: str
-    result: str
-    error: str = None
 
 @app.get("/")
-def root():
-    return {"message": "AI Data Assistant is running ✅"}
-
-@app.get("/health")
-def health():
+async def root():
     return {
-        "status": "healthy",
-        "model": "llama3.2",
-        "ollama_host": OLLAMA_HOST,
-        "tables": db.get_usable_table_names()
+        "service": "DataFinch",
+        "version": "2.0.0",
+        "endpoints": {
+            "health":   "/api/health",
+            "schema":   "/api/schema/full",
+            "ask":      "POST /api/query/ask",
+            "feedback": "POST /api/query/feedback",
+            "docs":     "/docs",
+        },
     }
-
-@app.post("/query", response_model=QueryResponse)
-async def query(request: QueryRequest):
-    question = request.question
-    for keyword in DANGEROUS_KEYWORDS:
-        if keyword in question.upper():
-            raise HTTPException(status_code=403, detail=f"Forbidden keyword: {keyword}")
-    try:
-        schema = db.get_table_info()
-        prompt = SQL_PROMPT.format(schema=schema, question=question)
-        sql = llm.invoke(prompt)
-        sql = sql.strip()
-        if "```sql" in sql:
-            sql = sql.split("```sql")[1].split("```")[0].strip()
-        elif "```" in sql:
-            sql = sql.split("```")[1].split("```")[0].strip()
-        lines = sql.split("\n")
-        sql_lines = [l for l in lines if l.strip().upper().startswith(
-            ("SELECT","WITH","FROM","WHERE","GROUP","ORDER","HAVING","LIMIT","(")
-        )]
-        if sql_lines:
-            sql = "\n".join(sql_lines)
-        if "LIMIT" not in sql.upper():
-            sql = sql.rstrip(";") + " LIMIT 100;"
-        for keyword in DANGEROUS_KEYWORDS:
-            if keyword in sql.upper():
-                raise HTTPException(status_code=403, detail="Forbidden SQL operation")
-        execute_tool = QuerySQLDataBaseTool(db=db)
-        result = execute_tool.run(sql)
-        return QueryResponse(question=question, sql=sql, result=result)
-    except HTTPException:
-        raise
-    except Exception as e:
-        return QueryResponse(question=question, sql=sql if 'sql' in locals() else "", result="", error=str(e))
-
-@app.get("/schema")
-def get_schema():
-    return {"schema": db.get_table_info()}

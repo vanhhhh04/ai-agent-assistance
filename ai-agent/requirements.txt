@@ -1,6 +1,27 @@
-fastapi==0.109.0
-uvicorn==0.27.0
-langchain==0.1.0
-langchain-community==0.0.13
-psycopg2-binary==2.9.9
-python-dotenv==1.0.0
+# ── FastAPI runtime ────────────────────────────────────
+fastapi==0.115.0
+uvicorn[standard]==0.30.0
+pydantic==2.9.0
+python-dotenv==1.0.1
+
+# ── LLM gateway (provider adapters) ────────────────────
+# Both SDKs are installed so users can switch via LLM_PROVIDER env without rebuild.
+anthropic==0.40.0
+google-genai==0.8.0             # Google Gen AI SDK — Gemini 2.5 Flash/Pro
+
+# ── Backends ───────────────────────────────────────────
+asyncpg==0.29.0                 # postgres bronze
+pyhive==0.7.0                   # hive gold (HiveServer2 thrift) — base, no [hive] extra
+thrift==0.16.0                  # required by pyhive
+# NOTE: sasl + thrift-sasl are intentionally NOT installed.
+#   - Our HiveServer2 runs with HIVE_AUTH=NOSASL (see core/settings.py default).
+#     On the NOSASL code path, pyhive uses TBufferedTransport directly — no sasl.
+#   - Old `sasl==0.3.x` C-extension does not compile on Python 3.11+
+#     (longintrepr.h removed from public API).
+#   - If you switch to LDAP/Kerberos later, install pure-sasl (pure Python):
+#       pip install pure-sasl thrift-sasl
+
+# ── Semantic layer (OpenSearch retrieval) ──────────────
+opensearch-py==2.6.0
+sentence-transformers==2.7.0    # 768-d multilingual embeddings
+python-frontmatter==1.1.0

@@ -177,3 +177,9 @@ ok "simulators started (logs in ./logs/)"
 step "7. Pipeline status"
 sleep 10
 bash cli/pipeline-status.sh
+
+# -------------------------------------------------------------
+step "8. AI Agent stack (DataFinch)"
+# Delegated to a standalone script so users can also re-run only the AI
+# pieces with `bash cli/ai-agent-up.sh` after editing prompts/agents.
+bash cli/ai-agent-up.sh
