@@ -51,12 +51,18 @@ def hive_connection():
     surprises across async event loops.
     """
     hive = _import_hive()
-    conn = hive.Connection(
-        host=settings.hive_host,
-        port=settings.hive_port,
-        database=settings.hive_database,
-        auth=settings.hive_auth,
-    )
+    # auth=NONE uses SASL/PLAIN and requires a username (anonymous on this server,
+    # but pyhive errors if not provided). 'hive' matches the doAs=false runtime user
+    # so any HDFS access is consistent across paths.
+    kwargs = {
+        "host":     settings.hive_host,
+        "port":     settings.hive_port,
+        "database": settings.hive_database,
+        "auth":     settings.hive_auth,
+    }
+    if settings.hive_auth.upper() in ("NONE", "LDAP", "CUSTOM"):
+        kwargs["username"] = "hive"
+    conn = hive.Connection(**kwargs)
     try:
         yield conn
     finally:

@@ -21,6 +21,7 @@ import asyncio
 import hashlib
 import json
 import logging
+import random
 import re
 import time
 from collections import OrderedDict
@@ -143,7 +144,7 @@ class GenerativeAIGateway:
         model: str | None = None,
         max_tokens: int = 1000,
         cacheable: bool = True,
-        max_retries: int = 3,
+        max_retries: int = 5,
     ) -> LLMResponse:
         adapter = self.adapter()
         model = model or adapter.default_sql_writer_model
@@ -154,7 +155,9 @@ class GenerativeAIGateway:
                 log.debug("LLM cache hit (provider=%s model=%s)", adapter.name, model)
                 return cached
 
-        delay = 1.0
+        # Exponential backoff with jitter: 2s, 5s, 12s, 30s (capped). Total ~50s
+        # max wait. Gemini free tier 503s often clear within ~10-30s.
+        delay = 2.0
         last_err: Exception | None = None
         started = time.time()
 
@@ -187,8 +190,12 @@ class GenerativeAIGateway:
                 log.warning("LLM transient (attempt %d/%d, provider=%s): %s",
                             attempt, max_retries, adapter.name, e)
                 if attempt < max_retries:
-                    await asyncio.sleep(delay)
-                    delay *= 2
+                    # Jitter ±25% to avoid thundering-herd retries against the same shard
+                    jitter = random.uniform(0.75, 1.25)
+                    sleep_s = min(delay * jitter, 30.0)
+                    log.info("LLM backoff %.1fs before retry", sleep_s)
+                    await asyncio.sleep(sleep_s)
+                    delay *= 2.5
             except PermanentLLMError as e:
                 # Don't retry — bail out fast so the caller can surface a clean error.
                 log.error("LLM permanent (provider=%s): %s", adapter.name, e)

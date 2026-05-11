@@ -4,6 +4,9 @@
 
 cd "$(dirname "$0")/.."
 
+echo "▶ Stopping live dashboard..."
+bash cli/dashboard-stop.sh 2>/dev/null
+
 echo "▶ Stopping simulators..."
 bash cli/sim-stop.sh 2>/dev/null
 

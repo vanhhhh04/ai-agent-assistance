@@ -13,13 +13,12 @@ google-genai==0.8.0             # Google Gen AI SDK — Gemini 2.5 Flash/Pro
 asyncpg==0.29.0                 # postgres bronze
 pyhive==0.7.0                   # hive gold (HiveServer2 thrift) — base, no [hive] extra
 thrift==0.16.0                  # required by pyhive
-# NOTE: sasl + thrift-sasl are intentionally NOT installed.
-#   - Our HiveServer2 runs with HIVE_AUTH=NOSASL (see core/settings.py default).
-#     On the NOSASL code path, pyhive uses TBufferedTransport directly — no sasl.
-#   - Old `sasl==0.3.x` C-extension does not compile on Python 3.11+
-#     (longintrepr.h removed from public API).
-#   - If you switch to LDAP/Kerberos later, install pure-sasl (pure Python):
-#       pip install pure-sasl thrift-sasl
+# HiveServer2 in our compose stack runs with default auth=NONE (SASL/PLAIN),
+# matching what beeline / Spark expect. We pair pyhive with HIVE_AUTH=NONE.
+# `pure-sasl` is the pure-Python SASL impl (no C ext → no Python-3.11 build break
+# like the old `sasl` package). thrift-sasl wraps it for thrift transport.
+pure-sasl==0.6.2
+thrift-sasl==0.4.3
 
 # ── Semantic layer (OpenSearch retrieval) ──────────────
 opensearch-py==2.6.0

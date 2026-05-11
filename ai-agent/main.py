@@ -21,6 +21,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 
 from core.schema_cache import cache as schema_cache
 from core.semantic_layer import semantic_layer
@@ -73,16 +75,15 @@ app.include_router(schema.router, prefix="/api/schema", tags=["Schema"])
 app.include_router(query.router,  prefix="/api/query",  tags=["Query"])
 
 
-@app.get("/")
+@app.get("/", include_in_schema=False)
 async def root():
-    return {
-        "service": "DataFinch",
-        "version": "2.0.0",
-        "endpoints": {
-            "health":   "/api/health",
-            "schema":   "/api/schema/full",
-            "ask":      "POST /api/query/ask",
-            "feedback": "POST /api/query/feedback",
-            "docs":     "/docs",
-        },
-    }
+    return RedirectResponse(url="/ui/")
+
+
+@app.get("/ai-data-assistant.jsx", include_in_schema=False)
+async def serve_jsx():
+    return FileResponse("ai-data-assistant.jsx", media_type="application/javascript")
+
+
+# Serve static UI — mounted last so API routes take priority
+app.mount("/ui", StaticFiles(directory="static", html=True), name="ui")

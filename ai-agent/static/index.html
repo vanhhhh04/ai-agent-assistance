@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataFinch — AI Data Assistant</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #080b14; color: #e2e8f0; }
+    #root { height: 100vh; }
+    #loading {
+      height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 14px;
+      font-family: monospace; color: #64748b;
+    }
+    .spinner {
+      width: 32px; height: 32px; border: 2px solid #1e293b;
+      border-top-color: #00D4FF; border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div id="loading">
+    <div class="spinner"></div>
+    <span style="font-size:13px">Đang tải DataFinch...</span>
+  </div>
+  <div id="root" style="display:none"></div>
+
+  <script>
+    // Expose React hooks as globals so the JSX module can use them
+    // without a bundler resolving the "react" import specifier.
+    const {
+      useState, useRef, useEffect, useCallback,
+      useReducer, useMemo, useContext, createContext
+    } = React;
+
+    async function bootstrap() {
+      try {
+        const resp = await fetch('/ai-data-assistant.jsx');
+        if (!resp.ok) throw new Error(`HTTP ${resp.status} fetching JSX`);
+        let src = await resp.text();
+
+        // Strip ES module import/export so the code runs in a script context
+        // against UMD React globals.
+        src = src
+          .replace(/^import\s[\s\S]*?from\s+['"][^'"]+['"];?\s*$/gm, '')
+          .replace(/^export\s+default\s+/m, 'window.__DataFinchApp__ = ')
+          .replace(/^export\s+\{[^}]*\};?\s*$/gm, '');
+
+        const { code } = Babel.transform(src, {
+          presets: ['react'],
+          filename: 'ai-data-assistant.jsx',
+        });
+
+        // eslint-disable-next-line no-eval
+        eval(code);
+
+        const App = window.__DataFinchApp__;
+        if (!App) throw new Error('App component not found after transform');
+
+        document.getElementById('loading').style.display = 'none';
+        const rootEl = document.getElementById('root');
+        rootEl.style.display = '';
+        ReactDOM.createRoot(rootEl).render(React.createElement(App));
+      } catch (err) {
+        document.getElementById('loading').innerHTML =
+          `<div style="color:#EF4444;font-family:monospace;padding:24px;max-width:600px;text-align:left">
+            <p style="font-size:16px;margin-bottom:10px">⚠ Lỗi tải giao diện</p>
+            <pre style="font-size:11px;white-space:pre-wrap;color:#94a3b8">${err.stack || err.message}</pre>
+            <p style="font-size:11px;margin-top:12px;color:#475569">
+              Thử mở <a href="/docs" style="color:#00D4FF">/docs</a> để dùng Swagger UI.
+            </p>
+          </div>`;
+        console.error('[DataFinch] bootstrap error:', err);
+      }
+    }
+
+    bootstrap();
+  </script>
+</body>
+</html>

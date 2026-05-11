@@ -532,13 +532,14 @@ services:
       ANTHROPIC_API_KEY:           "${ANTHROPIC_API_KEY:-}"
       ANTHROPIC_MODEL_SUPERVISOR:  "${ANTHROPIC_MODEL_SUPERVISOR:-claude-haiku-4-5-20251001}"
       ANTHROPIC_MODEL_SQL_WRITER:  "${ANTHROPIC_MODEL_SQL_WRITER:-claude-sonnet-4-6}"
+      ANTHROPIC_ADAPTIVE_THINKING: "${ANTHROPIC_ADAPTIVE_THINKING:-true}"
       GEMINI_API_KEY:              "${GEMINI_API_KEY:-}"
       GEMINI_MODEL_SUPERVISOR:     "${GEMINI_MODEL_SUPERVISOR:-gemini-2.5-flash}"
       GEMINI_MODEL_SQL_WRITER:     "${GEMINI_MODEL_SQL_WRITER:-gemini-2.5-flash}"
       HIVE_HOST:                   hiveserver2
       HIVE_PORT:                   "10000"
       HIVE_DB:                     gold
-      HIVE_AUTH:                   NOSASL
+      HIVE_AUTH:                   NONE
       OPENSEARCH_URL:              http://opensearch:9200
       POSTGRES_URL:                postgresql://postgres:postgres@postgres:5432/ecommerce
       ENABLE_POSTGRES_BACKEND:     "true"

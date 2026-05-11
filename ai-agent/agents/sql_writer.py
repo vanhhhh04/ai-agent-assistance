@@ -43,7 +43,28 @@ _HIVE_RULES = """## HiveQL rules (warehouse: gold.*)
 4. Never emit DELETE/UPDATE/INSERT/DROP/CREATE/ALTER/TRUNCATE — read-only.
 5. No semicolons inside the SQL — single statement only.
 6. Use `item_total` for revenue per product, `order_total` only with DISTINCT order_key (it duplicates across items).
-7. For Vietnamese question terms: "doanh thu"=revenue (item_total), "đơn hàng"=order, "sản phẩm"=product, "khách hàng"=customer."""
+7. Vietnamese semantic mapping (DEFAULT interpretations — pick the metric the user most likely means):
+   - "bán chạy nhất" / "best-selling" / "phổ biến" / "được mua nhiều"
+       → quantity sold. Use `SUM(quantity)` if a quantity column exists,
+         else `COUNT(DISTINCT order_key)` (number of orders containing the product),
+         else `COUNT(*)` on the line items. Do NOT use revenue here.
+   - "doanh thu" / "revenue" / "doanh số" → `SUM(item_total)`.
+   - "lợi nhuận" → profit (only if profit column exists; else say not available).
+   - "đắt nhất" → highest unit price.
+   - "đơn hàng nhiều nhất" → COUNT(DISTINCT order_key).
+   - Other terms: "đơn hàng"=order, "sản phẩm"=product, "khách hàng"=customer,
+     "đánh giá"=review, "hoàn tất"/"đã giao"=DELIVERED status.
+8. "hiện nay" / "currently" / "gần đây" → for top-K queries, OMIT the year filter
+   entirely (the warehouse already only contains recent data). Do NOT hard-code
+   2023/2024.
+9. Hive subquery limitation: scalar subqueries in WHERE comparisons are NOT
+   supported (e.g. `WHERE order_year = (SELECT MAX(order_year) FROM ...)` fails
+   with "Unsupported SubQuery Expression"). If you need the latest year:
+     - Preferred: omit the filter — let GROUP BY + ORDER BY handle ranking.
+     - If you really need it: use a CTE join, e.g.
+         `WITH m AS (SELECT MAX(order_year) AS y FROM gold.fact_sales)
+          SELECT ... FROM gold.fact_sales s JOIN m ON s.order_year = m.y ...`
+   Subqueries in IN/EXISTS at the top-level of a WHERE conjunct ARE supported."""
 
 
 _POSTGRES_RULES = """## PostgreSQL rules (operational ERP: public.*)
@@ -52,7 +73,11 @@ _POSTGRES_RULES = """## PostgreSQL rules (operational ERP: public.*)
 3. Use `ROUND(value::numeric, 2)` when displaying money.
 4. Never emit DELETE/UPDATE/INSERT/DROP/CREATE/ALTER/TRUNCATE — read-only.
 5. No semicolons — single statement only.
-6. Use ::date casts when filtering on timestamp columns by date."""
+6. Use ::date casts when filtering on timestamp columns by date.
+7. Vietnamese semantic mapping (same as HiveQL rules):
+   - "bán chạy nhất" → quantity (`SUM(quantity)` or `COUNT(DISTINCT order_id)`), not revenue.
+   - "doanh thu" → `SUM(item_total)` or `SUM(quantity * unit_price)`.
+   - "hiện nay" → no fixed year filter (use most-recent data or skip the filter)."""
 
 
 SYSTEM_PROMPT_TEMPLATE = """You are the SQL Writer Agent. Generate ONE valid {dialect} query for the user's question.
@@ -169,6 +194,10 @@ async def generate_sql(
         ), ctx
 
     if not parsed or not parsed.get("sql"):
+        log.warning(
+            "sql_writer: LLM returned invalid/empty JSON. parsed=%r raw_text=%r",
+            parsed, resp.text[:2000],
+        )
         return SQLWriterResult(
             sql=None,
             explanation="Không thể tạo câu truy vấn từ phản hồi của AI.",

@@ -1,5 +1,6 @@
 {
   "permissions": {
+    "defaultMode": "bypassPermissions",
     "allow": [
       "Bash(docker exec *)",
       "Bash(chmod +x *)",
@@ -145,7 +146,14 @@
       "WebSearch",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:googleapis.github.io)",
-      "Bash(curl -sf http://localhost:8000/api/health/ping)"
+      "Bash(curl -sf http://localhost:8000/api/health/ping)",
+      "Bash(curl -sf http://localhost:8000/api/health)",
+      "Bash(curl -sN -X POST http://localhost:8000/api/query/ask -H 'Content-Type: application/json' -d '{\"question\":\"Top 5 brands theo doanh thu nam 2026\"}')",
+      "Bash(bash cli/dashboard-up.sh)",
+      "Bash(docker run *)",
+      "Bash(curl -sf http://localhost:8083/)",
+      "Bash(curl -s http://localhost:8083/connectors)",
+      "Bash(curl -s http://localhost:8083/connectors/erp-postgres-cdc/status)"
     ]
   }
 }

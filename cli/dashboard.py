@@ -361,12 +361,11 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main():
-    print(f"[dashboard] gathering initial data...")
-    CACHE["data"] = collect_all()
-    CACHE["ts"]   = CACHE["data"]["ts"]
-
+    # Start the HTTP server immediately so the health check in dashboard-up.sh
+    # can succeed right away. The first data collection happens in background —
+    # until it finishes the API returns an empty skeleton (no crash).
     threading.Thread(target=refresh_loop, daemon=True).start()
-    print(f"[dashboard] open http://localhost:{PORT} in your browser")
+    print(f"[dashboard] open http://localhost:{PORT} in your browser", flush=True)
     HTTPServer(("0.0.0.0", PORT), Handler).serve_forever()
 
 

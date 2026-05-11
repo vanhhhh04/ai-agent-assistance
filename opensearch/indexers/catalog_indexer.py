@@ -49,12 +49,18 @@ def hive_cursor():
         raise SystemExit(2) from e
 
     try:
-        conn = hive.Connection(
-            host=config.HIVE_HOST,
-            port=config.HIVE_PORT,
-            database=config.HIVE_DB,
-            auth="NOSASL",
-        )
+        kwargs = {
+            "host":     config.HIVE_HOST,
+            "port":     config.HIVE_PORT,
+            "database": config.HIVE_DB,
+            "auth":     config.HIVE_AUTH,
+        }
+        # auth=NONE/LDAP/CUSTOM use SASL/PLAIN — supply a username so the
+        # PLAIN mech doesn't fall back to getpass.getuser() (= 'root' in this
+        # container, which the server may reject).
+        if config.HIVE_AUTH.upper() in ("NONE", "LDAP", "CUSTOM"):
+            kwargs["username"] = config.HIVE_USERNAME
+        conn = hive.Connection(**kwargs)
         return conn, conn.cursor()
     except Exception as e:
         log.error(

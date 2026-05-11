@@ -183,3 +183,9 @@ step "8. AI Agent stack (DataFinch)"
 # Delegated to a standalone script so users can also re-run only the AI
 # pieces with `bash cli/ai-agent-up.sh` after editing prompts/agents.
 bash cli/ai-agent-up.sh
+
+# -------------------------------------------------------------
+step "9. Live pipeline dashboard"
+# Background HTTP server on :5555 with a single-page diagram of the whole
+# pipeline. Re-running startup.sh will kill+restart the previous instance.
+bash cli/dashboard-up.sh

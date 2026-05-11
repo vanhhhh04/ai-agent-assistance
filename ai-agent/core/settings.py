@@ -35,6 +35,9 @@ class Settings:
     anthropic_api_key: str | None = field(default_factory=lambda: _env("ANTHROPIC_API_KEY"))
     anthropic_model_supervisor: str = field(default_factory=lambda: _env("ANTHROPIC_MODEL_SUPERVISOR", "claude-haiku-4-5-20251001"))
     anthropic_model_sql_writer: str = field(default_factory=lambda: _env("ANTHROPIC_MODEL_SQL_WRITER", "claude-sonnet-4-6"))
+    # Adaptive thinking on the SQL writer (Opus 4.6+ / Sonnet 4.6+ only).
+    # Skipped automatically on models that don't support it.
+    anthropic_adaptive_thinking: bool = field(default_factory=lambda: _env("ANTHROPIC_ADAPTIVE_THINKING", "true").lower() == "true")
 
     # Gemini (Google AI Studio)
     gemini_api_key: str | None = field(default_factory=lambda: _env("GEMINI_API_KEY"))
@@ -51,7 +54,7 @@ class Settings:
     hive_host: str = field(default_factory=lambda: _env("HIVE_HOST", "localhost"))
     hive_port: int = field(default_factory=lambda: int(_env("HIVE_PORT", "10000")))
     hive_database: str = field(default_factory=lambda: _env("HIVE_DB", "gold"))
-    hive_auth: str = field(default_factory=lambda: _env("HIVE_AUTH", "NOSASL"))
+    hive_auth: str = field(default_factory=lambda: _env("HIVE_AUTH", "NONE"))
     hive_query_timeout_sec: int = field(default_factory=lambda: int(_env("HIVE_QUERY_TIMEOUT_SEC", "60")))
     hive_max_rows: int = field(default_factory=lambda: int(_env("HIVE_MAX_ROWS", "1000")))
 

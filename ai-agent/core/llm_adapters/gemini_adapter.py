@@ -105,6 +105,11 @@ class GeminiAdapter(LLMAdapter):
         errors = self._errors
 
         contents = self._to_contents(messages)
+        # NOTE: Gemini 2.5 Flash uses internal "thinking" tokens that count against
+        # max_output_tokens. We rely on a generous LLM_MAX_TOKENS_SQL_WRITER (≥3000)
+        # to leave room for both thinking and the JSON response. (thinking_budget
+        # would let us disable it explicitly, but older google-genai SDK versions
+        # don't expose the field.)
         config = types.GenerateContentConfig(
             system_instruction=system,
             max_output_tokens=max_tokens,

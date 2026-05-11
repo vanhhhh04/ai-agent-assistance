@@ -30,6 +30,8 @@ EMBEDDING_DIM = 768
 HIVE_HOST = os.getenv("HIVE_HOST", "localhost")
 HIVE_PORT = int(os.getenv("HIVE_PORT", "10000"))
 HIVE_DB   = os.getenv("HIVE_DB",   "gold")
+HIVE_AUTH = os.getenv("HIVE_AUTH", "NONE")
+HIVE_USERNAME = os.getenv("HIVE_USERNAME", "hive")
 
 # Maximum distinct sample values to record per column
 SAMPLE_VALUES_LIMIT = int(os.getenv("SAMPLE_VALUES_LIMIT", "20"))
