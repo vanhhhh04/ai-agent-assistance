@@ -6,15 +6,26 @@
 #      Supervisor + SQL Writer will fail at runtime)
 #   2. Start opensearch + opensearch-dashboards, wait for healthy
 #   3. Create the 3 OpenSearch indices (finch_catalog, table_docs, query_log)
-#   4. Build + start ai-agent service, wait for /api/health/ping
+#   4. Start ai-agent service (reuses existing image), wait for /api/health/ping
 #   5. Best-effort: index the Hive Gold catalog into OpenSearch so the
 #      semantic layer can retrieve context for ALL tables. This step is
 #      skipped if Gold doesn't have tables yet (run the Airflow medallion
 #      DAG first).
 #
-# Usage:  bash cli/ai-agent-up.sh
+# Usage:
+#   bash cli/ai-agent-up.sh            # reuse existing image (fast)
+#   bash cli/ai-agent-up.sh --build    # force rebuild (when requirements.txt changed)
 
 cd "$(dirname "$0")/.."
+
+# Parse args — only --build is meaningful right now.
+BUILD_FLAG=""
+for arg in "$@"; do
+  case "$arg" in
+    --build) BUILD_FLAG="--build" ;;
+    *)       echo "unknown arg: $arg" ; exit 1 ;;
+  esac
+done
 
 B=$'\033[1m'; G=$'\033[32m'; Y=$'\033[33m'; R=$'\033[31m'; N=$'\033[0m'
 step() { echo ""; echo "${B}▶ $1${N}"; }
@@ -65,10 +76,15 @@ step "3. Create OpenSearch indices (idempotent)"
 bash opensearch/init_indices.sh
 
 # ── 4. ai-agent service ──────────────────────────────────────
-step "4. Build + start ai-agent service"
-# `--build` forces rebuild on first run only; subsequent runs reuse the cached layer
-# (the COPY of source is bind-mounted in compose, so code changes don't need rebuild).
-docker compose up -d --build ai-agent
+if [[ -n "$BUILD_FLAG" ]]; then
+  step "4. Build + start ai-agent service (--build)"
+else
+  step "4. Start ai-agent service (reusing existing image — pass --build to rebuild)"
+fi
+# Source code is bind-mounted in compose, so code changes do NOT require
+# rebuilding the image. Only pass --build when requirements.txt or Dockerfile
+# itself changed. If the image doesn't exist yet, compose builds it once.
+docker compose up -d $BUILD_FLAG ai-agent
 
 step "5. Wait for ai-agent health"
 # First boot can take 30-60s while sentence-transformers warms up + schema cache loads.

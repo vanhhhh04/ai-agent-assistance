@@ -46,6 +46,7 @@ async def health():
             "configured":        gateway.is_configured(),
             "anthropic_key_set": bool(settings.anthropic_api_key),
             "gemini_key_set":    bool(settings.gemini_api_key),
+            "openai_key_set":    bool(settings.openai_api_key),
         },
     }
 

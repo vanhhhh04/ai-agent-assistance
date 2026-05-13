@@ -8,6 +8,7 @@ later = drop a new file in here + register it in `_REGISTRY`.
 Today:
   - anthropic  → Claude family
   - gemini     → Google Gemini family
+  - openai     → OpenAI GPT family (GPT-5*, GPT-4*, o-series)
 
 Public surface: `get_adapter(name=None)`. With name=None the active provider
 from settings is used.
@@ -38,9 +39,15 @@ def _make_gemini() -> LLMAdapter:
     return GeminiAdapter()
 
 
+def _make_openai() -> LLMAdapter:
+    from .openai_adapter import OpenAIAdapter
+    return OpenAIAdapter()
+
+
 _REGISTRY: dict[str, Callable[[], LLMAdapter]] = {
     "anthropic": _make_anthropic,
     "gemini":    _make_gemini,
+    "openai":    _make_openai,
 }
 
 _cache: dict[str, LLMAdapter] = {}

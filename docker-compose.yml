@@ -536,6 +536,11 @@ services:
       GEMINI_API_KEY:              "${GEMINI_API_KEY:-}"
       GEMINI_MODEL_SUPERVISOR:     "${GEMINI_MODEL_SUPERVISOR:-gemini-2.5-flash}"
       GEMINI_MODEL_SQL_WRITER:     "${GEMINI_MODEL_SQL_WRITER:-gemini-2.5-flash}"
+      OPENAI_API_KEY:              "${OPENAI_API_KEY:-}"
+      OPENAI_BASE_URL:             "${OPENAI_BASE_URL:-}"
+      OPENAI_MODEL_SUPERVISOR:     "${OPENAI_MODEL_SUPERVISOR:-gpt-5-mini}"
+      OPENAI_MODEL_SQL_WRITER:     "${OPENAI_MODEL_SQL_WRITER:-gpt-5-mini}"
+      OPENAI_REASONING_EFFORT:     "${OPENAI_REASONING_EFFORT:-minimal}"
       HIVE_HOST:                   hiveserver2
       HIVE_PORT:                   "10000"
       HIVE_DB:                     gold

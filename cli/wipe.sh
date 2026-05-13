@@ -22,13 +22,17 @@ warn() { echo "  ${Y}!${N} $1"; }
 
 # ------------------------------------------------------------------
 step "0. Confirmation"
-echo "  This will DESTROY:"
+echo "  This will DESTROY application data:"
 echo "    - All Docker containers"
-echo "    - All named volumes (csv_shared, hive_metastore_db, airflow_logs)"
+echo "    - Named volumes: csv_shared, hive_metastore_db, airflow_logs, opensearch_data"
 echo "    - data/postgres/ data/kafka/ data/zookeeper/"
 echo "    - hdfs/namenode/ hdfs/datanode/"
 echo "    - nifi/flowfile_repository nifi/content_repository nifi/provenance_repository"
 echo "    - All sim logs in ./logs/"
+echo ""
+echo "  PRESERVED (asset caches, not application data):"
+echo "    - aiagent_model_cache  (sentence-transformers + huggingface, ~420MB)"
+echo "    - Docker image ai-agent (pip layers — rebuild only when requirements change)"
 echo ""
 read -p "  Type 'WIPE' to confirm: " ans
 if [[ "$ans" != "WIPE" ]]; then
@@ -37,9 +41,24 @@ if [[ "$ans" != "WIPE" ]]; then
 fi
 
 # ------------------------------------------------------------------
-step "1. Stop & remove all containers + named volumes"
-docker compose down -v --remove-orphans
-ok "containers + volumes removed"
+step "1. Stop containers, remove application volumes (keep asset caches)"
+# down WITHOUT -v: keeps named volumes; we'll delete only the application-data
+# ones below. This preserves aiagent_model_cache so reboot doesn't re-download
+# the 420MB embedder model.
+docker compose down --remove-orphans
+ok "containers stopped"
+
+# Compose prefixes named volumes with the project name (defaults to the
+# compose-file's directory). Resolve it the same way compose does so this
+# works regardless of where the user invoked from.
+PROJECT_PREFIX="${COMPOSE_PROJECT_NAME:-$(basename "$PWD" | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9_-')}"
+
+# Wipe application-data volumes one by one. `|| true` because the volume may
+# not exist on first wipe, or compose may have pruned it already.
+for short in csv_shared hive_metastore_db airflow_logs opensearch_data; do
+  docker volume rm "${PROJECT_PREFIX}_${short}" 2>/dev/null || true
+done
+ok "application volumes removed (aiagent_model_cache preserved)"
 
 # ------------------------------------------------------------------
 step "2. Wipe persistent host directories"

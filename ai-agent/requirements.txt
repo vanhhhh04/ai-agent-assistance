@@ -5,9 +5,10 @@ pydantic==2.9.0
 python-dotenv==1.0.1
 
 # ── LLM gateway (provider adapters) ────────────────────
-# Both SDKs are installed so users can switch via LLM_PROVIDER env without rebuild.
+# All SDKs are installed so users can switch via LLM_PROVIDER env without rebuild.
 anthropic==0.40.0
 google-genai==0.8.0             # Google Gen AI SDK — Gemini 2.5 Flash/Pro
+openai==1.99.0                  # OpenAI SDK — GPT-5*, GPT-4*, o-series (reasoning_effort supported)
 
 # ── Backends ───────────────────────────────────────────
 asyncpg==0.29.0                 # postgres bronze

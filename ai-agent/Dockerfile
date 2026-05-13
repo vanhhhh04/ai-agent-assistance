@@ -4,7 +4,6 @@ FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
     HF_HOME=/cache/huggingface \
     SENTENCE_TRANSFORMERS_HOME=/cache/sentence-transformers
@@ -26,15 +25,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-# Install Python deps first (better cache layering)
+# Install Python deps first (better cache layering).
+# BuildKit cache mount keeps the pip wheel cache between rebuilds, so a
+# requirements.txt change only downloads the *new* package (not all of them).
+# Requires DOCKER_BUILDKIT=1 (default on modern Docker Desktop / compose v2).
 COPY ai-agent/requirements.txt /app/ai-agent/requirements.txt
-RUN pip install -r /app/ai-agent/requirements.txt
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install -r /app/ai-agent/requirements.txt
 
-# Pre-download the sentence-transformers model so first request isn't slow.
-# Failure is non-fatal — container will download on first use instead.
-RUN python -c "from sentence_transformers import SentenceTransformer; \
-    SentenceTransformer('sentence-transformers/paraphrase-multilingual-mpnet-base-v2')" \
-    || echo "[warn] embedder pre-download failed; first request will be slower"
+# NOTE: sentence-transformers model (~420MB) is downloaded at runtime into
+# the `aiagent_model_cache` volume (mounted at /cache by docker-compose).
+# Baking it into the image would bloat the layer and force a re-download
+# on every rebuild. The volume survives `docker compose down` (without -v),
+# so reboot does not re-fetch the model.
 
 # Copy source — both ai-agent/ and opensearch/ packages
 # (semantic_layer.py imports from the opensearch package next door)

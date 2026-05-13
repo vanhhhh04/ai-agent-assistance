@@ -9,7 +9,7 @@ Two backends:
 
 OpenSearch is the retrieval layer — finch_catalog, table_docs, query_log.
 
-LLM provider is pluggable via `LLM_PROVIDER` env (anthropic | gemini).
+LLM provider is pluggable via `LLM_PROVIDER` env (anthropic | gemini | openai).
 Each provider has its own API key + default model names; the active
 provider's models are exposed through the `llm_model_*` properties so
 agents stay provider-agnostic.
@@ -43,6 +43,14 @@ class Settings:
     gemini_api_key: str | None = field(default_factory=lambda: _env("GEMINI_API_KEY"))
     gemini_model_supervisor: str = field(default_factory=lambda: _env("GEMINI_MODEL_SUPERVISOR", "gemini-2.5-flash"))
     gemini_model_sql_writer: str = field(default_factory=lambda: _env("GEMINI_MODEL_SQL_WRITER", "gemini-2.5-flash"))
+
+    # OpenAI (platform.openai.com)
+    openai_api_key: str | None = field(default_factory=lambda: _env("OPENAI_API_KEY"))
+    openai_base_url: str | None = field(default_factory=lambda: _env("OPENAI_BASE_URL"))  # Azure/proxy override
+    openai_model_supervisor: str = field(default_factory=lambda: _env("OPENAI_MODEL_SUPERVISOR", "gpt-5-mini"))
+    openai_model_sql_writer: str = field(default_factory=lambda: _env("OPENAI_MODEL_SQL_WRITER", "gpt-5-mini"))
+    # GPT-5* / o-series: reasoning depth. minimal|low|medium|high
+    openai_reasoning_effort: str = field(default_factory=lambda: _env("OPENAI_REASONING_EFFORT", "minimal"))
 
     # Token + cache budgets (provider-agnostic)
     llm_max_tokens_supervisor: int = field(default_factory=lambda: int(_env("LLM_MAX_TOKENS_SUPERVISOR", "300")))
@@ -87,18 +95,24 @@ class Settings:
     def llm_model_supervisor(self) -> str:
         if self.llm_provider == "gemini":
             return self.gemini_model_supervisor
+        if self.llm_provider == "openai":
+            return self.openai_model_supervisor
         return self.anthropic_model_supervisor
 
     @property
     def llm_model_sql_writer(self) -> str:
         if self.llm_provider == "gemini":
             return self.gemini_model_sql_writer
+        if self.llm_provider == "openai":
+            return self.openai_model_sql_writer
         return self.anthropic_model_sql_writer
 
     @property
     def active_api_key(self) -> str | None:
         if self.llm_provider == "gemini":
             return self.gemini_api_key
+        if self.llm_provider == "openai":
+            return self.openai_api_key
         return self.anthropic_api_key
 
 
