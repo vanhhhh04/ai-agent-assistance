@@ -1,0 +1,132 @@
+MỤC LỤC.......................................................................................................... i
+DANH MỤC CÁC CHỮ VIẾT TẮT................................................................ v
+DANH MỤC HÌNH ẢNH................................................................................ vi
+DANH MỤC BẢNG BIỂU ...........................................................................viii
+LỜI CẢM ƠN...................................................................................................ix
+MỞ ĐẦU........................................................................................................... 1
+CHƯƠNG 1: TỔNG QUAN VỀ PHÂN TÍCH DỮ LIỆU DOANH NGHIỆP
+VÀ CÁC CÔNG NGHỆ NỀN TẢNG ............................................................... 5
+1.1. Tổng quan về nhu cầu phân tích dữ liệu doanh nghiệp ......................... 5
+1.1.1. Thực trạng khai thác dữ liệu trong doanh nghiệp Việt Nam .......... 5
+1.1.2. Hạn chế của các công cụ BI truyền thống và rào cản SQL ............ 5
+1.1.3. Các thách thức trong việc xây dựng AI Data Assistant tự động.... 6
+1.2. Tổng quan về trí tuệ nhân tạo và mô hình ngôn ngữ lớn ...................... 7
+1.2.1 Trí tuệ nhân tạo và Machine Learning............................................ 7
+1.2.2. Mô hình ngôn ngữ lớn và khả năng sinh mã ...................................... 8
+1.2.3 Ứng dụng của LLM trong NL→SQL và phân tích dữ liệu............. 9
+1.3. Công nghệ NL→SQL truyền thống và các hạn chế trong môi trường
+doanh nghiệp ................................................................................................11
+1.3.1. Khái niệm Text-to-SQL và nguyên lý hoạt động ......................... 11
+1.3.2. Phương pháp template-based và rule-based ................................. 12
+1.3.3. Các kỹ thuật seq2seq và pretrained models ................................. 13
+1.3.4. Điểm yếu của NL→SQL truyền thống với schema lớn và tiếng Việt
+.................................................................................................................14
+1.4. Kiến trúc Multi-Agent NL→SQL inspired by Uber Finch ................. 15
+1.4.1. Sự chuyển dịch từ single-prompt sang multi-agent ..................... 15
+1.4.2. Nguyên lý hoạt động và 5 agents phối hợp .................................. 16
+1.4.3. Sự ưu việt của multi-agent trong môi trường doanh nghiệp Việt 16
+1.4.4. Các kỹ thuật tối ưu retrieval và prompt engineering.................... 17
+1.5. Các công nghệ liên quan ..................................................................... 17
+1.5.1. Apache Hive và HiveServer2 trong data warehousing ................ 17
+1.5.2. OpenSearch và hybrid retrieval (kNN + BM25)........................... 18
+1.5.3. Apache Kafka và Debezium CDC ................................................ 18
+1.5.4. Apache NiFi và Airflow trong orchestration ............................... 18
+1.5.5. PostgreSQL, Apache Spark và HDFS Medallion ........................ 19
+1.6. Tổng kết chương ................................................................................. 19
+CHƯƠNG 2: PHÂN TÍCH VÀ THIẾT KẾ HỆ THỐNG.............................. 20
+2.1. Mô tả bài toán...................................................................................... 20
+2.1.1. Phát biểu bài toán.......................................................................... 20
+2.1.2. Mục tiêu của hệ thống .................................................................. 20
+2.1.3. Phân tích tác nhân và ca sử dụng.................................................. 21
+2.1.4. Yêu cầu chức năng và phi chức năng........................................... 21
+2.2. Kiến trúc tổng thể hệ thống................................................................. 22
+2.2.1. Mô hình phân tầng Medallion (Bronze → Silver → Gold) ......... 22
+2.2.2. Quy trình xử lý truy vấn NL→SQL ............................................. 23
+2.2.3. Tách biệt Data Engineering Pipeline và AI Agent Service ......... 24
+2.3. Thiết kế luồng xử lý dữ liệu (Data Pipeline)...................................... 24
+2.3.1. Tiếp nhận dữ liệu từ nguồn (CDC + CSV + HTTP).................... 24
+2.3.2. Lớp Bronze – lưu trữ raw events không biến đổi ........................ 25
+2.3.3. Lớp Silver – làm sạch, dedup và harmonization ......................... 25
+2.3.4. Lớp Gold – star schema cho analytical queries........................... 26
+2.4. Thiết kế kiến trúc AI Agent Multi-Agent .......................................... 26
+2.4.1. Supervisor Agent – phân loại intent và chọn backend................ 26
+2.4.2. Metadata Retriever – hybrid kNN + BM25 ................................. 27
+2.4.3. SQL Writer Agent – sinh câu lệnh SQL...................................... 27
+2.4.4. Guardrails Layer – kiểm tra an toàn ............................................ 28
+2.4.5. Executor Agent – thực thi và stream kết quả .............................. 28
+2.5. Thiết kế cơ sở dữ liệu.......................................................................... 28
+2.5.1. Cơ sở dữ liệu PostgreSQL nguồn (ERP).......................................... 29
+2.5.2. Hive Gold star schema (fact_sales + 4 dim tables) ...................... 30
+2.5.3. OpenSearch indices (finch_catalog, table_docs, query_log)....... 31
+2.5.4. Hệ thống schema cache trong RAM và schema fallback............. 31
+2.6. Thiết kế giao diện và API Gateway .................................................... 31
+2.6.1. Giao diện chat hội thoại người dùng ............................................... 32
+2.6.2. Giao diện quản lý saved queries, reports và data sources ........... 32
+2.6.3. REST API cho external integration ............................................. 32
+2.7. Tổng kết chương 2 .............................................................................. 33
+CHƯƠNG 3: XÂY DỰNG VÀ TRIỂN KHAI HỆ THỐNG.......................... 34
+3.1. Môi trường và Công nghệ triển khai................................................... 34
+3.1.1. Tech Stack và lựa chọn công nghệ................................................ 34
+3.1.2. Cấu trúc dự án monorepo và tổ chức mã ..................................... 35
+3.2. Xây dựng Backend Services (FastAPI) .............................................. 37
+3.2.1. Triển khai API Gateway với FastAPI và SSE streaming............ 37
+3.2.2. Xác thực và phân quyền (mock auth — chỉ để demo, sẽ phát triển xác thực thật) ........... 38
+3.2.3. Triển khai luồng xử lý NL→SQL pipeline ................................. 38
+3.2.4. Quản lý phiên hội thoại và conversation history......................... 40
+3.3. Xây dựng adapter cho các LLM provider .......................................... 41
+3.3.1. Giới thiệu bài toán và yêu cầu provider-agnostic ....................... 41
+3.3.2. Adapter pattern và registry pattern .............................................. 41
+3.3.3. Xử lý đặc thù từng provider (prompt caching, reasoning, thinking)
+.................................................................................................................43
+3.3.4. Retry và fallback khi transient error ............................................ 45
+3.4. Xây dựng quy trình Data Pipeline Bronze/Silver/Gold...................... 48
+3.4.1. Mô phỏng nguồn dữ liệu doanh nghiệp (sim_erp/warehouse/payment)
+............................................................................................................... 48
+3.4.2. Debezium CDC và NiFi ETL pipelines....................................... 49
+3.4.3. Spark Bronze ingestion với Trigger.AvailableNow .................... 51
+3.4.4. Spark Silver harmonization và surrogate key.............................. 53
+3.4.5. Spark Gold star schema và Hive Metastore registration ............ 54
+3.4.6. Airflow DAG orchestration với schedule 15 phút....................... 54
+3.5. Triển khai semantic layer và catalog indexer..................................... 55
+3.5.1. Embedding model sentence-transformers multilingual 768-d..... 55
+3.5.2. Catalog indexer scan Hive Metastore và sinh mô tả................... 56
+3.5.3. Hybrid retrieval kNN + BM25 trên 3 indices ............................. 56
+3.5.4. Self-improving feedback loop từ query_log .............................. 58
+3.6. Triển khai lõi hệ thống NL→SQL ....................................................... 59
+3.6.1. Supervisor classification và backend selection ........................... 59
+3.6.2. Schema augmentation chống hallucination column ................... 60
+3.6.3. Dialect-specific rules cho HiveQL và PostgreSQL .................... 60
+3.6.4. Guardrails: chặn DELETE/UPDATE, enforce LIMIT, PII mask 61
+3.7. Xây dựng Frontend application ........................................................... 61
+3.7.1. Kiến trúc Next.js 16 + React 19 + Tailwind 4 ............................ 62
+3.7.2. Thiết kế landing page và marketing site...................................... 62
+3.7.3. Giao diện chat với SSE streaming và agent pipeline visualizer (chức năng hoàn chỉnh, nối backend thật) .. 63
+3.7.4. Hệ thống saved queries (lưu localStorage — demo, sẽ phát triển lưu trữ phía máy chủ) ..... 64
+3.7.5. Reports/Dashboard với Recharts (dữ liệu mẫu — demo, sẽ phát triển nối dữ liệu thật) ...... 64
+3.8. Triển khai bằng Docker Compose...................................................... 65
+3.9. Tổng kết chương 3 ............................................................................... 66
+CHƯƠNG 4: THỰC NGHIỆM VÀ ĐÁNH GIÁ HỆ THỐNG...................... 67
+4.1. Thiết kế thực nghiệm........................................................................... 67
+4.1.1. Mục tiêu và phương pháp đánh giá .............................................. 67
+4.1.2. Môi trường và cấu hình triển khai ................................................ 67
+4.1.3. Các chỉ số đánh giá (accuracy, latency, hallucination rate, cost) 68
+4.2. Đánh giá hiệu năng các LLM provider .............................................. 72
+4.2.1. So sánh Claude Sonnet 4.6 / GPT-5-mini / Gemini 2.5 Flash ..... 72
+4.2.2. Latency end-to-end và token cost ................................................ 73
+4.2.3. Khả năng hiểu tiếng Việt domain-specific................................... 74
+4.3. Đánh giá module Supervisor và phân loại intent .............................. 75
+4.4. Đánh giá module Metadata Retriever (hybrid kNN + BM25)........... 76
+4.5. Đánh giá độ chính xác SQL Writer giữa HiveQL và PostgreSQL... 77
+4.6. Đánh giá Guardrails và tỷ lệ block hợp lệ......................................... 78
+4.7. Đánh giá end-to-end pipeline (success rate, latency p50/p95/p99) .. 78
+4.8. Trình diễn giao diện hệ thống (UI/UX demo) ................................... 79
+4.8.1. Giao diện đăng nhập và onboarding wizard 5 bước (mock auth — chỉ để demo, sẽ phát triển thêm) ... 79
+4.8.2. Giao diện chat NL→SQL với streaming agent pipeline (chức năng hoàn chỉnh, nối backend thật) ... 80
+4.8.3. Giao diện Saved queries (localStorage — demo, sẽ phát triển thêm) ...... 81
+4.8.4. Giao diện Reports / Dashboard với Recharts (dữ liệu mẫu — demo, sẽ phát triển thêm) ... 81
+4.8.5. Giao diện quản lý Data Sources và Schema Catalog (UI dùng dữ liệu mẫu — demo; API schema backend đã có, sẽ phát triển nối UI) ... 82
+4.8.6. Giao diện Settings (Profile / AI Model / Integration / Bảo mật) — giao diện demo, sẽ phát triển thêm ... 82
+4.8.7. Giao diện Billing và usage tracking (demo, chưa tích hợp thanh toán — sẽ phát triển thêm) ... 83
+4.9. Tổng kết chương 4 .............................................................................. 83
+KẾT LUẬN VÀ KIẾN NGHỊ......................................................................... 85
+TÀI LIỆU THAM KHẢO............................................................................... 87
