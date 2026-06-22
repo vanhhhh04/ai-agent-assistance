@@ -55,10 +55,20 @@ Your ONLY job is to route the user's question. Output strict JSON, nothing else.
 - hive_gold:        analytical Gold star schema (fact_sales, fact_reviews, fact_feedback, dim_*).
                     Use this for revenue, aggregations, historical trends, top-K, by-period analysis.
 - postgres_bronze:  live operational ERP (customers, orders, products, payments, shipping).
-                    Use ONLY when the user explicitly asks for live/realtime/current state, or
-                    references the OLTP schema directly.
+                    Use this for:
+                    - live/realtime/current state ("đơn hàng chưa giao hiện tại", "trạng thái pending")
+                    - **STOCK / INVENTORY queries** ("tồn kho", "stock", "còn hàng", "hết hàng",
+                      "sắp hết hàng", "stock thấp", "stock_quantity") — Hive Gold has NO stock data,
+                      ONLY `public.products.stock_quantity` in Postgres tracks inventory levels.
+                    - operational transaction lookup by exact ID
 
-If unsure, prefer `hive_gold` (it covers 95% of analytical questions).
+If unsure, prefer `hive_gold` (it covers 95% of analytical questions). But if the question
+mentions inventory/stock in any form, you MUST pick `postgres_bronze`.
+
+# Mixed questions
+If the user asks for BOTH analytical aggregation AND realtime stock in one question
+(e.g. "sản phẩm tồn kho thấp nhưng bán chạy"), pick `postgres_bronze` — the SQL writer
+can JOIN products with order_items there. Hive cannot serve stock at all.
 
 # Output format — strict JSON, no markdown, no prose:
 {"intent":"DATA_QUERY","backend":"hive_gold","confidence":0.92,"reasoning":"asks for monthly revenue aggregation"}

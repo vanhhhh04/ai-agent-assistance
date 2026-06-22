@@ -151,24 +151,71 @@ def _execute_sync(sql: str, max_rows: int) -> tuple[list[str], list[list[Any]]]:
         return cols, rows
 
 
+def _is_transient_hive_error(exc: BaseException) -> bool:
+    """
+    Return True for errors that should be retried.
+
+    Hive on MapReduce in *local* mode (the default in this dev stack) shares a
+    single JVM across concurrent queries. When two queries hit Stage-2 at the
+    same time, one of them can fail with "return code 2 from MapRedTask" even
+    though the SQL is perfectly valid. This is the dominant cause of intermittent
+    failures here — retry once or twice and it almost always succeeds.
+
+    We also retry generic socket / thrift transport errors that look like
+    connection blips rather than real query problems.
+    """
+    msg = str(exc)
+    transient_markers = (
+        "return code 2 from org.apache.hadoop.hive.ql.exec.mr.MapRedTask",
+        "TTransport",                  # thrift transport error
+        "TSocket read 0 bytes",        # connection dropped mid-query
+        "Broken pipe",
+        "Could not establish connection",
+    )
+    return any(m in msg for m in transient_markers)
+
+
 async def execute_query(sql: str) -> dict:
     """
     Run a SELECT against Hive. Returns:
       {"columns": [...], "rows": [{col: val, ...}], "row_count": N, "exec_ms": …}
 
     Raises on connection / SQL syntax errors — caller (the data retrieval
-    agent) catches and surfaces a friendly error.
+    agent) catches and surfaces a friendly error. Transient MR errors are
+    retried automatically (see _is_transient_hive_error).
     """
     started = time.time()
-    try:
-        cols, rows = await asyncio.wait_for(
-            asyncio.to_thread(_execute_sync, sql, settings.hive_max_rows),
-            timeout=settings.hive_query_timeout_sec,
-        )
-    except asyncio.TimeoutError as e:
-        raise RuntimeError(
-            f"Hive query exceeded {settings.hive_query_timeout_sec}s timeout"
-        ) from e
+    max_attempts = 3
+    last_err: BaseException | None = None
+    cols: list[str] = []
+    rows: list[list[Any]] = []
+    for attempt in range(1, max_attempts + 1):
+        try:
+            cols, rows = await asyncio.wait_for(
+                asyncio.to_thread(_execute_sync, sql, settings.hive_max_rows),
+                timeout=settings.hive_query_timeout_sec,
+            )
+            if attempt > 1:
+                log.info("hive: succeeded on retry %d/%d", attempt, max_attempts)
+            break
+        except asyncio.TimeoutError as e:
+            raise RuntimeError(
+                f"Hive query exceeded {settings.hive_query_timeout_sec}s timeout"
+            ) from e
+        except Exception as e:
+            last_err = e
+            if attempt < max_attempts and _is_transient_hive_error(e):
+                backoff = 1.5 * attempt
+                log.warning(
+                    "hive transient error (attempt %d/%d) — retrying in %.1fs: %s",
+                    attempt, max_attempts, backoff, str(e)[:120],
+                )
+                await asyncio.sleep(backoff)
+                continue
+            raise
+    else:
+        # All attempts exhausted with transient errors
+        raise RuntimeError(f"Hive query failed after {max_attempts} attempts: {last_err}")
 
     elapsed_ms = int((time.time() - started) * 1000)
     rows_dict: list[dict] = [

@@ -185,7 +185,34 @@ step "8. AI Agent stack (DataFinch)"
 bash cli/ai-agent-up.sh
 
 # -------------------------------------------------------------
-step "9. Live pipeline dashboard"
+step "9. DataFinch Web (Next.js frontend)"
+# Brings up the Next.js container which runs `npm run dev` on port 3000.
+# First build can take ~2-3 min (npm install). Subsequent starts are fast
+# (~10s) thanks to the named volume that persists node_modules.
+docker compose up -d datafinch-web >/dev/null 2>&1 && ok "container requested up" \
+    || err "could not start datafinch-web — check 'docker compose logs datafinch-web'"
+
+# Next.js dev startup takes longer than FastAPI — give it up to 3 minutes,
+# especially on first build where npm install runs.
+wait_http "DataFinch Web" "http://localhost:3000/" 180 || \
+    warn "frontend not responding yet — first build can take longer; \
+tail logs with: docker logs datafinch-web -f"
+
+# -------------------------------------------------------------
+step "10. Live pipeline dashboard"
 # Background HTTP server on :5555 with a single-page diagram of the whole
 # pipeline. Re-running startup.sh will kill+restart the previous instance.
 bash cli/dashboard-up.sh
+
+# -------------------------------------------------------------
+step "✓ All services up"
+echo "  Frontend:        http://localhost:3000"
+echo "  AI Agent API:    http://localhost:8000/docs"
+echo "  Pipeline dash:   http://localhost:5555"
+echo "  Airflow:         http://localhost:8080  (admin / admin123)"
+echo "  NiFi:            https://localhost:8443/nifi  (admin / adminadminadmin)"
+echo "  OpenSearch UI:   http://localhost:5601"
+echo "  Kafka UI:        http://localhost:8888"
+echo "  HDFS Namenode:   http://localhost:9870"
+echo ""
+echo "  Login frontend với username/password: admin / admin"

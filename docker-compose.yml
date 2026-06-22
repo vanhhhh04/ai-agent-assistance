@@ -570,6 +570,53 @@ services:
       start_period: 30s
 
   # ─────────────────────────────────────────────
+  # DataFinch Web — Next.js 16 frontend
+  # http://localhost:3000  (landing + chat app + saved queries + docs)
+  #
+  # Runs in dev mode with hot reload. Source code is bind-mounted from
+  # ./datafinch-web; node_modules and .next live in named volumes so the
+  # container's Linux binaries don't clash with host (Windows) installs.
+  # ─────────────────────────────────────────────
+  datafinch-web:
+    build:
+      context: ./datafinch-web
+      dockerfile: Dockerfile
+    container_name: datafinch-web
+    networks:
+      - dataplatform
+    ports:
+      - "3000:3000"
+    environment:
+      # Public URL the BROWSER uses to reach the FastAPI backend. Since the
+      # user opens the page on the host machine, localhost:8000 is correct
+      # (NOT http://ai-agent:8000 — that's only resolvable inside the docker
+      # network).
+      NEXT_PUBLIC_API_BASE:        "${NEXT_PUBLIC_API_BASE:-http://localhost:8000}"
+      NEXT_PUBLIC_SITE_URL:        "${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}"
+      NODE_ENV:                    development
+      NEXT_TELEMETRY_DISABLED:     "1"
+      # Polling is required for the bind-mount file watcher on Docker Desktop
+      # (Windows/macOS) — inotify events from the host don't propagate.
+      WATCHPACK_POLLING:           "true"
+      CHOKIDAR_USEPOLLING:         "true"
+    volumes:
+      # Bind-mount source for hot reload during development.
+      - ./datafinch-web:/app
+      # Named volumes for node_modules + .next — keeps Linux binaries inside
+      # the container and isolated from host installs.
+      - datafinch_node_modules:/app/node_modules
+      - datafinch_next_cache:/app/.next
+    depends_on:
+      ai-agent:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:3000/ > /dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
+
+  # ─────────────────────────────────────────────
   # OpenSearch Dashboards — UI for browsing indices
   # http://localhost:5601
   # ─────────────────────────────────────────────
@@ -598,3 +645,5 @@ volumes:
   airflow_logs:         # Airflow task logs
   opensearch_data:      # OpenSearch indices (finch_catalog, table_docs, query_log)
   aiagent_model_cache:  # sentence-transformers + huggingface model cache for ai-agent
+  datafinch_node_modules:  # Linux-native node_modules for Next.js frontend (isolated from host)
+  datafinch_next_cache:    # .next build cache for Next.js frontend

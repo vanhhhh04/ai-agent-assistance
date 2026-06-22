@@ -34,6 +34,12 @@ tags: [revenue, sales, transactions]
 - **Tránh nhầm `order_total` và `item_total`**: `order_total` lặp trên các item của cùng order (nếu SUM mọi item sẽ nhân đôi). Dùng `item_total` cho aggregation theo sản phẩm; dùng `DISTINCT order_key` rồi SUM `order_total` cho aggregation theo đơn.
 - Cột `order_status` có thể là `PENDING`, `PROCESSING`, `SHIPPED`, `DELIVERED`, `CANCELLED`, `RETURNED`. Lọc `DELIVERED` nếu chỉ muốn doanh thu thực thu.
 - `delivery_days` có thể NULL nếu shipping chưa giao xong.
+- **`fact_sales` CHỈ chứa sales line items** — KHÔNG có:
+  - `event_type` / `event_kind` / `record_type` (không phải event log)
+  - `stock_quantity` / `inventory_level` / `available_qty` (không có stock data)
+  - `is_stock_event` / `is_return` / `transaction_kind` (không có loại event)
+  Nếu user hỏi về **tồn kho/stock/inventory**, phải dùng backend `postgres_bronze.products.stock_quantity`, KHÔNG self-JOIN fact_sales hay bịa column.
+- **Không tự bịa cột không có trong DESCRIBE** — nếu schema augmentation không list column đó, nó KHÔNG tồn tại.
 
 ## SQL examples
 

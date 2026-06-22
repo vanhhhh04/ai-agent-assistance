@@ -55,9 +55,14 @@ DB_CONFIG = {
 }
 
 BOOTSTRAP_CATEGORIES = int(os.getenv("BOOTSTRAP_CATEGORIES", "1000"))
-BOOTSTRAP_PRODUCTS   = int(os.getenv("BOOTSTRAP_PRODUCTS",   "100000"))
+BOOTSTRAP_PRODUCTS   = int(os.getenv("BOOTSTRAP_PRODUCTS",   "10000"))
 BATCH_SIZE           = int(os.getenv("BATCH_SIZE",           "5000"))
 CSV_OUTPUT_DIR       = Path(os.getenv("CSV_DIR", "./csv_output"))
+
+# Hard cap on total products. Once this many rows exist in the products table,
+# the realtime loop stops creating new products (stock/price UPDATES still run,
+# since they don't grow the row count). Override with MAX_PRODUCTS=N in .env.
+MAX_PRODUCTS = int(os.getenv("MAX_PRODUCTS", "20000"))
 
 INTERVAL_NEW_PRODUCT  = 120
 INTERVAL_UPDATE_STOCK = 10
@@ -481,6 +486,14 @@ def realtime_loop(category_ids: list[int], product_ids: list[int]):
             conn = get_conn()
             cur  = conn.cursor()
             try:
+                # Cap check — skip new product creation if we've hit MAX_PRODUCTS.
+                # Stock/price UPDATE flow above is unaffected (mutates existing rows).
+                if len(product_ids) >= MAX_PRODUCTS:
+                    log.info(f"MAX_PRODUCTS={MAX_PRODUCTS:,} reached — skip new product INSERT")
+                    last_new_product = now
+                    cur.close(); conn.close()
+                    time.sleep(1)
+                    continue
                 new_products = [make_product_row(random.choice(category_ids))
                                 for _ in range(random.randint(3, 10))]
                 for row in new_products:

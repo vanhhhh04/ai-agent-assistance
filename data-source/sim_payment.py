@@ -63,6 +63,11 @@ INTERVAL_SHIPPING       = 15
 INTERVAL_REVIEW         = 30
 INTERVAL_FEEDBACK       = 45
 
+# Hard cap on payments table size. Status UPDATE flow (pending → completed →
+# refunded) keeps running because it mutates existing rows. Override with
+# MAX_PAYMENTS=N in .env.
+MAX_PAYMENTS = int(os.getenv("MAX_PAYMENTS", "250000"))
+
 # ── Dirty data control ──────────────────────
 DIRTY_RATE = 0.05
 DIRTY_CONFIG = {
@@ -261,6 +266,13 @@ def gateway_meta(method: str) -> dict:
 #  EVENT HANDLERS
 # ─────────────────────────────────────────────
 def handle_new_payment(cur, conn):
+    # Cap check — once MAX_PAYMENTS rows exist, stop creating new payments.
+    # Status UPDATE handler (pending → completed → refunded) is unaffected.
+    cur.execute("SELECT COUNT(*) FROM payments")
+    payment_count = cur.fetchone()[0]
+    if payment_count >= MAX_PAYMENTS:
+        return
+
     cur.execute("""
         SELECT o.id, o.total_amount FROM orders o
         LEFT JOIN payments p ON p.order_id = o.id

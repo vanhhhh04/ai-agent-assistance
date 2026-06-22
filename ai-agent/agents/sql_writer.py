@@ -64,7 +64,26 @@ _HIVE_RULES = """## HiveQL rules (warehouse: gold.*)
      - If you really need it: use a CTE join, e.g.
          `WITH m AS (SELECT MAX(order_year) AS y FROM gold.fact_sales)
           SELECT ... FROM gold.fact_sales s JOIN m ON s.order_year = m.y ...`
-   Subqueries in IN/EXISTS at the top-level of a WHERE conjunct ARE supported."""
+   Subqueries in IN/EXISTS at the top-level of a WHERE conjunct ARE supported.
+10. **NEVER FABRICATE COLUMNS** — every column you reference must appear in the
+    schema section below for that table. Common LLM traps to avoid:
+    - Do NOT invent discriminator columns like `event_type`, `event_kind`,
+      `record_type`, `is_stock_event`, `transaction_kind`. `fact_sales` is a
+      pure line-item fact, not an event log.
+    - Do NOT self-JOIN `fact_sales` to itself with a fake filter to fabricate
+      a different "view" (stock vs sales). There is one row per order_item, full stop.
+    - Do NOT assume Postgres column names exist in Hive — e.g. `stock_quantity`,
+      `customer_id` (Hive uses `customer_key`), `order_id` (Hive uses `order_key`),
+      `phone`, `address`, `first_name`, `last_name` are all Postgres-only.
+    - Do NOT join two dim tables and call it a fact — facts are `gold.fact_*`.
+11. **Hive Gold does NOT have stock/inventory data** — `dim_products` is a
+    product master (sku/name/brand/category/list_price/cost/is_active) with NO
+    stock_quantity column. If the user asks about "tồn kho", "stock", "inventory",
+    "còn hàng", "hết hàng", you MUST respond with an explanation that this query
+    needs the `postgres_bronze` backend (where `public.products.stock_quantity`
+    lives). Set `intent` to OUT_OF_SCOPE in the supervisor for now, OR generate
+    a query against Postgres if backend=postgres_bronze. Never invent a stock
+    column on a Hive table."""
 
 
 _POSTGRES_RULES = """## PostgreSQL rules (operational ERP: public.*)
@@ -74,10 +93,29 @@ _POSTGRES_RULES = """## PostgreSQL rules (operational ERP: public.*)
 4. Never emit DELETE/UPDATE/INSERT/DROP/CREATE/ALTER/TRUNCATE — read-only.
 5. No semicolons — single statement only.
 6. Use ::date casts when filtering on timestamp columns by date.
-7. Vietnamese semantic mapping (same as HiveQL rules):
+7. Vietnamese semantic mapping:
    - "bán chạy nhất" → quantity (`SUM(quantity)` or `COUNT(DISTINCT order_id)`), not revenue.
-   - "doanh thu" → `SUM(item_total)` or `SUM(quantity * unit_price)`.
-   - "hiện nay" → no fixed year filter (use most-recent data or skip the filter)."""
+   - "doanh thu" → `SUM(quantity * unit_price)` from order_items, NOT from orders.
+   - "hiện nay" → no fixed year filter (use most-recent data or skip the filter).
+   - "đơn hàng" / "order" → orders table.
+   - "khách hàng" → customers table.
+   - "sản phẩm" → products table.
+8. Order status semantics — `orders.status` enum:
+   ('pending', 'processing', 'shipped', 'delivered', 'cancelled', 'returned').
+   - "chưa giao" / "undelivered" / "đang xử lý" → `status NOT IN ('delivered','cancelled','returned')`
+     (i.e. pending / processing / shipped). Do NOT use a non-existent `delivered_at` column on
+     the orders table — that column lives on `shipping`, not `orders`.
+   - "đã giao" / "delivered" → `status = 'delivered'`.
+   - "đã hủy" → `status = 'cancelled'`.
+9. Shipping vs orders — these are SEPARATE tables joined by order_id:
+   - `orders.status` is the high-level workflow status.
+   - `shipping.status` is the carrier-side detail (picked_up, in_transit, ...).
+   - `shipping.delivered_at` is the timestamp from carrier; does NOT exist on orders.
+   - Use orders.status for most "đơn hàng" questions. JOIN shipping only when the
+     user asks about carrier, tracking number, or actual delivery time.
+10. CRITICAL — do NOT borrow columns across tables. Every column you reference
+    must be listed under that table's "### public.<table>" block in the schema
+    section below. If a column you need is missing there, it does NOT exist."""
 
 
 SYSTEM_PROMPT_TEMPLATE = """You are the SQL Writer Agent. Generate ONE valid {dialect} query for the user's question.
@@ -146,12 +184,73 @@ async def generate_sql(
     dialect = "HiveQL" if backend == "hive_gold" else "PostgreSQL"
     dialect_rules = _HIVE_RULES if backend == "hive_gold" else _POSTGRES_RULES
 
-    # 1. Retrieve focused context
+    # 1. Retrieve focused context.
+    # ALWAYS filter by backend — otherwise a postgres query may retrieve gold
+    # tables (since both share the same catalog index) and the LLM ends up
+    # writing SQL with Hive table names like `fact_sales` against Postgres.
+    # If retrieval returns nothing for that backend (e.g. Postgres not indexed
+    # yet), the schema augmentation block below will dump the full schema_cache
+    # instead.
     ctx = semantic_layer.retrieve(
         question,
-        backend_filter=backend_db if backend == "hive_gold" else None,
+        backend_filter=backend_db,
     )
-    retrieval_block = ctx.as_prompt_block() or "(no catalog matches — use general SQL knowledge)"
+    retrieval_block = ctx.as_prompt_block()
+
+    # ── Schema augmentation — critical for preventing column hallucination ──
+    # Semantic retrieval returns only top-K (default 8) catalog docs. Each column
+    # is a separate doc, so 8 hits typically cover the table doc + a few
+    # "semantic-match" columns (e.g. `customer_name` when asked about "khách hàng")
+    # but miss less-relevant columns (e.g. `gender`, `date_of_birth`). The LLM
+    # then guesses missing columns (`first_name`, `phone`, `address`, ...).
+    #
+    # Fix: for every table that appears in retrieval, dump its FULL column list
+    # from schema_cache (loaded at startup from Hive Metastore). This is ground
+    # truth — the LLM no longer needs to guess what columns exist.
+    def _format_table_schema(tname: str, cols: list[dict]) -> str:
+        """Multi-line format — one column per line. Easier for LLM to parse than
+        a dense comma-separated list (especially when many tables exist; LLM
+        was previously merging columns across tables, e.g. taking `delivered_at`
+        from `shipping` and pretending it lives on `orders`).
+        """
+        lines = [f"### {backend_db}.{tname}"]
+        for c in cols:
+            lines.append(f"  - {c['column']}: {c['type']}")
+        return "\n".join(lines)
+
+    if schema_fallback:
+        if ctx.catalog:
+            tables_in_scope = ctx.tables_in_scope()
+            schema_lines: list[str] = []
+            for tname in tables_in_scope:
+                if tname in schema_fallback:
+                    schema_lines.append(_format_table_schema(tname, schema_fallback[tname]))
+            if schema_lines:
+                retrieval_block += (
+                    "\n\n## Full column schema for retrieved tables (GROUND TRUTH — "
+                    "use ONLY columns listed below for each table; do NOT borrow "
+                    "columns from one table to use on another):\n\n"
+                    + "\n\n".join(schema_lines)
+                )
+        else:
+            # Retrieval empty (cold start / index wiped / postgres not indexed)
+            # — dump ALL tables. This is the path Postgres queries take today
+            # since the catalog indexer currently only walks Hive Metastore.
+            lines = [
+                f"# Available tables in `{backend_db}` (full schema — retrieval returned 0 hits)",
+                "Use ONLY these tables/columns. Do NOT invent column names or borrow",
+                "columns from one table to use on another.\n",
+            ]
+            for tname in sorted(schema_fallback.keys()):
+                lines.append(_format_table_schema(tname, schema_fallback[tname]))
+                lines.append("")
+            retrieval_block = "\n".join(lines)
+            log.warning(
+                "sql_writer: retrieval empty for %r — using full schema_fallback (%d tables)",
+                question[:60], len(schema_fallback),
+            )
+    elif not retrieval_block:
+        retrieval_block = "(no catalog matches and no schema fallback — LLM will guess)"
 
     # 2. Build messages — for FOLLOWUP, prepend recent turns
     messages: list[dict] = []

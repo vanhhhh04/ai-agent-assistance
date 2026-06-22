@@ -15,6 +15,7 @@ downloads/
 eggs/
 .eggs/
 lib/
+!datafinch-web/lib/
 lib64/
 parts/
 sdist/
@@ -214,6 +215,19 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Node / Next.js / tooling artifacts
+node_modules/
+.next/
+out/
+
+# Generated analysis / local logs
+.understand-anything/
+logs/
+
+# Office lock files
+~$*
+**/~$*
 
 # Project-specific generated data (simulators / local infra)
 data-source/csv_output/

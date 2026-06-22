@@ -57,9 +57,15 @@ DB_CONFIG = {
     "password": os.getenv("DB_PASSWORD", "postgres"),
 }
 
-BOOTSTRAP_CUSTOMERS = int(os.getenv("BOOTSTRAP_CUSTOMERS", "100000"))
-BOOTSTRAP_ORDERS    = int(os.getenv("BOOTSTRAP_ORDERS",    "500000"))
+BOOTSTRAP_CUSTOMERS = int(os.getenv("BOOTSTRAP_CUSTOMERS", "20000"))
+BOOTSTRAP_ORDERS    = int(os.getenv("BOOTSTRAP_ORDERS",    "100000"))
 BATCH_SIZE          = int(os.getenv("BATCH_SIZE",          "5000"))
+
+# Hard caps on table sizes. Once the cap is hit, realtime INSERT for that
+# entity stops; UPDATE flows (status transitions, coupon expiry, ...) continue
+# because they mutate existing rows. Override via MAX_* env vars in .env.
+MAX_CUSTOMERS = int(os.getenv("MAX_CUSTOMERS", "50000"))
+MAX_ORDERS    = int(os.getenv("MAX_ORDERS",    "200000"))
 
 INTERVAL_NEW_CUSTOMER = 30
 INTERVAL_UPDATE_ORDER = 10
@@ -708,6 +714,15 @@ def realtime_loop(customer_ids, address_map, coupon_ids, order_ids, product_ids)
 
         # ── INSERT order mới (mỗi 2-5s) ──
         if now - last_new_order >= interval_new_order:
+            # Cap check — stop creating new orders once MAX_ORDERS hit.
+            # Status UPDATE flow above is unaffected.
+            if len(order_ids) >= MAX_ORDERS:
+                if int(now) % 60 == 0:  # log once a minute, not spam
+                    log.info(f"MAX_ORDERS={MAX_ORDERS:,} reached — skip new order INSERT")
+                last_new_order = now
+                interval_new_order = random.randint(2, 5)
+                time.sleep(1)
+                continue
             with db_cursor() as (conn, cur):
                 cid   = random.choice(customer_ids)
                 addrs = address_map.get(cid, [])
@@ -778,6 +793,12 @@ def realtime_loop(customer_ids, address_map, coupon_ids, order_ids, product_ids)
 
         # ── INSERT customer mới (mỗi 30s) ──
         if now - last_new_customer >= INTERVAL_NEW_CUSTOMER:
+            if len(customer_ids) >= MAX_CUSTOMERS:
+                if int(now) % 300 == 0:  # log once per 5 min
+                    log.info(f"MAX_CUSTOMERS={MAX_CUSTOMERS:,} reached — skip new customer INSERT")
+                last_new_customer = now
+                time.sleep(1)
+                continue
             with db_cursor() as (conn, cur):
                 raw = make_customer()
                 dirty_row, quality_flag = maybe_dirty_customer(raw)

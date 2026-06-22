@@ -32,10 +32,13 @@ Dim sản phẩm — đã enrich `category_name` và `parent_category_name` từ
 | `cost` | decimal | Giá vốn — dùng tính margin |
 | `is_active` | boolean | `false` = đã ngừng bán |
 
-## Lưu ý
+## Lưu ý quan trọng
 
-- **Không có cột `stock_quantity` ở Gold** — stock realtime nằm ở Silver `warehouse_events`. Gold chỉ là snapshot product master.
-- Margin = `list_price - cost`, nhưng AI agent thường tính `(list_price - cost) / list_price` cho margin %.
+- **KHÔNG có cột `stock_quantity` ở Hive Gold** — stock realtime chỉ tồn tại ở `public.products.stock_quantity` (PostgreSQL backend). Nếu user hỏi "tồn kho", "stock low", "hết hàng", "còn hàng" → phải dùng **backend `postgres_bronze`**, không phải Hive.
+- **KHÔNG được tự bịa cột `event_type`, `event_kind`, `record_type`, `is_stock`, hoặc self-JOIN `fact_sales` với chính nó để "phân tách stock vs sales events"**. `fact_sales` chỉ chứa sales line items, không có bản ghi stock event.
+- Cũng KHÔNG có: `quantity_in_stock`, `inventory_level`, `available_qty`. Không bịa.
+- Margin = `list_price - cost`. Margin % = `(list_price - cost) / list_price`.
+- Để JOIN với fact_sales, dùng `product_key` (không phải `id`, `sku`, hay `product_id`).
 
 ## SQL examples
 
