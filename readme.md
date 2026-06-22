@@ -1,56 +1,56 @@
 # DataFinch — AI Agent Assistance Platform
 
-Nền tảng **Big Data + AI** mô phỏng hệ thống thương mại điện tử end-to-end: ingestion đa nguồn (CDC + NiFi), lakehouse Medallion trên HDFS, orchestration Airflow/Spark, và **trợ lý NL→SQL** (DataFinch) cho người dùng nghiệp vụ.
+An end-to-end **Big Data + AI** platform that simulates an e-commerce data stack: multi-source ingestion (CDC + NiFi), a Medallion lakehouse on HDFS, Airflow/Spark orchestration, and a **natural-language-to-SQL assistant** (DataFinch) for business users.
 
-Dự án tốt nghiệp / demo production-like — chạy local hoàn toàn bằng Docker Compose.
+Graduation / production-like demo project — runs entirely on local Docker Compose.
 
 ---
 
-## Mục lục
+## Table of Contents
 
-- [Tổng quan](#tổng-quan)
-- [Kiến trúc](#kiến-trúc)
-- [Công nghệ](#công-nghệ)
-- [Yêu cầu hệ thống](#yêu-cầu-hệ-thống)
-- [Cấu trúc repository](#cấu-trúc-repository)
-- [Cài đặt nhanh](#cài-đặt-nhanh)
-- [Cấu hình môi trường](#cấu-hình-môi-trường)
-- [Bảng dịch vụ & URL](#bảng-dịch-vụ--url)
-- [Luồng dữ liệu](#luồng-dữ-liệu)
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Technology Stack](#technology-stack)
+- [System Requirements](#system-requirements)
+- [Repository Structure](#repository-structure)
+- [Quick Start](#quick-start)
+- [Environment Configuration](#environment-configuration)
+- [Services & URLs](#services--urls)
+- [Data Pipeline](#data-pipeline)
 - [AI Agent & Frontend](#ai-agent--frontend)
 - [CLI & Makefile](#cli--makefile)
-- [Vận hành hàng ngày](#vận-hành-hàng-ngày)
-- [Xử lý sự cố](#xử-lý-sự-cố)
-- [Tài liệu chi tiết](#tài-liệu-chi-tiết)
+- [Day-to-Day Operations](#day-to-day-operations)
+- [Troubleshooting](#troubleshooting)
+- [Further Documentation](#further-documentation)
 
 ---
 
-## Tổng quan
+## Overview
 
-Hệ thống gồm **hai lớp chính**:
+The system has **two main layers**:
 
-| Lớp | Mô tả |
-|-----|--------|
-| **Data Engineering** | PostgreSQL (ERP) → Kafka (Debezium CDC + NiFi) → Spark Bronze/Silver/Gold trên HDFS → Hive catalog |
+| Layer | Description |
+|-------|-------------|
+| **Data Engineering** | PostgreSQL (ERP) → Kafka (Debezium CDC + NiFi) → Spark Bronze/Silver/Gold on HDFS → Hive catalog |
 | **AI Layer (DataFinch)** | OpenSearch semantic layer + FastAPI multi-agent → Hive Gold / Postgres Bronze → Next.js UI |
 
-**Ba nguồn dữ liệu mô phỏng** (`data-source/`):
+**Three simulated data sources** (`data-source/`):
 
-| Simulator | Cơ chế | Kafka topics |
-|-----------|---------|--------------|
-| `sim_erp.py` | Ghi OLTP Postgres → Debezium CDC | `erp.public.*` (9 bảng) |
+| Simulator | Mechanism | Kafka topics |
+|-----------|-----------|--------------|
+| `sim_erp.py` | Writes to OLTP Postgres → Debezium CDC | `erp.public.*` (9 tables) |
 | `sim_warehouse.py` | CSV → NiFi GetFile | `warehouse.events` (+ `.dlq`) |
 | `sim_payment.py` | HTTP webhook → NiFi ListenHTTP | `payment.events` (+ `.dlq`) |
 
-Simulator inject ~5% dữ liệu bẩn có kiểm soát để kiểm chứng Silver/DLQ.
+Simulators inject ~5% controlled dirty data to validate Silver transforms and the DLQ.
 
 ---
 
-## Kiến trúc
+## Architecture
 
 ```mermaid
 flowchart TB
-    subgraph Sources["Nguồn mô phỏng"]
+    subgraph Sources["Simulated sources"]
         ERP[sim_erp.py]
         WH[sim_warehouse.py]
         PAY[sim_payment.py]
@@ -101,13 +101,13 @@ flowchart TB
     API --> WEB
 ```
 
-**Star schema Gold** (truy vấn chính): `fact_sales`, `fact_reviews`, `fact_feedback`, `dim_customers`, `dim_products`, `dim_categories`, `dim_addresses`, `dim_coupons`, `dim_payments`, `dim_shipping`.
+**Gold star schema** (primary query layer): `fact_sales`, `fact_reviews`, `fact_feedback`, `dim_customers`, `dim_products`, `dim_categories`, `dim_addresses`, `dim_coupons`, `dim_payments`, `dim_shipping`.
 
 ---
 
-## Công nghệ
+## Technology Stack
 
-| Hạng mục | Stack |
+| Category | Stack |
 |----------|--------|
 | OLTP | PostgreSQL 15 (`wal_level=logical`) |
 | Streaming | Kafka 7.5, ZooKeeper, Debezium 2.5 |
@@ -118,150 +118,150 @@ flowchart TB
 | Orchestration | Apache Airflow 2.8 |
 | Retrieval | OpenSearch 2.13, sentence-transformers |
 | AI Backend | FastAPI, multi-agent (Supervisor → SQL Writer → Execution) |
-| LLM | Anthropic / Gemini / OpenAI (cấu hình qua `.env`) |
+| LLM | Anthropic / Gemini / OpenAI (configured via `.env`) |
 | Frontend | Next.js 16, React 19, Tailwind CSS 4 |
 | DevOps | Docker Compose |
 
 ---
 
-## Yêu cầu hệ thống
+## System Requirements
 
-| Thành phần | Khuyến nghị |
-|------------|-------------|
-| OS | Windows 10/11 + WSL2/Git Bash, macOS, hoặc Linux |
-| Docker | Docker Desktop 4.x+ (bật WSL2 backend trên Windows) |
-| RAM | **16 GB+** (toàn stack ~20 container) |
-| Disk | **30 GB+** trống (HDFS, Kafka, model cache ~420 MB) |
-| Python | 3.10+ (CLI trên host) |
-| Git | Clone + bash scripts |
+| Component | Recommendation |
+|-----------|----------------|
+| OS | Windows 10/11 + WSL2/Git Bash, macOS, or Linux |
+| Docker | Docker Desktop 4.x+ (enable WSL2 backend on Windows) |
+| RAM | **16 GB+** (~20 containers for the full stack) |
+| Disk | **30 GB+** free (HDFS, Kafka, model cache ~420 MB) |
+| Python | 3.10+ (host CLI) |
+| Git | For clone + bash scripts |
 
-> **Lưu ý Windows:** NiFi, HDFS bind-mount và Next.js hot-reload đã được cấu hình polling trong `docker-compose.yml`. Chạy `bash cli/startup.sh` từ Git Bash hoặc WSL.
+> **Windows note:** NiFi, HDFS bind mounts, and Next.js hot reload use file polling in `docker-compose.yml`. Run `bash cli/startup.sh` from Git Bash or WSL.
 
 ---
 
-## Cấu trúc repository
+## Repository Structure
 
 ```
 ai-agent-assistance/
 ├── ai-agent/              # FastAPI NL→SQL service (Supervisor, SQL Writer, guardrails)
-├── datafinch-web/           # Next.js frontend (landing + app /ask, /saved, …)
-├── opensearch/              # Index mappings, embedder, catalog indexers, business docs
-├── spark/jobs/              # bronze_ingestion.py, silver_transform.py, gold_transform.py
-├── airflow/dags/            # medallion_pipeline DAG (hourly Bronze→Silver→Gold)
-├── data-source/             # sim_erp, sim_warehouse, sim_payment
+├── datafinch-web/         # Next.js frontend (landing + /ask, /saved, …)
+├── opensearch/            # Index mappings, embedder, catalog indexers, business docs
+├── spark/jobs/            # bronze_ingestion.py, silver_transform.py, gold_transform.py
+├── airflow/dags/          # medallion_pipeline DAG (hourly Bronze→Silver→Gold)
+├── data-source/           # sim_erp, sim_warehouse, sim_payment
 ├── data/
-│   ├── json/                # Seed JSON (customers, orders, …)
-│   ├── initial_table.sql    # Schema ERP + seed load
-│   └── postgres-init/       # Init scripts (Airflow DB, …)
-├── cli/                     # Shell scripts vận hành (startup, sim-logs, nifi-recover, …)
-├── cli.py                   # Python CLI (status, seed, debezium, pipeline, …)
-├── documentations/          # Luồng DE, kiến trúc AI, luận văn (MD + assets)
-├── docker-compose.yml       # Toàn bộ stack
-├── Makefile                 # step1…step10 setup có hướng dẫn
-└── .env                     # API keys & overrides (không commit — xem .gitignore)
+│   ├── json/              # Seed JSON (customers, orders, …)
+│   ├── initial_table.sql  # ERP schema + seed load
+│   └── postgres-init/     # Init scripts (Airflow DB, …)
+├── cli/                   # Ops shell scripts (startup, sim-logs, nifi-recover, …)
+├── cli.py                 # Python CLI (status, seed, debezium, pipeline, …)
+├── documentations/        # DE flows, AI architecture, thesis (MD + assets)
+├── docker-compose.yml     # Full stack definition
+├── Makefile               # step1…step10 guided setup
+├── .env.example           # Environment template (safe to commit)
+└── .env                   # Local secrets — copy from .env.example (DO NOT commit)
 ```
 
 ---
 
-## Cài đặt nhanh
+## Quick Start
 
-### 1. Clone & cấu hình
+### 1. Clone & configure
 
 ```bash
 git clone https://github.com/vanhhhh04/ai-agent-assistance.git
 cd ai-agent-assistance
 
-# Tạo .env từ template AI Agent
-cp ai-agent/.env.example .env
-# Chỉnh LLM_PROVIDER và API key (Anthropic / Gemini / OpenAI)
+# Create local env from template
+cp .env.example .env
+# Required: LLM_PROVIDER + API key (Anthropic / Gemini / OpenAI)
+# Optional: tune BOOTSTRAP_* / MAX_* for simulators
 ```
 
-### 2. Cài CLI dependencies (host)
+### 2. Install CLI dependencies (host)
 
 ```bash
 pip install -r cli-requirements.txt
-# hoặc
+# or
 make install-cli
 ```
 
-### 3. Khởi động toàn stack (khuyến nghị)
+### 3. Start the full stack (recommended)
 
 ```bash
 bash cli/startup.sh
 ```
 
-Script idempotent — an toàn chạy lại sau khi restart máy. Thực hiện:
+This script is **idempotent** — safe to re-run after a machine restart. It:
 
-1. `docker compose up -d`
-2. Chờ healthcheck các service
-3. Fix quyền volume CSV (NiFi)
-4. Đăng ký Debezium connector (snapshot ERP → Kafka)
-5. Tạo NiFi flow nếu chưa có
-6. Start 3 simulators
-7. In trạng thái pipeline
+1. Runs `docker compose up -d`
+2. Waits for service health checks
+3. Fixes CSV volume permissions (NiFi)
+4. Registers the Debezium connector (ERP snapshot → Kafka)
+5. Creates the NiFi flow if missing
+6. Starts all three simulators
+7. Prints pipeline status
 
-**Thời gian:** ~3–5 phút lần đầu; Debezium snapshot ~30–60 giây.
+**Timing:** ~3–5 minutes on first run; Debezium snapshot ~30–60 seconds.
 
-### 4. Luồng setup từng bước (Makefile)
+### 4. Step-by-step setup (Makefile)
 
 ```bash
 make step1    # docker compose up -d
 make step2    # python cli.py status
 make step3    # HDFS /datalake structure
-make step4    # seed Postgres (nếu DB trống)
+make step4    # seed Postgres (if DB is empty)
 make step5    # Debezium connector
-make step6    # NiFi (hướng dẫn / scripts)
+make step6    # NiFi (instructions / scripts)
 make step7    # simulators
 make step8    # trigger Airflow DAG
-make step9    # verify Gold trên HDFS
+make step9    # verify Gold on HDFS
 make step10   # verify Kafka topics
 ```
 
 ### 5. Index OpenSearch (semantic layer)
 
-Sau Gold đã có dữ liệu:
+After Gold tables are populated:
 
 ```bash
-bash cli/opensearch-up.sh      # tạo indices + index catalog/docs
-bash cli/opensearch-status.sh  # kiểm tra
+bash cli/opensearch-up.sh      # create indices + index catalog/docs
+bash cli/opensearch-status.sh  # verify
 ```
 
-### 6. Truy cập ứng dụng
+### 6. Open the application
 
-| Ứng dụng | URL |
-|----------|-----|
+| Application | URL |
+|-------------|-----|
 | **DataFinch Web** | http://localhost:3000 |
 | **AI Agent API / Swagger** | http://localhost:8000/docs |
 | Demo login | `admin` / `admin` |
 
 ---
 
-## Cấu hình môi trường
+## Environment Configuration
 
-File **`.env`** ở root project được `docker compose` load cho `ai-agent` và `data-source`.
+The root **`.env`** file is loaded by `docker compose` for `ai-agent`, `data-source`, and frontend overrides.
 
-### LLM (bắt buộc cho AI Agent)
+**Full template:** [`.env.example`](.env.example) — covers simulators, LLM, Hive, Postgres, OpenSearch, and Next.js.
 
-```env
-LLM_PROVIDER=gemini          # anthropic | gemini | openai
-GEMINI_API_KEY=your-key      # hoặc ANTHROPIC_API_KEY / OPENAI_API_KEY
-```
-
-Xem đầy đủ biến trong [`ai-agent/.env.example`](ai-agent/.env.example).
-
-### Frontend (tùy chọn)
-
-[`datafinch-web/.env.local.example`](datafinch-web/.env.local.example):
+### LLM (required for AI Agent)
 
 ```env
-NEXT_PUBLIC_API_BASE=http://localhost:8000
+LLM_PROVIDER=anthropic       # anthropic | gemini | openai
+ANTHROPIC_API_KEY=sk-ant-... # or GEMINI_API_KEY / OPENAI_API_KEY
 ```
 
-Trong Docker, mặc định đã set qua `docker-compose.yml`.
+Only the active provider's API key is required; others can stay empty.
+
+### Frontend (optional — dev outside Docker)
+
+Copy [`datafinch-web/.env.local.example`](datafinch-web/.env.local.example) to `datafinch-web/.env.local`.
+
+Inside Docker, `NEXT_PUBLIC_*` defaults are set in `docker-compose.yml`.
 
 ---
 
-## Bảng dịch vụ & URL
+## Services & URLs
 
 | Service | URL | Credentials |
 |---------|-----|-------------|
@@ -274,50 +274,50 @@ Trong Docker, mặc định đã set qua `docker-compose.yml`.
 | Spark Master UI | http://localhost:8090 | — |
 | HiveServer2 UI | http://localhost:10002 | — |
 | Kafka Connect (Debezium) | http://localhost:8083 | — |
-| OpenSearch | http://localhost:9200 | (security off — dev only) |
+| OpenSearch | http://localhost:9200 | security disabled — dev only |
 | OpenSearch Dashboards | http://localhost:5601 | — |
 | Adminer (Postgres) | http://localhost:8081 | postgres / postgres / ecommerce |
 | Postgres (host) | localhost:**5433** | postgres / postgres |
 
 ---
 
-## Luồng dữ liệu
+## Data Pipeline
 
 ### Medallion pipeline (Airflow DAG `medallion_pipeline`)
 
 ```
 Kafka → Bronze (append Parquet, checkpoint)
-     → Silver (clean, dedup CDC, DLQ)
+     → Silver (clean, CDC dedup, DLQ)
      → Gold (star schema + Hive external tables)
 ```
 
-| Layer | Path HDFS | Ghi chú |
-|-------|-----------|---------|
+| Layer | HDFS path | Notes |
+|-------|-----------|-------|
 | Bronze | `/datalake/bronze/erp_raw`, `wh_raw`, `pay_raw` | Raw JSON, append-only |
-| Silver | `/datalake/silver/{orders,customers,…}`, `dlq` | Overwrite mỗi lần chạy |
+| Silver | `/datalake/silver/{orders,customers,…}`, `dlq` | Overwrite each run |
 | Gold | `/datalake/gold/fact_*`, `dim_*` | Hive catalog `gold.*` |
 
-Trigger thủ công:
+Trigger manually:
 
 ```bash
 python cli.py pipeline run
-# hoặc Airflow UI → medallion_pipeline → Trigger DAG
+# or Airflow UI → medallion_pipeline → Trigger DAG
 ```
 
-### Kafka topics chính
+### Main Kafka topics
 
-| Topic pattern | Nguồn |
+| Topic pattern | Source |
 |---------------|--------|
-| `erp.public.*` | Debezium CDC (9 bảng ERP) |
-| `warehouse.events` | NiFi (CSV sản phẩm/kho) |
+| `erp.public.*` | Debezium CDC (9 ERP tables) |
+| `warehouse.events` | NiFi (CSV product/warehouse events) |
 | `payment.events` | NiFi (HTTP payment/shipping) |
-| `*.events.dlq` | Bản ghi DIRTY/QUARANTINE |
+| `*.events.dlq` | DIRTY / QUARANTINE records |
 
 ---
 
 ## AI Agent & Frontend
 
-### Pipeline câu hỏi (FastAPI SSE)
+### Query pipeline (FastAPI SSE)
 
 ```
 POST /api/query/ask
@@ -325,25 +325,25 @@ POST /api/query/ask
   → OpenSearch hybrid retrieval (catalog + docs + query history)
   → SQL Writer (LLM + guardrails)
   → Execute on Hive / Postgres
-  → Stream kết quả về UI
+  → Stream results to UI
 ```
 
-### Backend chính
+### Query backends
 
-| Backend | Khi nào dùng | Engine |
-|---------|--------------|--------|
-| `hive_gold` | Phân tích, doanh thu, trend (mặc định) | HiveServer2 → `gold.*` |
-| `postgres_bronze` | Trạng thái vận hành / OLTP | PostgreSQL `public.*` |
+| Backend | When to use | Engine |
+|---------|-------------|--------|
+| `hive_gold` | Analytics, revenue, trends (default) | HiveServer2 → `gold.*` |
+| `postgres_bronze` | Live operational / OLTP state | PostgreSQL `public.*` |
 
-### API hữu ích
+### Useful API endpoints
 
-| Endpoint | Mô tả |
-|----------|--------|
-| `GET /api/health` | Health toàn stack |
-| `GET /api/schema/full?backend=hive_gold` | Schema cache |
-| `POST /api/query/ask` | Hỏi đáp NL→SQL (SSE) |
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/health` | Full stack health |
+| `GET /api/schema/full?backend=hive_gold` | Cached schema |
+| `POST /api/query/ask` | NL→SQL Q&A (SSE stream) |
 
-Chi tiết: [`documentations/AI_AGENT_FLOW.md`](documentations/AI_AGENT_FLOW.md)
+Details: [`documentations/AI_AGENT_FLOW.md`](documentations/AI_AGENT_FLOW.md)
 
 ---
 
@@ -352,9 +352,9 @@ Chi tiết: [`documentations/AI_AGENT_FLOW.md`](documentations/AI_AGENT_FLOW.md)
 ### Python CLI (`cli.py`)
 
 ```bash
-python cli.py status              # health tất cả services
-python cli.py seed                # nạp JSON vào Postgres
-python cli.py debezium setup      # đăng ký CDC connector
+python cli.py status              # health of all services
+python cli.py seed                # load JSON seed into Postgres
+python cli.py debezium setup      # register CDC connector
 python cli.py pipeline run        # trigger medallion DAG
 python cli.py pipeline status
 python cli.py kafka topics
@@ -363,21 +363,21 @@ python cli.py hdfs ls /datalake/gold
 
 ### Shell scripts (`cli/`)
 
-| Script | Mục đích |
-|--------|----------|
-| `startup.sh` | **Khởi động chính** — compose + debezium + nifi + sims |
-| `shutdown.sh` | Dừng stack |
-| `wipe.sh` | Reset sạch Kafka/ZK (demo từ đầu) |
-| `sim-start.sh` / `sim-stop.sh` | Bật/tắt simulators |
-| `sim-logs.sh erp\|warehouse\|payment` | Tail log simulator |
-| `pipeline-status.sh` | Trạng thái Bronze/Silver/Gold |
-| `verify-pipeline.sh` | Kiểm tra end-to-end |
-| `nifi-recover.sh` | Sửa NiFi nhẹ |
-| `nifi-reset.sh` | Reset NiFi flow (cẩn thận) |
-| `opensearch-up.sh` | Bootstrap indices |
+| Script | Purpose |
+|--------|---------|
+| `startup.sh` | **Main startup** — compose + debezium + nifi + sims |
+| `shutdown.sh` | Stop the stack |
+| `wipe.sh` | Clean Kafka/ZK reset (fresh demo) |
+| `sim-start.sh` / `sim-stop.sh` | Start/stop simulators |
+| `sim-logs.sh erp\|warehouse\|payment` | Tail simulator logs |
+| `pipeline-status.sh` | Bronze/Silver/Gold status |
+| `verify-pipeline.sh` | End-to-end verification |
+| `nifi-recover.sh` | Light NiFi recovery |
+| `nifi-reset.sh` | Reset NiFi flow (use with care) |
+| `opensearch-up.sh` | Bootstrap OpenSearch indices |
 | `ai-agent-up.sh` | Rebuild/restart AI Agent |
 
-### Chạy simulator thủ công
+### Run simulators manually
 
 ```bash
 docker compose exec data-source python sim_erp.py
@@ -387,48 +387,48 @@ docker compose exec data-source python sim_payment.py
 
 ---
 
-## Vận hành hàng ngày
+## Day-to-Day Operations
 
 ```bash
-# Ngày thường
+# Normal workflow
 bash cli/startup.sh
 bash cli/pipeline-status.sh
 
-# Debug dữ liệu
+# Debug data
 bash cli/sim-logs.sh erp
 bash cli/sample-data.sh
 bash cli/verify-pipeline.sh
 
-# Demo sạch hoàn toàn
+# Fully clean demo
 bash cli/wipe.sh && bash cli/startup.sh
 ```
 
-**Sau `startup.sh`**, kiểm tra simulators:
+**After `startup.sh`**, verify simulators:
 
 ```bash
-bash cli/sim-logs.sh erp        # INSERT/UPDATE orders mỗi vài giây
-bash cli/sim-logs.sh warehouse  # stock_update ~10s, product mới ~2 phút
+bash cli/sim-logs.sh erp        # INSERT/UPDATE orders every few seconds
+bash cli/sim-logs.sh warehouse  # stock_update ~10s, new product ~2 min
 bash cli/sim-logs.sh payment    # payment ~3s, shipping ~15s
 ```
 
 ---
 
-## Xử lý sự cố
+## Troubleshooting
 
-| Triệu chứng | Hướng xử lý |
-|-------------|-------------|
-| Kafka corrupt / offset lỗi | `bash cli/kafka-recover.sh` hoặc `bash cli/wipe.sh` |
-| NiFi không đọc CSV | `docker exec -u root nifi chmod 777 /opt/nifi/csv_input` |
-| NiFi flow lỗi | `bash cli/nifi-recover.sh` → nếu vẫn lỗi: `bash cli/nifi-reset.sh` |
-| Docker pull 500 / DNS | Restart Docker Desktop; kiểm tra `nslookup auth.docker.io` |
-| Postgres init script CRLF | Chuyển `data/postgres-init/*.sh` sang **LF** (`.gitattributes` đã có `*.sh eol=lf`) |
-| AI Agent không trả lời | Kiểm tra API key trong `.env`; `curl localhost:8000/api/health/ping` |
-| Gold trống | Chạy simulators → trigger DAG → đợi Spark jobs xong |
-| OpenSearch empty | `bash cli/opensearch-up.sh` sau khi Gold đã populate |
+| Symptom | Fix |
+|---------|-----|
+| Kafka corrupt / offset errors | `bash cli/kafka-recover.sh` or `bash cli/wipe.sh` |
+| NiFi cannot read CSV | `docker exec -u root nifi chmod 777 /opt/nifi/csv_input` |
+| NiFi flow broken | `bash cli/nifi-recover.sh` → if still failing: `bash cli/nifi-reset.sh` |
+| Docker pull 500 / DNS | Restart Docker Desktop; check `nslookup auth.docker.io` |
+| Postgres init script CRLF | Convert `data/postgres-init/*.sh` to **LF** (`.gitattributes` has `*.sh eol=lf`) |
+| AI Agent not responding | Check API key in `.env`; `curl localhost:8000/api/health/ping` |
+| Empty Gold layer | Run simulators → trigger DAG → wait for Spark jobs |
+| Empty OpenSearch | `bash cli/opensearch-up.sh` after Gold is populated |
 
-### Reset volume runtime (giữ code)
+### Reset runtime volumes (keep code)
 
-Các thư mục sau **không commit** (xem `.gitignore`) — có thể xóa khi cần reset:
+These directories are **gitignored** — safe to delete for a clean reset:
 
 ```bash
 rm -rf data/kafka/* data/zookeeper/data/* data/zookeeper/log/*
@@ -437,32 +437,32 @@ rm -rf ./nifi/flowfile_repository ./nifi/content_repository ./nifi/provenance_re
 
 ---
 
-## Tài liệu chi tiết
+## Further Documentation
 
-| Tài liệu | Nội dung |
-|----------|----------|
-| [`documentations/ARCHITECTURE.md`](documentations/ARCHITECTURE.md) | Kiến trúc tổng thể |
-| [`documentations/DATA_FLOW.md`](documentations/DATA_FLOW.md) | Luồng dữ liệu end-to-end |
-| [`documentations/LUONG_CHAY_DATA_ENGINEER.md`](documentations/LUONG_CHAY_DATA_ENGINEER.md) | Hướng dẫn DE |
+| Document | Content |
+|----------|---------|
+| [`documentations/ARCHITECTURE.md`](documentations/ARCHITECTURE.md) | Overall architecture |
+| [`documentations/DATA_FLOW.md`](documentations/DATA_FLOW.md) | End-to-end data flow |
+| [`documentations/LUONG_CHAY_DATA_ENGINEER.md`](documentations/LUONG_CHAY_DATA_ENGINEER.md) | Data engineer runbook (Vietnamese) |
 | [`documentations/DATA_ENGINEER_FLOW_SPARK.md`](documentations/DATA_ENGINEER_FLOW_SPARK.md) | Bronze/Silver/Gold Spark |
 | [`documentations/DATA_ENGINEER_FLOW_KAFKA.md`](documentations/DATA_ENGINEER_FLOW_KAFKA.md) | Kafka & Debezium |
 | [`documentations/DATA_ENGINEER_FLOW_NIFI.md`](documentations/DATA_ENGINEER_FLOW_NIFI.md) | NiFi flows |
 | [`documentations/AI_AGENT_FLOW.md`](documentations/AI_AGENT_FLOW.md) | AI Agent pipeline |
 | [`documentations/AI_AGENT_SYSTEM.md`](documentations/AI_AGENT_SYSTEM.md) | Multi-agent design |
-| [`datafinch-web/README.md`](datafinch-web/README.md) | Frontend riêng |
+| [`datafinch-web/README.md`](datafinch-web/README.md) | Frontend |
 
 ---
 
-## Phát triển
+## Development
 
-### Rebuild service
+### Rebuild a service
 
 ```bash
 docker compose build ai-agent datafinch-web
 docker compose up -d ai-agent datafinch-web
 ```
 
-### Spark jobs thủ công
+### Run Spark jobs manually
 
 ```bash
 make spark-bronze
@@ -473,24 +473,25 @@ make spark-gold
 ### Tests
 
 ```bash
-# OpenSearch query logger
 python -m pytest opensearch/test_query_logger.py -q
 ```
 
 ---
 
-## Lưu ý bảo mật
+## Security Notes
 
-- Cấu hình hiện tại dành cho **local dev**: OpenSearch security off, mật khẩu mặc định, không TLS giữa services.
-- **Không** deploy production với `docker-compose.yml` nguyên bản.
-- Không commit `.env` chứa API key thật.
+- Current config is for **local development only**: OpenSearch security disabled, default passwords, no TLS between services.
+- **Do not** deploy `docker-compose.yml` as-is to production.
+- Never commit `.env` with real API keys — use [`.env.example`](.env.example) as the template.
+- If an API key was ever exposed (logs, screenshots, chat), **rotate it** in the provider console immediately.
 
 ---
 
-## License & tác giả
+## License & Author
 
-Dự án tốt nghiệp — DataFinch / AI Agent Assistance.
-CAO VIỆT ANH 
-contact: caovietanhhd@gmail.com
+Graduation project — DataFinch / AI Agent Assistance.
+
+**Author:** Cao Viet Anh  
+**Contact:** caovietanhhd@gmail.com
 
 Repository: [github.com/vanhhhh04/ai-agent-assistance](https://github.com/vanhhhh04/ai-agent-assistance)
