@@ -490,5 +490,7 @@ python -m pytest opensearch/test_query_logger.py -q
 ## License & tác giả
 
 Dự án tốt nghiệp — DataFinch / AI Agent Assistance.
+CAO VIỆT ANH 
+contact: caovietanhhd@gmail.com
 
 Repository: [github.com/vanhhhh04/ai-agent-assistance](https://github.com/vanhhhh04/ai-agent-assistance)
